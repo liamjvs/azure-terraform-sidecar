@@ -1,0 +1,20 @@
+parameters:
+- name: service_connection
+  type: string
+- name: skip
+  type: boolean
+  default: false
+
+steps:
+  - ${{ if eq(parameters.skip, true) }}:
+    - task: AzureCLI@2
+      name: ado_check
+      inputs:
+        azureSubscription: ${{ parameters.ServiceConnection }}
+        scriptType: pscore
+        scriptLocation: scriptPath
+        scriptPath: ./scripts/check_ado.ps1
+        arguments: |
+          -ado_project $(System.TeamProject)
+          -ado_org ${{ split(System.CollectionUri, "/")[3]] }}
+          -service_connection ${{ parameters.ServiceConnection }}
