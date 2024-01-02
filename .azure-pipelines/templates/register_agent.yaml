@@ -47,7 +47,7 @@ steps:
       scriptLocation: '../scripts/register_ado_agent.ps1'
       arguments: >
         -ado_project "Code"
-        -ado_org ${{ split(System.CollectionUri, "/")[3] }}
+        -ado_org "lismithmcaps"
         -ado_agent_pool_vmss_id ${{ parameters.ado_agent_pool_vmss_id }}
         -ado_service_connection ${{ parameters.ado_service_connection }}
         -ado_service_connection_name ${{ parameters.endpoint_name }}
