@@ -50,6 +50,6 @@ steps:
         -ado_org "lismithmcaps"
         -ado_agent_pool_vmss_id ${{ parameters.ado_agent_pool_vmss_id }}
         -ado_service_connection ${{ parameters.ado_service_connection }}
-        -ado_service_connection_name ${{ parameters.endpoint_name }}
-        -ado_agent_pool_name ${{ parameters.agent_pool_name }}
-        -subscription_name ${{ parameters.subscriptionName }}
+        -ado_service_connection_name ${{ parameters.ado_service_connection_name }}
+        -ado_agent_pool_name ${{ parameters.ado_agent_pool_vmss_id }}
+        -subscription_name ${{ parameters.subscription_name }}
