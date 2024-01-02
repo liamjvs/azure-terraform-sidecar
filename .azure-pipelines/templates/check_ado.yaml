@@ -6,7 +6,7 @@ parameters:
   default: false
 
 steps:
-  - ${{ if eq(parameters.skip, true) }}:
+  - ${{ if eq(parameters.skip, false) }}:
     - task: AzureCLI@2
       name: ado_check
       inputs:
