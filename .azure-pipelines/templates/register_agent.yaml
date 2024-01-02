@@ -4,20 +4,25 @@
 parameters:
   - name: service_connection
     type: string
-  - name: ado_agent_pool_vmss_id
-    type: string
-  - name: ado_service_connection_name
-    type: string
-  - name: ado_agent_pool_name
-    type: string
-  - name: subscription_name
-    type: string
   - name: ado_service_connection
     type: string
     default: ''
+  - name: ado_agent_pool_name
+    type: string
+  - name: ado_agent_pool_vmss_id
+    type: string
+  - name: ado_org
+    type: string
+  - name: ado_project
+    type: string
+  - name: ado_service_connection_name
+    type: string
+  - name: subscription_name
+    type: string
   - name: skipChecks
     type: boolean
     default: false
+    displayName: Skip ADO Checks?
 
 steps:
   - ${{ if ne(parameters.ado_service_connection, '') }}:
@@ -47,8 +52,8 @@ steps:
       scriptLocation: 'scriptPath'
       scriptPath: '$(Build.SourcesDirectory)/scripts/register_vmss.ps1'
       arguments: >
-        -ado_project "Code"
-        -ado_org "lismithmcaps"
+        -ado_project ${{ parameters.ado_project }}
+        -ado_org ${{ parameters.ado_org }}
         -ado_agent_pool_vmss_id ${{ parameters.ado_agent_pool_vmss_id }}
         -ado_service_connection ${{ parameters.ado_service_connection }}
         -ado_service_connection_name ${{ parameters.ado_service_connection_name }}

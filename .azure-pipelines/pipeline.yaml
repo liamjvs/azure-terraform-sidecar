@@ -26,11 +26,19 @@ parameters:
     default: false
     displayName: Skip ADO Checks?
 
+variables:
+  - name: ado_org
+    value: ${{ System.TeamFoundationCollectionUri }}
+  - name: ado_project
+    value: ${{ System.ProjectName }}
+
 steps:
   - template: templates/check_ado.yaml
     parameters:
       service_connection: ${{ coalesce(parameters.ado_service_connection, parameters.service_connection) }}
       skip: ${{ parameters.skip_checks }}
+      ado_org: ${{ variables.ado_org }}
+      ado_project: ${{ variables.ado_project }}
   - template: templates/register_agent.yaml
     parameters:
       ado_service_connection: ${{ parameters.ado_service_connection }}
@@ -39,3 +47,5 @@ steps:
       ado_agent_pool_vmss_id: ${{ parameters.ado_agent_pool_vmss_id }}
       service_connection: ${{ parameters.service_connection }}
       subscription_name: ${{ parameters.subscription_name }}
+      ado_org: ${{ variables.ado_org }}
+      ado_project: ${{ variables.ado_project }}

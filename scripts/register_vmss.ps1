@@ -57,7 +57,7 @@ if( $ado_service_connection_name -ne "" ){
 
 # $accessToken = az account get-access-token --resource '499b84ac-1321-427f-aa17-267ca6975798' --query 'accessToken' --output tsv
 
-$projects_uri = "https://dev.azure.com/$ado_org/_apis/projects?api-version=7.1-preview.4"
+$projects_uri = "$ado_org/_apis/projects?api-version=7.1-preview.4"
 Write-Verbose "Trying for projects: $projects_uri" -Verbose
 $ado_projects = az rest --uri $projects_uri --method get --resource '499b84ac-1321-427f-aa17-267ca6975798' --output json
 Write-Verbose ("Projects: {0}" -f ($ado_projects | ConvertFrom-Json -Depth 10 | ConvertTo-Json -Compress)) -Verbose
@@ -70,7 +70,7 @@ if ($ado_projectTargetObject -eq $null) {
 $ado_project_id = $ado_projectTargetObject.id
 
 # Search for service connection
-$service_connections_uri = "https://dev.azure.com/$ado_org/$ado_project/_apis/serviceendpoint/endpoints?api-version=7.1-preview.4"
+$service_connections_uri = "$ado_org/$ado_project/_apis/serviceendpoint/endpoints?api-version=7.1-preview.4"
 Write-Verbose "Trying for service connections: $service_connections_uri" -Verbose
 $service_endpoints = az rest --uri $service_connections_uri --method get --resource '499b84ac-1321-427f-aa17-267ca6975798' --output json
 Write-Verbose ("Service Connections: {0}" -f ($service_endpoints | ConvertFrom-Json -Depth 10 | ConvertTo-Json -Compress)) -Verbose
@@ -120,14 +120,14 @@ if ($null -eq $service_endpoints_object) {
   $payload | Out-File -FilePath payload.json -Encoding ascii -Force
   Write-Verbose ("Payload for Service Endpoint: {0}" -f ($payload.replace($vmss_sp.clientSecret, "*"))) -Verbose
   
-  $service_connection_uri = "https://dev.azure.com/$ado_org/_apis/serviceendpoint/endpoints?api-version=7.1-preview.4"
+  $service_connection_uri = "$ado_org/_apis/serviceendpoint/endpoints?api-version=7.1-preview.4"
   Write-Verbose ("Trying to create service endpoint: {0}" -f $service_connection_uri) -Verbose
   
   $service_endpoints_response = az rest --uri $service_connection_uri --method post --resource "499b84ac-1321-427f-aa17-267ca6975798" --output json --body "@payload.json"
   $service_endpoints_object = $service_endpoints_response | ConvertFrom-Json -Depth 10
 }
 
-$elastic_pools_uri = "https://dev.azure.com/$ado_org/_apis/distributedtask/elasticpools?api-version=7.0"
+$elastic_pools_uri = "$ado_org/_apis/distributedtask/elasticpools?api-version=7.0"
 Write-Verbose ("Trying for elastic pools: {0}" -f $elastic_pools_uri) -Verbose
 $elastic_pools = az rest --uri $elastic_pool_uri --method get --resource '499b84ac-1321-427f-aa17-267ca6975798' --output json
 Write-Verbose ("Elastic Pools: {0}" -f ($elastic_pools | ConvertFrom-Json -Depth 10 | ConvertTo-Json -Compress)) -Verbose
@@ -141,7 +141,7 @@ if ($null -eq ($elastic_pools_object.value | Where-Object { $_.azureId -eq $ado_
   $pool_name = $ado_service_connection_name
   $authorizeAllPipelines = $false
   $autoProvisionProjectPools = $false
-  $agent_pool_uri = "https://dev.azure.com/$ado_org/_apis/distributedtask/elasticpools?poolName={0}&authorizeAllPipelines={1}&autoProvisionProjectPools={2}&projectId={3}&api-version=7.0"
+  $agent_pool_uri = "$ado_org/_apis/distributedtask/elasticpools?poolName={0}&authorizeAllPipelines={1}&autoProvisionProjectPools={2}&projectId={3}&api-version=7.0"
   $agent_pool_uri = $agent_pool_uri -f $pool_name, $authorizeAllPipelines, $autoProvisionProjectPools, $ado_project_id
   Write-Verbose ("Trying to register VMSS: {0}" -f $agent_pool_uri) -Verbose
   $payload = @{

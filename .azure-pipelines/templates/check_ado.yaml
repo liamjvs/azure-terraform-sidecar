@@ -1,9 +1,17 @@
 parameters:
 - name: service_connection
   type: string
+  displayName: Service Connection To Use
 - name: skip
   type: boolean
   default: false
+  displayName: Skip ADO Checks?
+- name: ado_org
+  type: string
+  displayName: Azure DevOps Org Name
+- name: ado_project
+  type: string
+  displayName: Azure DevOps Project Name
 
 steps:
   - ${{ if eq(parameters.skip, false) }}:

@@ -6,9 +6,9 @@ param(
     [string]$ado_org
 )
 
-$projects_uri = "https://dev.azure.com/$ado_org/_apis/projects?api-version=7.1-preview.4"
-$agent_pool_uri = "https://dev.azure.com/$ado_org/_apis/securityroles/scopes/distributedtask.globalagentqueuerole/roleassignments/resources/{0}"
-$service_connection_uri = "https://dev.azure.com/$ado_org/_apis/securityroles/scopes/distributedtask.project.serviceendpointrole/roleassignments/resources/{0}"
+$projects_uri = "$ado_org/_apis/projects?api-version=7.1-preview.4"
+$agent_pool_uri = "$ado_org/_apis/securityroles/scopes/distributedtask.globalagentqueuerole/roleassignments/resources/{0}"
+$service_connection_uri = "$ado_org/_apis/securityroles/scopes/distributedtask.project.serviceendpointrole/roleassignments/resources/{0}"
 $ado_graph_app = "499b84ac-1321-427f-aa17-267ca6975798"
 
 Write-Verbose "Trying if Service Connection has access to ADO projects: $projects_uri" -Verbose
