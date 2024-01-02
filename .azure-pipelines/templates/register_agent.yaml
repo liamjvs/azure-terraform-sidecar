@@ -1,9 +1,6 @@
 # Register VMSS Agent
 # This template will register a VMSS with Azure DevOps
 
-pool:
-  vmImage: ubuntu-latest
-
 parameters:
   - name: service_connection
     type: string
