@@ -16,5 +16,5 @@ steps:
         scriptPath: ./scripts/check_ado.ps1
         arguments: >
           -ado_project $(System.TeamProject)
-          -ado_org ${{ split(System.CollectionUri, "/")[3]] }}
+          -ado_org ${{ split(System.CollectionUri, "/")[3] }}
           -service_connection ${{ parameters.service_connection }}
