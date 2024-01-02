@@ -6,11 +6,11 @@ parameters:
     type: string
   - name: ado_agent_pool_vmss_id
     type: string
-  - name: endpoint_name
+  - name: ado_service_connection_name
     type: string
-  - name: agent_pool_name
+  - name: ado_agent_pool_name
     type: string
-  - name: subscriptionName
+  - name: subscription_name
     type: string
   - name: ado_service_connection
     type: string
