@@ -21,21 +21,17 @@ parameters:
   - name: subscription_name
     type: string
     displayName: Subscription Name (for new ADO Service Connection)
-  - name: refresh_application_secret
-    type: boolean
-    default: true
-    displayName: Refresh Service Connection Application Secret 
   - name: skip_checks
     type: boolean
     default: false
     displayName: Skip ADO Checks?
 
 steps:
-  - template: ./check_ado.yaml
+  - template: templates/check_ado.yaml
     parameters:
       service_connection: ${{ coalesce(parameters.ado_service_connection, parameters.service_connection) }}
       skip: ${{ parameters.skip_checks }}
-  - template: ./register_agent.yaml
+  - template: templates/register_agent.yaml
     parameters:
       ado_service_connection: ${{ parameters.ado_service_connection }}
       ado_service_connection_name: ${{ parameters.endpoint_name }}
@@ -43,4 +39,3 @@ steps:
       ado_agent_pool_vmss_id: ${{ parameters.azure_vmss_id }}
       service_connection: ${{ parameters.service_connection }}
       subscription_name: ${{ parameters.subscription_name }}
-      refresh_application_secret: ${{ parameters.refresh_application_secret }}

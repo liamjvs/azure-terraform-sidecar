@@ -18,9 +18,6 @@ parameters:
   - name: ado_service_connection
     type: string
     default: ''
-  - name: refreshApplicationSecret
-    type: boolean
-    default: true
   - name: skipChecks
     type: boolean
     default: false
@@ -59,4 +56,3 @@ steps:
         -ado_service_connection_name ${{ parameters.endpoint_name }}
         -ado_agent_pool_name ${{ parameters.agent_pool_name }}
         -subscription_name ${{ parameters.subscriptionName }}
-        -refresh_application_secret ${{ parameters.refreshApplicationSecret }}
