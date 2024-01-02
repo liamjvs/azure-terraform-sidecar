@@ -44,7 +44,8 @@ steps:
       addSpnToEnvironment: true
       azureSubscription: ${{ parameters.service_connection }}
       scriptType: 'pscore'
-      scriptLocation: '../scripts/register_ado_agent.ps1'
+      scriptLocation: 'scriptPath'
+      scriptPath: '../scripts/register_ado_agent.ps1'
       arguments: >
         -ado_project "Code"
         -ado_org "lismithmcaps"
