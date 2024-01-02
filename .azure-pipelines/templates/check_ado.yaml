@@ -23,6 +23,6 @@ steps:
         scriptLocation: scriptPath
         scriptPath: ./scripts/check_ado.ps1
         arguments: >
-          -ado_project "Code"
-          -ado_org "lismithmcaps"
+          -ado_project ${{ parameters.ado_project }}
+          -ado_org ${{ parameters.ado_org }}
           -service_connection ${{ parameters.service_connection }}

@@ -31,13 +31,13 @@ if ($null -eq $vmss_sp) {
     foreach($key in $keys){
         Write-Verbose ("Removing key with displayName {0}" -f $key.name)
         $payload = @{ keyId = $key.id } | ConvertTo-Json -Depth 10 | Out-File -FilePath payload.json -Encoding ascii -Force
-        az rest --method post --url https://graph.microsoft.com/v1.0/applications/$($vmss_sp.id)/removePassword --body $payload --headers $headers
+        az rest --method post --url https://graph.microsoft.com/v1.0/applications/$($vmss_sp.id)/removePassword --body $payload --headers $headers --only-show-errors
     }
   
   Write-Verbose ("Creating key with displayName" -f $sp.name)
   $payload = @{ passwordCredential = @{ displayName = "rbac" }} | ConvertTo-Json -Depth 10
   $payload | Out-File -FilePath "payload.json" -Encoding ascii -Force
-  $output = az rest --method post --url https://graph.microsoft.com/v1.0/applications/$($vmss_sp.id)/addPassword --body "@payload.json"
+  $output = az rest --method post --url https://graph.microsoft.com/v1.0/applications/$($vmss_sp.id)/addPassword --body "@payload.json" --only-show-errors
   $vmss_sp_object = $output | ConvertFrom-Json -depth 10
   $vmss_sp = @{
     clientId = $vmss_sp.appId
