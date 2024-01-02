@@ -10,11 +10,11 @@ steps:
     - task: AzureCLI@2
       name: ado_check
       inputs:
-        azureSubscription: ${{ parameters.ServiceConnection }}
+        azureSubscription: ${{ parameters.service_connection }}
         scriptType: pscore
         scriptLocation: scriptPath
         scriptPath: ./scripts/check_ado.ps1
         arguments: |
           -ado_project $(System.TeamProject)
           -ado_org ${{ split(System.CollectionUri, "/")[3]] }}
-          -service_connection ${{ parameters.ServiceConnection }}
+          -service_connection ${{ parameters.service_connection }}

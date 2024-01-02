@@ -1,0 +1,62 @@
+# Register VMSS Agent
+# This template will register a VMSS with Azure DevOps
+
+pool:
+  vmImage: ubuntu-latest
+
+parameters:
+  - name: service_connection
+    type: string
+  - name: ado_agent_pool_vmss_id
+    type: string
+  - name: endpoint_name
+    type: string
+  - name: agent_pool_name
+    type: string
+  - name: subscriptionName
+    type: string
+  - name: ado_service_connection
+    type: string
+    default: ''
+  - name: refreshApplicationSecret
+    type: boolean
+    default: true
+  - name: skipChecks
+    type: boolean
+    default: false
+
+steps:
+  - ${{ if ne(parameters.ado_service_connection, '') }}:
+    - task: AzureCLI@2
+      name: az_login_ado
+      inputs:
+        azureSubscription: ${{ parameters.ado_service_connection }}
+        addSpnToEnvironment: true
+        scriptType: pscore
+        scriptLocation: inlineScript
+        inlineScript: |
+          # Output ADO SP Environment Variables
+          Write-Host "##vso[task.setvariable variable=ADO_CLIENT_ID;issecret=true]$env:servicePrincipalId"
+          Write-Host "##vso[task.setvariable variable=ADO_CLIENT_SECRET;issecret=true]$env:servicePrincipalKey"
+          Write-Host "##vso[task.setvariable variable=ADO_TENANT_ID;issecret=true]$env:tenantId"
+
+          if( "${{ parameters.skipChecks }}" -eq "true" ){
+            Write-Verbose "Skipping Checks" -Verbose
+            exit 0
+          }
+  - task: AzureCLI@2
+    displayName: 'Register VMSS [${{ parameters.service_connection }}]'
+    inputs:
+      addSpnToEnvironment: true
+      azureSubscription: ${{ parameters.service_connection }}
+      scriptType: 'pscore'
+      scriptLocation: '../scripts/register_ado_agent.ps1'
+      arguments: |
+        -ado_project $(System.TeamProject)
+        -ado_org ${{ split(System.CollectionUri, "/")[3] }}
+        -ado_agent_pool_vmss_id ${{ parameters.ado_agent_pool_vmss_id }}
+        -ado_service_connection ${{ parameters.ado_service_connection }}
+        -ado_service_connection_name ${{ parameters.endpoint_name }}
+        -ado_agent_pool_name ${{ parameters.agent_pool_name }}
+        -subscription_name ${{ parameters.subscriptionName }}
+        -refresh_application_secret ${{ parameters.refreshApplicationSecret }}
