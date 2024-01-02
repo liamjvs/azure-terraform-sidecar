@@ -4,15 +4,7 @@ param(
     [string]$service_connection,
     [string]$ado_project,
     [string]$ado_org
-    # [string]$system_collection_uri
 )
-
-# if($null -eq $ado_org) {
-#     $ado_org = $(System.TeamProject).split('/')[3]
-# }
-# if($null -eq $ado_project){
-#     $ado_project = $(System.TeamProject)
-# }
 
 $projects_uri = "https://dev.azure.com/$ado_org/_apis/projects?api-version=7.1-preview.4"
 $agent_pool_uri = "https://dev.azure.com/$ado_org/_apis/securityroles/scopes/distributedtask.globalagentqueuerole/roleassignments/resources/{0}"
@@ -28,9 +20,9 @@ if ($null -eq $projects_object) {
     Write-Verbose ("The Service Connection '{0}' has access to the project." -f $service_connection) -Verbose
 }
 
-$projectId = $projectsObject.id
-Write-Verbose "Project Id: $projectId" -Verbose
-$agent_pool_uri = $agent_pool_uri -f $projectId
+$project_id = $projects_object.id
+Write-Verbose "Project Id: $project_id" -Verbose
+$agent_pool_uri = $agent_pool_uri -f $project_id
 Write-Verbose "Trying for Agent Pools: $agent_pool_uri" -Verbose
 $agent_pools = az rest --uri $agent_pool_uri --method get --resource $ado_graph_app --output json
 $agent_pool_identity = $agent_pools | ConvertFrom-Json -Depth 10 | Select-Object -ExpandProperty value | `
@@ -43,7 +35,7 @@ if ($null -eq $agent_pool_identity) {
 }
 
 
-$service_connection_uri = $service_connection_uri -f $projectId
+$service_connection_uri = $service_connection_uri -f $project_id
 Write-Verbose "Trying for Service Connections: $service_connection_uri" -Verbose
 $service_connections = az rest --uri $service_connection_uri --method get --resource $ado_graph_app --output json
 $service_connections_object = $service_connections | 
