@@ -46,7 +46,7 @@ steps:
       scriptType: 'pscore'
       scriptLocation: '../scripts/register_ado_agent.ps1'
       arguments: >
-        -ado_project ${{ System.TeamProject }}
+        -ado_project "Code"
         -ado_org ${{ split(System.CollectionUri, "/")[3] }}
         -ado_agent_pool_vmss_id ${{ parameters.ado_agent_pool_vmss_id }}
         -ado_service_connection ${{ parameters.ado_service_connection }}
