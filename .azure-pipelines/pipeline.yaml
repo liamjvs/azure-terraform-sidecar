@@ -1,216 +1,46 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 pool:
   vmImage: ubuntu-latest
 
 parameters:
   - name: service_connection
     type: string
+    displayName: Service Connection To Use
   - name: ado_service_connection
     type: string
     default: ''
-  - name: vmssAzureId
+    displayName: (Optional) ADO Service Connection To Use
+  - name: ado_agent_pool_vmss_id
     type: string
-  - name: endpointName
+    displayName: Azure VMSS ID
+  - name: ado_service_connection_name
     type: string
-  - name: agentPoolName
+    displayName: New ADO Service Connection Name
+  - name: ado_agent_pool_name
     type: string
-  - name: subscriptionName
+    displayName: New ADO Agent Pool Name
+  - name: subscription_name
     type: string
-  - name: refreshApplicationSecret
+    displayName: Subscription Name (for new ADO Service Connection)
+  - name: refresh_application_secret
     type: boolean
     default: true
-  - name: skipChecks
+    displayName: Refresh Service Connection Application Secret 
+  - name: skip_checks
     type: boolean
     default: false
+    displayName: Skip ADO Checks?
 
 steps:
   - template: ./check_ado.yaml
     parameters:
       service_connection: ${{ coalesce(parameters.ado_service_connection, parameters.service_connection) }}
-      skip: ${{ parameters.skipChecks }}
-  - task: AzureCLI@2
-    name: az_login_ado
-    inputs:
-      azureSubscription: ${{ parameters.ado_service_connection }}
-      addSpnToEnvironment: true
-      scriptType: pscore
-      scriptLocation: inlineScript
-      inlineScript: |
-        # Output ADO SP Environment Variables
-        Write-Host "##vso[task.setvariable variable=ADO_CLIENT_ID;issecret=true]$env:servicePrincipalId"
-        Write-Host "##vso[task.setvariable variable=ADO_CLIENT_SECRET;issecret=true]$env:servicePrincipalKey"
-        Write-Host "##vso[task.setvariable variable=ADO_TENANT_ID;issecret=true]$env:tenantId"
-  - task: AzureCLI@2
-    displayName: 'Register VMSS [${{ parameters.ServiceConnection }}]'
-    inputs:
-      addSpnToEnvironment: true
-      azureSubscription: ${{ parameters.ServiceConnection }}
-      scriptType: 'pscore'
-      scriptLocation: 'inlineScript'
-      inlineScript: |
-        $organisation = "$(System.CollectionUri)".split('/')[3]
-        $project = "$(System.TeamProject)"
-        $endpointName = "${{ parameters.endpointName }}"
-        $vmssAzureId = "${{ parameters.vmssAzureId }}"
-        $spName = "${{ parameters.agentPoolName }}" # at the time of writing, the SP names are not approved
-        $subscriptionName = "${{ parameters.subscriptionName }}"
-
-        Write-Verbose "Organisation: $organisation" -Verbose
-        Write-Verbose "Project: $project" -Verbose
-        Write-Verbose "Endpoint Name: $endpointName" -Verbose
-        Write-Verbose "VMSS Azure Id: $vmssAzureId" -Verbose
-        Write-Verbose "Service Principal Name: $spName" -Verbose
-        Write-Verbose "Subscription Name: $subscriptionName" -Verbose
-
-        $spObject = az ad app list --output json --query "[?displayName=='$($spName)']" | ConvertFrom-Json -Depth 10
-        if ($spObject -eq $null) {
-          $spOutput = az ad sp create-for-rbac --name $spName --role "Virtual Machine Contributor" --scopes $vmssAzureId --json-auth --output json
-          $spObject = $spOutput | convertfrom-json -Depth 10
-        } elseif (("${{ parameters.refreshApplicationSecret }}" -eq "true") -and ($spObject -ne $null)) {
-          if($spObject.Length -gt 1){
-            Write-Error "Found too many Service Principals"
-            throw error
-          }
-          $spGet = az rest --method get --url https://graph.microsoft.com/v1.0/applications/$($spObject.id) --query "passwordCredentials[?displayName=='rbac'].{name:displayName,id:keyId}"
-          $spGetObj = $spGet | ConvertFrom-Json -Depth 10
-          if($spGetObj.length -gt 0){
-            foreach($sp in $spGetObj){
-              Write-Verbose ("Removing key with displayName {0}" -f $sp.name)
-              $payload = @{ keyId = $sp.id } | ConvertTo-Json -Depth 10
-              $headers = @{ "Content-Type" = "application/json" } | ConvertTo-Json -Depth 10
-              az rest --method post --url https://graph.microsoft.com/v1.0/applications/$($spObject.id)/removePassword --body $payload --headers $headers
-            }
-          }
-          
-          Write-Verbose ("Creating key with displayName" -f $sp.name)
-          $payload = @{ passwordCredential = @{ displayName = "rbac" }} | ConvertTo-Json -Depth 10
-          $headers = @{ "Content-Type" = "application/json" } | ConvertTo-Json -Depth 10
-          $output = az rest --method post --url https://graph.microsoft.com/v1.0/applications/$($spObject.id)/addPassword --body $payload --headers $headers
-          $outputObj = $output | ConvertFrom-Json -depth 10
-          $spObject = @{
-            clientId = $spObject.appId
-            clientSecret = $outputObj.secretText
-            subscriptionId = $vmssAzureId.Split("/")[2]
-            displayName = $spName
-            tenantId = $(az account show --query "tenantId")
-          }
-        }
-
-        if( "${{ parameters.ADOServiceConnection }}" -ne "" ){
-          Write-Verbose "Logging out of Service Connection"
-          az logout
-          Write-Verbose "Logging into Service Connection ${{ parameters.ADOServiceConnection }}"
-          az login --service-principal --username "$(ADO_CLIENT_ID)" --password "$(ADO_CLIENT_SECRET)" --tenant "$(ADO_TENANT_ID)"
-        }
-
-        $accessToken = az account get-access-token --resource '499b84ac-1321-427f-aa17-267ca6975798' --query 'accessToken' --output tsv
-
-        $uri = "https://dev.azure.com/$organisation/_apis/projects?api-version=7.1-preview.4"
-        Write-Verbose "Trying for projects: $uri" -Verbose
-        $projects = az rest --uri $uri --method get --resource '499b84ac-1321-427f-aa17-267ca6975798' --output json
-        Write-Verbose ("Projects: {0}" -f ($projects | ConvertFrom-Json -Depth 10 | ConvertTo-Json -Compress)) -Verbose
-        $projectsObject = $projects | ConvertFrom-Json -Depth 10
-        $projectTargetObject = $projectsObject.value | where-object { $_.name -eq $project }
-
-        if ($projectTargetObject -eq $null) {
-          Write-Error "Project Not Found"
-        }
-        $projectId = $projectTargetObject.id
-
-        # Search for service connection
-        $uri = "https://dev.azure.com/$organisation/$project/_apis/serviceendpoint/endpoints?api-version=7.1-preview.4"
-        Write-Verbose "Trying for service connections: $uri" -Verbose
-        $serviceEndpoints = az rest --uri $uri --method get --resource '499b84ac-1321-427f-aa17-267ca6975798' --output json
-        Write-Verbose ("Service Connections: {0}" -f ($serviceEndpoints | ConvertFrom-Json -Depth 10 | ConvertTo-Json -Compress)) -Verbose
-        $serviceEndpointsSearch = ($serviceEndpoints | ConvertFrom-Json -Depth 10)
-
-        if ($serviceEndpointsSearch -ne $null) {
-          if (($serviceEndpointsSearch.value | where-object { $_.name -eq $endpointName }) -ne $null) {
-            Write-Verbose "Service Connection Already Exists" -Verbose
-            $serviceEndpointObject = $serviceEndpointsSearch.value | where-object { $_.name -eq $endpointName }
-          }
-        }
-
-        if ($serviceEndpointObject -eq $null) {
-          $payload = @{
-            data = @{
-              subscriptionId = "$($spObject.subscriptionId)"
-              subscriptionName = "$subscriptionName"
-              environment = "AzureCloud"
-              scopeLevel = "Subscription"
-              creationMode = "Manual"
-            }
-            name = $endpointName
-            type = "AzureRM"
-            url = "https://management.azure.com/"
-            authorization = @{
-              parameters = @{
-                tenantid = $spObject.tenantId
-                serviceprincipalid = $spObject.clientId
-                authenticationType = "spnKey"
-                serviceprincipalkey = $spObject.clientSecret
-              }
-              scheme = "ServicePrincipal"
-            }
-            isShared = false
-            isReady = true
-            serviceEndpointProjectReferences = @(
-              @{
-                projectReference = @{
-                  id = $projectId
-                  name = $project
-                }
-                name = $endpointName
-              }
-            )
-          } | ConvertTo-Json -Compress -Depth 10
-          $payload | Out-File -FilePath payload.json -Encoding ascii -Force
-          Write-Verbose ("Payload for Service Endpoint: {0}" -f ($payload.replace($spObject.clientSecret, "*"))) -Verbose
-          
-          $uri = "https://dev.azure.com/$organisation/_apis/serviceendpoint/endpoints?api-version=7.1-preview.4"
-          Write-Verbose ("Trying to create service endpoint: {0}" -f $uri) -Verbose
-          
-          $serviceEndpointResponse = az rest --uri $uri --method post --resource '499b84ac-1321-427f-aa17-267ca6975798' --output json --body '@payload.json'
-          $serviceEndpointObject = $serviceEndpointResponse | ConvertFrom-Json -Depth 10
-        }
-
-        $ElasticPoolsUrl = "https://dev.azure.com/$organisation/_apis/distributedtask/elasticpools?api-version=7.0"
-        Write-Verbose ("Trying for elastic pools: {0}" -f $ElasticPoolsUrl) -Verbose
-        $ElasticPools = az rest --uri $ElasticPoolsUrl --method get --resource '499b84ac-1321-427f-aa17-267ca6975798' --output json
-        Write-Verbose ("Elastic Pools: {0}" -f ($ElasticPools | ConvertFrom-Json -Depth 10 | ConvertTo-Json -Compress)) -Verbose
-        $ElasticPoolsObject = $ElasticPools | ConvertFrom-Json -Depth 10
-
-        # Check if the VMSS is already registered
-        if (($ElasticPoolsObject.value | Where-Object { $_.azureId -eq $vmssAzureId }) -eq $null) {
-          Write-Verbose "VMSS is not registered"
-          Write-Verbose "Sleep for 30; let Azure DevOps Service Connection be ready" -Verbose
-          Start-Sleep -Seconds 30
-          $poolname = $endpointName
-          $authorizeAllPipelines = $false
-          $autoProvisionProjectPools = $false
-          $uri = "https://dev.azure.com/$organisation/_apis/distributedtask/elasticpools?poolName={0}&authorizeAllPipelines={1}&autoProvisionProjectPools={2}&projectId={3}&api-version=7.0" -f $poolname, $authorizeAllPipelines, $autoProvisionProjectPools, $projectId
-          Write-Verbose ("Trying to register VMSS: {0}" -f $uri) -Verbose
-          $payload = @{
-            agentInteractiveUI = $false
-            azureId = $vmssAzureId
-            desiredIdle = 0
-            maxCapacity = 10
-            maxSavedNodeCount = 0
-            osType = 1
-            recycleAfterEachUse = $true
-            serviceEndpointId    = $($serviceEndpointObject.id)
-            serviceEndpointScope = $($serviceEndpointObject.serviceEndpointProjectReferences[0].projectReference.id)
-            timeToLiveMinutes    = 15
-          }
-          $payloadJson = $payload | ConvertTo-Json -Compress -Depth 10
-          Write-Verbose ("Payload: {0}" -f ($payloadJson)) -Verbose
-          Out-File -FilePath payload.json -Encoding ascii -Force -InputObject $payloadJson
-          $NewPool = az rest --uri $uri --method post --resource '499b84ac-1321-427f-aa17-267ca6975798' --output json --body '@payload.json'
-          Write-Verbose "Successfully Register VMSS" -Verbose
-        } else {
-          Write-Verbose "Failed to Register VMSS - VMSS is already registered" -Verbose
-        }
+      skip: ${{ parameters.skip_checks }}
+  - template: ./register_agent.yaml
+    parameters:
+      ado_service_connection: ${{ parameters.ado_service_connection }}
+      ado_service_connection_name: ${{ parameters.endpoint_name }}
+      ado_agent_pool_name: ${{ parameters.ado_agent_pool_name }}
+      ado_agent_pool_vmss_id: ${{ parameters.azure_vmss_id }}
+      service_connection: ${{ parameters.service_connection }}
+      subscription_name: ${{ parameters.subscription_name }}
+      refresh_application_secret: ${{ parameters.refresh_application_secret }}
