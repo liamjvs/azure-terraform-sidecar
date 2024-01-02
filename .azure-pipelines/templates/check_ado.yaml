@@ -14,7 +14,7 @@ steps:
         scriptType: pscore
         scriptLocation: scriptPath
         scriptPath: ./scripts/check_ado.ps1
-        arguments: |
+        arguments: >
           -ado_project $(System.TeamProject)
           -ado_org ${{ split(System.CollectionUri, "/")[3]] }}
           -service_connection ${{ parameters.service_connection }}
