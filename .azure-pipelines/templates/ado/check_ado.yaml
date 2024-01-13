@@ -19,9 +19,10 @@ steps:
       name: ado_check
       inputs:
         azureSubscription: ${{ parameters.service_connection }}
+        addSpnToEnvironment: true
         scriptType: pscore
         scriptLocation: scriptPath
-        scriptPath: ./scripts/check_ado.ps1
+        scriptPath: '$(Build.SourcesDirectory)/scripts/check_ado.ps1'
         arguments: >
           -ado_project ${{ parameters.ado_project }}
           -ado_org ${{ parameters.ado_org }}

@@ -1,20 +1,20 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Azure Terraform Sidecar
+<img src="docs/images/sidecar.png" alt="Azure Terraform Sidecar" width="30%" />
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+Sidecar is a solution to provide a minimal Terraform environment for future Terraform deployments. Sidecar caters for if you're starting off executing Terraform locally or you're looking to integrate Terraform into your CI/CD environment, Sidecar will provide you with a Terraform environment in Azure. Whether you're deploying your Terraform solution directly to a subscription and need a simple way of deploying a Storage Account to store your Terraform state files or you're looking to deploy a new Azure Landing Zone within a new tenant via your Azure DevOps environment or provide a Bring-Your-Own-Runner functionality to application teams via GitHub, Sidecar will provide you with a Terraform environment in Azure.
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+- [Azure Terraform Sidecar](#azure-terraform-sidecar)
+- [FAQ](#faq)
+  - [Isn't this just another accelerator/bootstrap?](#isnt-this-just-another-acceleratorbootstrap)
+  - [Why would I use this?](#why-would-i-use-this)
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+
+
+# FAQ
+
+## Isn't this just another accelerator/bootstrap?
+Yes-no. It is a bootstrap in the sense that it will get you up and running with a Terraform environment in Azure. However, it is not an accelerator in the sense it is for a specific usecase. It is a series of scripts, pipelines and Terraform code that will deploy a Terraform environment to your requirements.
+
+## Why would I use this?
+If you are looking to get up and running with Terraform in Azure, then this is a good place to start. It will provide you with a Terraform environment in Azure that you can use to deploy your Terraform solutions. From here you can then start to build out your Terraform solution using the Storage Account as a backend for your Terraform state files and optionally, using the runner for your CI/CD pipeline.

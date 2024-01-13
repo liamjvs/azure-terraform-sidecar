@@ -1,0 +1,5 @@
+steps:
+  - script: |
+      echo "Waiting for cloud-init to finish..."
+      cloud-init status --wait
+    displayName: cloud-init

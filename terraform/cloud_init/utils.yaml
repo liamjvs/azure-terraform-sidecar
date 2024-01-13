@@ -10,4 +10,3 @@ packages:
   - git
   - zip
   - tar
-package_upgrade: true

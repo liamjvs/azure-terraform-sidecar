@@ -35,9 +35,9 @@ steps:
         scriptLocation: inlineScript
         inlineScript: |
           # Output ADO SP Environment Variables
-          Write-Host "##vso[task.setvariable variable=ADO_CLIENT_ID;issecret=true]$env:servicePrincipalId"
+          Write-Host "##vso[task.setvariable variable=ADO_CLIENT_ID]$env:servicePrincipalId"
           Write-Host "##vso[task.setvariable variable=ADO_CLIENT_SECRET;issecret=true]$env:servicePrincipalKey"
-          Write-Host "##vso[task.setvariable variable=ADO_TENANT_ID;issecret=true]$env:tenantId"
+          Write-Host "##vso[task.setvariable variable=ADO_TENANT_ID]$env:tenantId"
 
           if( "${{ parameters.skipChecks }}" -eq "true" ){
             Write-Verbose "Skipping Checks" -Verbose
@@ -51,11 +51,16 @@ steps:
       scriptType: 'pscore'
       scriptLocation: 'scriptPath'
       scriptPath: '$(Build.SourcesDirectory)/scripts/register_vmss.ps1'
+      failOnStandardError: true
       arguments: >
         -ado_project ${{ parameters.ado_project }}
         -ado_org ${{ parameters.ado_org }}
         -ado_agent_pool_vmss_id ${{ parameters.ado_agent_pool_vmss_id }}
-        -ado_service_connection ${{ parameters.ado_service_connection }}
         -ado_service_connection_name ${{ parameters.ado_service_connection_name }}
         -ado_agent_pool_name ${{ parameters.ado_agent_pool_vmss_id }}
         -subscription_name ${{ parameters.subscription_name }}
+        -vmss_operator_name ${{ parameters.ado_service_connection_name }}-vmss-operator
+    env:
+      ADO_CLIENT_ID: $(ADO_CLIENT_ID)
+      ADO_CLIENT_SECRET: $(ADO_CLIENT_SECRET)
+      ADO_TENANT_ID: $(ADO_TENANT_ID)

@@ -32,4 +32,3 @@ apt:
 package_update: true
 packages:
   - powershell
-package_upgrade: true

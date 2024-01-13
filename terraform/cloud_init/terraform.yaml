@@ -77,4 +77,3 @@ apt:
 package_update: true
 packages:
   - terraform
-package_upgrade: true
