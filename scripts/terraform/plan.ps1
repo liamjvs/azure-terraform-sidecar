@@ -1,5 +1,5 @@
 param(
-    [string]$refresh_plan = $false
+    [string]$refresh_plan = $false,
     [string]$terraform_vars, # JSON string NEED TO ADD SUPPORT
     [string]$terraform_var_file,
     [string]$terraform_plan_file = 'terraform.plan'
