@@ -28,7 +28,7 @@ if($terraform_migrate){
 }
 
 # Backend Config; we can pass multiple -backend-config parameters or a single -backend-config parameter with a JSON file
-$backend_object = ConvertFrom-Json $backendConfigs -Depth 100
+$backend_object = ConvertFrom-Json $terraform_backend_config -Depth 100
 if($backend_object){
   # On the conversion, switch on what type of object we have; it can be a single line to point to a backend config file or a series of strings
   switch ($backend_object.GetType().FullName) {
