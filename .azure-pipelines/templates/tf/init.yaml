@@ -26,7 +26,7 @@ steps:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/scripts/terraform_init.ps1'
       arguments: >
-        -backend_config ${{ parameters.backend_config | json }}
+        -backend_config ${{ parameters.backend_config }}
         -azure_subscription_id ${{ parameters.azure_subscription_id }}
         -migrate_backend ${{ parameters.migrate_backend }}
       workingDirectory: '${{ parameters.working_directory }}'
