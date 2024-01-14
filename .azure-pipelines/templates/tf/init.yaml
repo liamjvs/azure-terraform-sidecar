@@ -3,7 +3,7 @@ parameters:
     type: object
     displayName: Backend Config
     default:
-      null
+      - ''
   - name: azure_subscription_id
     type: string
     displayName: Azure Subscription ID
