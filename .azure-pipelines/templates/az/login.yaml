@@ -2,6 +2,7 @@ parameters:
   - name: service_connection
     type: string
     displayName: Service Connection To Use
+    default: ''
   - name: managed_identity
     type: boolean
     displayName: Managed Identity?
