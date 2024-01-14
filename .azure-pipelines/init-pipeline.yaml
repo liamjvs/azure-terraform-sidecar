@@ -5,23 +5,72 @@ parameters:
   - name: service_connection
     type: string
     displayName: Service Connection To Use
-    default: lmsp0
+  - name: ado_service_connection
+    type: string
+    default: ''
+    displayName: (Optional) ADO Service Connection To Use
+  - name: ado_agent_pool_vmss_id
+    type: string
+    displayName: Azure VMSS ID
+  - name: ado_service_connection_name
+    type: string
+    displayName: New ADO Service Connection Name
+  - name: ado_agent_pool_name
+    type: string
+    displayName: New ADO Agent Pool Name
+  - name: subscription_name
+    type: string
+    displayName: Subscription Name (for new ADO Service Connection)
+  - name: skip_checks
+    type: boolean
+    default: false
+    displayName: Skip ADO Checks?
 
 stages:
-- stage: check_ado
-  displayName: Check ADO
+- stage: plan
+  displayName: tf plan
   jobs:
-  - job: tf_init
+  - job: check_ado
+    displayName: Check ADO
+    steps:
+      - ${{ if eq(parameters.skip_checks, true) }}:
+        - template: templates/ado/check_ado.yaml
+          parameters:
+            service_connection: ${{ coalesce(parameters.ado_service_connection, parameters.service_connection) }}
+            skip: ${{ parameters.skip_checks }}
+            ado_org: $(System.TeamFoundationCollectionUri)
+            ado_project: $(System.TeamProject)
+  - job: tf_plan
     displayName: terraform plan
     steps:
       - template: templates/utils/cloud_init.yaml
       - checkout: self
         persistCredentials: true
+        displayName: git checkout
       - template: templates/utils/remove_backend.yaml
       - template: templates/az/login.yaml
         parameters:
           service_connection: ${{ parameters.service_connection }}
+          managed_identity: false
       - template: templates/tf/init.yaml
         parameters:
-          azure_subscription_id: 3f96fd38-eec2-48f5-8d76-c9b6c17c8c95
+          azure_subscription_id: ${{ parameters.subscription_name }}
           working_directory: '$(Build.SourcesDirectory)/terraform'
+      - template: templates/tf/plan.yaml
+        parameters:
+          working_directory: '$(Build.SourcesDirectory)/terraform'
+  - job: tf_apply
+    displayName: terraform apply
+    dependsOn: tf_plan
+    condition: false # succeeded()
+    steps:
+      - template: templates/ado/register_agent.yaml
+        parameters:
+          ado_service_connection: ${{ parameters.ado_service_connection }}
+          ado_service_connection_name: ${{ parameters.ado_service_connection_name }}
+          ado_agent_pool_name: ${{ parameters.ado_agent_pool_name }}
+          ado_agent_pool_vmss_id: ${{ parameters.ado_agent_pool_vmss_id }}
+          service_connection: ${{ parameters.service_connection }}
+          subscription_name: ${{ parameters.subscription_name }}
+          ado_org: $(System.TeamFoundationCollectionUri)
+          ado_project: $(System.TeamProject)
