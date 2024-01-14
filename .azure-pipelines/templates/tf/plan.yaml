@@ -1,0 +1,41 @@
+parameters:
+  - name: task_name
+    type: string
+    displayName: Task Name
+    default: 'tf_plan'
+  - name: working_directory
+    type: string
+    displayName: Working Directory
+    default: '$(Build.SourcesDirectory)'
+  - name: refresh_only
+    type: boolean
+    displayName: Refresh Only?
+    default: false
+  - name: publish_plan
+    type: boolean
+    displayName: Publish tf plan?
+    default: true
+
+steps:
+  - task: PowerShell@2
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/scripts/terraform/plan.ps1'
+      ${{ if eq(parameters.publish_plan, false) }}:
+        arguments: >
+          -working_directory ${{ parameters.working_directory }}
+          -refresh_only ${{ parameters.refresh_only }}
+          -publish_plan $null
+      ${{ else }}:
+        arguments: >
+          -working_directory ${{ parameters.working_directory }}
+          -refresh_only ${{ parameters.refresh_only }}
+      workingDirectory: '${{ parameters.working_directory }}'
+    displayName: tf plan
+  - ${{ if eq(parameters.publish_plan, true) }}:
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '${{ parameters.working_directory }}/terraform_plan'
+        artifactName: 'terraform_plan'
+        publishLocation: 'pipeline'
+      displayName: Publish tf plan
