@@ -21,10 +21,10 @@ parameters:
   # - name: subscription_name
   #   type: string
   #   displayName: Subscription Name (for new ADO Service Connection)
-  # - name: skip_checks
-  #   type: boolean
-  #   default: false
-  #   displayName: Skip ADO Checks?
+  - name: skip_checks
+    type: boolean
+    default: false
+    displayName: Skip ADO Checks?
 
 stages:
 - stage: plan
