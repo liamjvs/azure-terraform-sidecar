@@ -50,12 +50,19 @@ stages:
           ado_org: $(System.TeamFoundationCollectionUri)
           ado_project: $(System.TeamProject)
   - job: tf_init
-    displayName: terraform init
+    displayName: terraform plan
     steps:
       - template: templates/utils/cloud_init.yaml
       - checkout: self
         persistCredentials: true
       - template: templates/utils/remove_backend.yaml
-      - template: 
+      - template: templates/az/login.yaml
+        parameters:
+          service_connection: ${{ parameters.service_connection }}
+          managed_identity: false
+      - template: templates/tf/init.yaml
+        parameters:
+          azure_subscription_id: ${{ parameters.subscription_name }}
+          working_directory: '$(Build.SourcesDirectory)/terraform'
 
       

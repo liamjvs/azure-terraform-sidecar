@@ -1,7 +1,4 @@
 parameters:
-  - name: service_connection
-    type: string
-    displayName: Service Connection To Use
   - name: managed_identity
     type: boolean
     displayName: Managed Identity Toggle
@@ -21,25 +18,12 @@ parameters:
     type: string
     displayName: Task Name
     default: 'tf_init'
+  - name: working_directory
+    type: string
+    displayName: Working Directory
+    default: '$(Build.SourcesDirectory)'
 
 steps:
-  - ${{ if eq(parameters.managed_identity, true) }}:
-    - task: AzureCLI@2
-      ${{ if eq(parameters['task_name'], 'tf_init') }}:
-        name: az_login
-      ${{ else }}:
-        name: az_login_${{ parameters['task_name'] }}
-      inputs:
-        azureSubscription: ${{ parameters.service_connection }}
-        addSpnToEnvironment: true
-        scriptType: pscore
-        scriptLocation: inlineScript
-        inlineScript: |
-          # Translate Service Connection Environment Variables to Terrraform Environment Variables
-          Write-Host "##vso[task.setvariable variable=ARM_CLIENT_ID]$($env:ARM_CLIENT_ID)"
-          Write-Host "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true]$($env:servicePrincipalKey)"
-          Write-Host "##vso[task.setvariable variable=ARM_TENANT_ID]$($env:tenantId)"
-      displayName: az login
   - task: PowerShell@2
     inputs:
       targetType: 'filePath'
@@ -48,5 +32,5 @@ steps:
         -backend_config ${{ parameters.backend_config | json }}
         -azure_subscription_id ${{ parameters.azure_subscription_id }}
         -migrate_backend ${{ parameters.migrate_backend }}
-      workingDirectory: '$(Build.SourcesDirectory)'
+      workingDirectory: '${{ parameters.working_directory }}'
     displayName: terraform init
