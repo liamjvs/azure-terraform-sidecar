@@ -6,9 +6,6 @@ parameters:
     type: boolean
     displayName: Managed Identity?
     default: false
-  - name: azure_subscription_id
-    type: string
-    displayName: Azure Subscription ID
   - name: task_name
     type: string
     displayName: Task Name
