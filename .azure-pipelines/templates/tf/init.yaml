@@ -1,7 +1,4 @@
 parameters:
-  - name: managed_identity
-    type: boolean
-    displayName: Managed Identity Toggle
   - name: backend_config
     type: object
     displayName: Backend Config
