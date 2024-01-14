@@ -24,7 +24,7 @@ steps:
   - task: PowerShell@2
     inputs:
       targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/scripts/terraform_init.ps1'
+      filePath: '$(Build.SourcesDirectory)/scripts/terraform/init.ps1'
       arguments: >
         -backend_config ${{ parameters.backend_config }}
         -azure_subscription_id ${{ parameters.azure_subscription_id }}
