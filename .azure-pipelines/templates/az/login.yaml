@@ -39,6 +39,6 @@ steps:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/scripts/az/login.ps1'
       arguments: >
-        -managed_identity ${{ parameters.managed_identity }}
+        -managed_identity $${{ parameters.managed_identity }}
       workingDirectory: '$(Build.SourcesDirectory)'
     displayName: az login identity
