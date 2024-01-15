@@ -25,9 +25,10 @@ steps:
     inputs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/scripts/terraform/init.ps1'
+      pwsh: true
       arguments: >
-        -backend_config ${{ parameters.backend_config }}
+        -backend_config ${{ convertToJson(parameters.backend_config) }}
         -azure_subscription_id ${{ parameters.azure_subscription_id }}
-        -migrate_backend ${{ parameters.migrate_backend }}
+        -migrate_backend $${{ parameters.migrate_backend }}
       workingDirectory: '${{ parameters.working_directory }}'
     displayName: terraform init
