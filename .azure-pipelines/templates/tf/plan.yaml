@@ -26,16 +26,16 @@ steps:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/scripts/terraform/plan.ps1'
       arguments: >
-        -working_directory ${{ parameters.working_directory }}
         -refresh_only ${{ parameters.refresh_only }}
         -terraform_publish_plan $${{ parameters.publish_plan }}
         -terraform_plan_file ${{ parameters.plan_name }}
+        -terraform_vars 'resource_group_name=sidecar2'
       workingDirectory: '${{ parameters.working_directory }}'
-    displayName: tf plan
+    displayName: terraform plan
   - ${{ if eq(parameters.publish_plan, true) }}:
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: '${{ parameters.working_directory }}/${{ parameters.plan_name }}'
+        targetPath: '${{ parameters.working_directory }}/terraform/${{ parameters.plan_name }}'
         artifactName: 'terraform_plan'
         publishLocation: 'pipeline'
-      displayName: Publish tf plan
+      displayName: Publish terraform plan
