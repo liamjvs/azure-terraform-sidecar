@@ -41,3 +41,5 @@ if($terraform_exit_code -eq 0){
 } else {
     Write-Verbose "Terraform plan returned an unknown exit code: $terraform_exit_code" -Verbose
 }
+
+$LASTEXITCODE = ($terraform_exit_code -eq 0) -or ($terraform_exit_code -eq 2) ? 0 : 1
