@@ -27,8 +27,8 @@ parameters:
     displayName: Skip ADO Checks?
 
 stages:
-- stage: plan
-  displayName: tf plan
+- stage: validation
+  displayName: Validate
   jobs:
   - job: check_ado
     displayName: Check ADO
