@@ -1,5 +1,5 @@
 param(
-    [string]$refresh_plan = $false,
+    [string]$terraform_refresh_plan = $false,
     [string]$terraform_vars, # JSON string NEED TO ADD SUPPORT
     [string]$terraform_var_file,
     [string]$terraform_publish_plan = $true,
@@ -9,11 +9,11 @@ param(
 $terraform_params = @()
 $terraform_params += '-input=false' # Don't prompt for input
 
-if($publish_plan){
+if($terraform_publish_plan){
     $terraform_params += "-out=$terraform_plan_file"
 }
 
-if($refresh_plan){
+if($terraform_refresh_plan){
     $terraform_params += '-refresh=true'
 }
 
