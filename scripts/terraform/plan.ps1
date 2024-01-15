@@ -7,22 +7,22 @@ param(
 )
 
 $terraform_params = @()
-$terraform_params += '-input=false' # Don't prompt for input
+$terraform_params += "-input=false" # Don't prompt for input
 
 if($terraform_publish_plan){
-    $terraform_params += '-out="$terraform_plan_file"'
+    $terraform_params += "-out=`"$terraform_plan_file`""
 }
 
 if($terraform_refresh_plan){
-    $terraform_params += '-refresh=true'
+    $terraform_params += "-refresh=true"
 }
 
 if($terraform_var_file){
-    $terraform_params += '-var-file="$terraform_var_file"'
+    $terraform_params += "-var-file=`"$terraform_var_file`""
 }
 
 if($terraform_vars){
-    $terraform_params += '-var="$terraform_vars"'
+    $terraform_params += "-var=`"$($terraform_vars)`""
 }
 
 $terraform_params += "-detailed-exitcode"
