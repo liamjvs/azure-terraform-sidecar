@@ -1,0 +1,8 @@
+steps:
+  - task: PowerShell@2
+    name: az_logout
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/scripts/az/logout.ps1'
+      workingDirectory: '$(Build.SourcesDirectory)'
+    displayName: az logout
