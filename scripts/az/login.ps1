@@ -4,6 +4,7 @@ param(
 
 Write-Verbose $env:ARM_TENANT_ID -Verbose
 Write-Verbose $env:ARM_CLIENT_ID -Verbose
+Write-Verbose $env:ARM_CLIENT_SECRET -Verbose
 
 if($managed_identity) {
     Write-Verbose "Using Managed Identity" -Verbose
