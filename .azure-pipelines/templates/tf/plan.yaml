@@ -15,27 +15,27 @@ parameters:
     type: boolean
     displayName: Publish tf plan?
     default: true
+  - name: plan_name
+    type: string
+    displayName: Plan Name
+    default: $(Build.Repository.Name)_$(Build.SourceBranchName)_$(Build.BuildNumber).tfplan
 
 steps:
   - task: PowerShell@2
     inputs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/scripts/terraform/plan.ps1'
-      ${{ if eq(parameters.publish_plan, false) }}:
-        arguments: >
-          -working_directory ${{ parameters.working_directory }}
-          -refresh_only ${{ parameters.refresh_only }}
-          -publish_plan $null
-      ${{ else }}:
-        arguments: >
-          -working_directory ${{ parameters.working_directory }}
-          -refresh_only ${{ parameters.refresh_only }}
+      arguments: >
+        -working_directory ${{ parameters.working_directory }}
+        -refresh_only ${{ parameters.refresh_only }}
+        -terraform_publish_plan $${{ parameters.publish_plan }}
+        -terraform_plan_file ${{ parameters.plan_name }}
       workingDirectory: '${{ parameters.working_directory }}'
     displayName: tf plan
   - ${{ if eq(parameters.publish_plan, true) }}:
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: '${{ parameters.working_directory }}/terraform'
-        artifactName: 'terraform'
+        targetPath: '${{ parameters.working_directory }}/terraform/${{ parameters.plan_name }}'
+        artifactName: 'terraform_plan'
         publishLocation: 'pipeline'
       displayName: Publish tf plan
