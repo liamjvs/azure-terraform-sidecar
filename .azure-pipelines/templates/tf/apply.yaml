@@ -17,6 +17,7 @@ steps:
     inputs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/scripts/terraform/apply.ps1'
+      pwsh: true
       ${{ if ne(parameters.plan_name, '') }}:
         arguments: >
           -terraform_plan_file ${{ parameters.plan_name }}
