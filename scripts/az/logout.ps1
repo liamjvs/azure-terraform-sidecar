@@ -1,0 +1,1 @@
+az account clear
