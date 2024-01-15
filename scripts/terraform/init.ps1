@@ -21,7 +21,7 @@ $terraform_params = @()
 
 # Terraform does not like input=false and -migrate-state together...
 if($terraform_migrate){
-    $terraform_params += '-migrate-state" # Migrate state from local to remote
+    $terraform_params += "-migrate-state" # Migrate state from local to remote
     $terraform_params += "-force-copy" # Force copy of state from local to remote
 } else {
     $terraform_params += "-input=false" # Don't prompt for input
