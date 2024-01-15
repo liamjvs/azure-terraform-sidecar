@@ -25,6 +25,7 @@ steps:
         scriptType: pscore
         scriptLocation: inlineScript
         inlineScript: |
+          $env | ForEach-Object { Write-Verbose $_  -Verbose }
           # Translate Service Connection Environment Variables to Terrraform Environment Variables
           Write-Host "##vso[task.setvariable variable=ARM_CLIENT_ID;]$($env:ARM_CLIENT_ID)"
           Write-Host "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true;]$($env:servicePrincipalKey)"
