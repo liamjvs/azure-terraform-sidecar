@@ -42,7 +42,7 @@ steps:
         -managed_identity $${{ parameters.managed_identity }}
       workingDirectory: '$(Build.SourcesDirectory)'
     displayName: az login identity
-    env:
-      ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-      ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-      ARM_TENANT_ID: $(ARM_TENANT_ID)
+    # env:
+    #   ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+    #   ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+    #   ARM_TENANT_ID: $(ARM_TENANT_ID)
