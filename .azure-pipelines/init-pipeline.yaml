@@ -52,6 +52,7 @@ stages:
         parameters:
           service_connection: ${{ parameters.service_connection }}
           managed_identity: false
+          azure_subscription_id: '3f96fd38-eec2-48f5-8d76-c9b6c17c8c95'
       - template: templates/tf/init.yaml
         parameters:
           azure_subscription_id: '3f96fd38-eec2-48f5-8d76-c9b6c17c8c95'
