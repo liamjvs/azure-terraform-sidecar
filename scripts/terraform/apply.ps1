@@ -7,7 +7,7 @@ $terraform_params += '-input=false' # Don't prompt for input
 $terraform_params += '-auto-approve' # Don't prompt for approval
 
 if($terraform_plan_file){
-    $terraform_params += "$terraform_plan_file"
+    $terraform_params += '"$terraform_plan_file"'
 }
 
 Write-Verbose ("Running 'terraform apply {0}'" -f ($terraform_params -join ' ')) -Verbose
