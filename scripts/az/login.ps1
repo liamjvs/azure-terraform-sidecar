@@ -2,6 +2,9 @@ param(
     [bool]$managed_identity = $false
 )
 
+Write-Verbose $env:ARM_TENANT_ID -Verbose
+Write-Verbose $env:ARM_CLIENT_ID -Verbose
+
 if($managed_identity) {
     Write-Verbose "Using Managed Identity" -Verbose
     az login --identity
