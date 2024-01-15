@@ -35,7 +35,7 @@ steps:
   - ${{ if eq(parameters.publish_plan, true) }}:
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: '${{ parameters.working_directory }}/terraform_plan'
-        artifactName: 'terraform_plan'
+        targetPath: '${{ parameters.working_directory }}/terraform'
+        artifactName: 'terraform'
         publishLocation: 'pipeline'
       displayName: Publish tf plan
