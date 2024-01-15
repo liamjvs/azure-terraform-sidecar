@@ -26,9 +26,9 @@ steps:
         scriptLocation: inlineScript
         inlineScript: |
           # Translate Service Connection Environment Variables to Terrraform Environment Variables
-          Write-Host "##vso[task.setvariable variable=ARM_CLIENT_ID;isoutput=true]$($env:servicePrincipalId)"
-          Write-Host "##vso[task.setvariable variable=ARM_CLIENT_SECRET;isoutput=true;issecret=true]$($env:servicePrincipalKey)"
-          Write-Host "##vso[task.setvariable variable=ARM_TENANT_ID;isoutput=true]$($env:tenantId)"
+          Write-Host "##vso[task.setvariable variable=ARM_CLIENT_ID;]$($env:ARM_CLIENT_ID)"
+          Write-Host "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true;]$($env:servicePrincipalKey)"
+          Write-Host "##vso[task.setvariable variable=ARM_TENANT_ID;]$($env:tenantId)"
       displayName: az login
   - task: PowerShell@2
     ${{ if eq(parameters['task_name'], 'az_login') }}:
@@ -39,10 +39,10 @@ steps:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/scripts/az/login.ps1'
       arguments: >
-        -managed_identity ${{ parameters.managed_identity }}
+        -managed_identity $${{ parameters.managed_identity }}
       workingDirectory: '$(Build.SourcesDirectory)'
     displayName: az login identity
-    # env:
-    #   ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-    #   ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-    #   ARM_TENANT_ID: $(ARM_TENANT_ID)
+    env:
+      ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+      ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+      ARM_TENANT_ID: $(ARM_TENANT_ID)
