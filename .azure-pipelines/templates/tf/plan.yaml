@@ -25,6 +25,7 @@ steps:
     inputs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/scripts/terraform/plan.ps1'
+      pwsh: true
       arguments: >
         -refresh_only ${{ parameters.refresh_only }}
         -terraform_publish_plan $${{ parameters.publish_plan }}
