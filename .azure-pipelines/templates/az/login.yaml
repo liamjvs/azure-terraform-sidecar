@@ -50,5 +50,5 @@ steps:
       workingDirectory: '$(Build.SourcesDirectory)'
     displayName: az login identity
     env:
-      - ${{ if eq(parameters.managed_identity, false) }}:
+      ${{ if eq(parameters.managed_identity, false) }}:
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
