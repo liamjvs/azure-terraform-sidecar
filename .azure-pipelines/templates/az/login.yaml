@@ -16,9 +16,9 @@ steps:
   - ${{ if eq(parameters.managed_identity, false) }}:
     - task: AzureCLI@2
       ${{ if eq(parameters['task_name'], 'az_login') }}:
-        name: az_login
+        name: az_login_sc
       ${{ else }}:
-        name: az_login_${{ parameters['task_name'] }}
+        name: az_login_sc_${{ parameters['task_name'] }}
       inputs:
         azureSubscription: ${{ parameters.service_connection }}
         addSpnToEnvironment: true
@@ -29,10 +29,10 @@ steps:
           Write-Host "##vso[task.setvariable variable=ARM_CLIENT_ID]$($env:ARM_CLIENT_ID)"
           Write-Host "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true]$($env:servicePrincipalKey)"
           Write-Host "##vso[task.setvariable variable=ARM_TENANT_ID]$($env:tenantId)"
-      displayName: az login
+      displayName: az login sc
   - task: PowerShell@2
     ${{ if eq(parameters['task_name'], 'az_login') }}:
-      name: az_login_mi
+      name: az_login
     ${{ else }}:
       name: az_login_${{ parameters['task_name'] }}
     inputs:
@@ -41,4 +41,4 @@ steps:
       arguments: >
         -managed_identity $${{ parameters.managed_identity }}
       workingDirectory: '$(Build.SourcesDirectory)'
-    displayName: az login identity
+    displayName: az login
