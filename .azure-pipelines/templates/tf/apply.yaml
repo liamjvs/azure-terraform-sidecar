@@ -16,7 +16,7 @@ steps:
   - task: PowerShell@2
     inputs:
       targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/scripts/terraform/apply.ps1'
+      filePath: '$(Build.SourcesDirectory)/scripts/tf/apply.ps1'
       pwsh: true
       ${{ if ne(parameters.plan_name, '') }}:
         arguments: >
