@@ -36,11 +36,11 @@ steps:
   - ${{ if eq(parameters.publish_plan, true) }}:
     - task: CopyFiles@2
       inputs:
-        contents: |
+        Contents: |
           "${{ parameters.plan_name }}"
           .terraform.lock.hcl
-        targetFolder: '$(Build.ArtifactStagingDirectory)'
-        workingFolder: '${{ parameters.working_directory }}'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        SourceFolder: '${{ parameters.working_directory }}'
       displayName: Copy terraform plan
     - task: PublishPipelineArtifact@1
       inputs:
