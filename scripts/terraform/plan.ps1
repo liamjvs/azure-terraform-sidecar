@@ -22,8 +22,10 @@ if($terraform_var_file){
 }
 
 if($terraform_vars){
-    $terraform_params += "-detailed-exitcode"
+    $terraform_params += "-var=$terraform_vars"
 }
+
+$terraform_params += "-detailed-exitcode"
 
 Write-Verbose ("Running 'terraform plan {0}'" -f ($terraform_params -join ' ')) -Verbose
 terraform plan @terraform_params
