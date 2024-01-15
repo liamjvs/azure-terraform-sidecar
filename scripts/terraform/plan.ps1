@@ -1,6 +1,6 @@
 param(
     [string]$terraform_refresh_plan = $false,
-    [string]$terraform_vars, # JSON string NEED TO ADD SUPPORT
+    [string]$terraform_vars, # only a JSON string NEED TO ADD SUPPORT
     [string]$terraform_var_file,
     [string]$terraform_publish_plan = $true,
     [string]$terraform_plan_file = 'terraform.plan'
@@ -10,7 +10,7 @@ $terraform_params = @()
 $terraform_params += '-input=false' # Don't prompt for input
 
 if($terraform_publish_plan){
-    $terraform_params += "-out=$terraform_plan_file"
+    $terraform_params += '-out="$terraform_plan_file"'
 }
 
 if($terraform_refresh_plan){
@@ -18,11 +18,11 @@ if($terraform_refresh_plan){
 }
 
 if($terraform_var_file){
-    $terraform_params += "-var-file=$terraform_var_file"
+    $terraform_params += '-var-file="$terraform_var_file"'
 }
 
 if($terraform_vars){
-    $terraform_params += "-var=$terraform_vars"
+    $terraform_params += '-var="$terraform_vars"'
 }
 
 $terraform_params += "-detailed-exitcode"
