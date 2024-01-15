@@ -25,9 +25,16 @@ steps:
         scriptType: pscore
         scriptLocation: inlineScript
         inlineScript: |
+          Write-Verbose "Logging in to Azure using Service Connection `${{ parameters.service_connection }}`."
           # Translate Service Connection Environment Variables to Terrraform Environment Variables
+
+          Write-Verbose "Setting `$env:ARM_CLIENT_ID to `$($env:servicePrincipalId)`."
           Write-Host "##vso[task.setvariable variable=ARM_CLIENT_ID;]$($env:servicePrincipalId)"
+
+          Write-Verbose "Setting `$env:ARM_CLIENT_SECRET to `$($env:servicePrincipalKey)`."
           Write-Host "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true;]$($env:servicePrincipalKey)"
+
+          Write-Verbose "Setting `$env:ARM_TENANT_ID to `$($env:tenantId)`."
           Write-Host "##vso[task.setvariable variable=ARM_TENANT_ID;]$($env:tenantId)"
       displayName: az login
   - task: PowerShell@2
