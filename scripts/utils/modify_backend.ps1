@@ -1,8 +1,8 @@
-param{
+param(
     [bool]$enable = $false,
     [bool]$disable = $false,
     [string]$backend_file = "backend.tf"
-}
+)
 
 if($enable -and $disable){
     Write-Error "Cannot enable and disable at the same time"
