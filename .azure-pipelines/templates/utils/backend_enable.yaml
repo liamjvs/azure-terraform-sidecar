@@ -12,4 +12,4 @@ steps:
       workingDirectory: ${{ parameters.working_directory }}
       arguments: >
         -enable $true
-    displayName: Disable backend.tf
+    displayName: Enable backend.tf

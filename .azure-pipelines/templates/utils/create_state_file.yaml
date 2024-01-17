@@ -7,13 +7,18 @@ parameters:
   type: string
   displayName: State File
   default: 'terraform.tfstate'
+- name: output_folder
+  type: string
+  displayName: Output Folder
+  default: "$(Build.SourcesDirectory)/variables"
 
 steps:
   - task: PowerShell@2
     inputs:
       targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/scripts/create_state_file.ps1'
+      filePath: '$(Build.SourcesDirectory)/scripts/utils/create_state_file.ps1'
       workingDirectory: ${{ parameters.working_directory }}
       arguments: >
         -terraform_plan_file ${{ parameters.state_file }}
+        -output_folder ${{ parameters.output_folder }}
     displayName: Create ${{ parameters.state_file }}
