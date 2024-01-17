@@ -1,6 +1,8 @@
 pool:
   vmImage: ubuntu-latest
 
+trigger: none
+
 parameters:
   - name: service_connection
     type: string
