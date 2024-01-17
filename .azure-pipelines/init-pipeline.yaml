@@ -27,7 +27,7 @@ parameters:
     type: boolean
     default: false
     displayName: Skip ADO Checks?
-  - name: azure_subscription_id
+  - name: subscription_name
     type: string
     displayName: Azure Subscription ID
     default: '3f96fd38-eec2-48f5-8d76-c9b6c17c8c95'
@@ -60,10 +60,10 @@ stages:
         parameters:
           service_connection: ${{ parameters.service_connection }}
           managed_identity: false
-          azure_subscription_id: ${{ parameters.subscription_name }}
+          subscription_name: ${{ parameters.subscription_name }}
       - template: templates/tf/init.yaml
         parameters:
-          azure_subscription_id: '3f96fd38-eec2-48f5-8d76-c9b6c17c8c95'
+          subscription_name: '3f96fd38-eec2-48f5-8d76-c9b6c17c8c95'
           working_directory: '$(Build.SourcesDirectory)/terraform'
       - template: templates/tf/plan.yaml
         parameters:
@@ -99,10 +99,10 @@ stages:
               parameters:
                 service_connection: ${{ parameters.service_connection }}
                 managed_identity: false
-                azure_subscription_id: ${{ parameters.subscription_name }}
+                subscription_name: ${{ parameters.subscription_name }}
             - template: templates/tf/init.yaml
               parameters:
-                azure_subscription_id: ${{ parameters.subscription_name }}
+                subscription_name: ${{ parameters.subscription_name }}
                 working_directory: '$(Build.SourcesDirectory)/terraform'
             - template: templates/tf/apply.yaml
               parameters:
