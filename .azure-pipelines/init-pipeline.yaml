@@ -109,14 +109,14 @@ stages:
             - template: templates/utils/backend_enable.yaml
               parameters:
                 working_directory: '$(Build.SourcesDirectory)/terraform'
-            - template: templates/utils/create_state_file.yaml
-              parameters:
-                working_directory: '$(Build.SourcesDirectory)/terraform'
             - template: templates/tf/init.yaml
               parameters:
                 azure_subscription_id: ${{ variables.azure_subscription_id }}
                 working_directory: '$(Build.SourcesDirectory)/terraform'
                 migrate_backend: true
                 backend_config: ../variables/terraform.tfbackend.json
+            - template: templates/utils/create_state_file.yaml
+              parameters:
+                working_directory: '$(Build.SourcesDirectory)/terraform'
             - template: templates/az/logout.yaml
     
