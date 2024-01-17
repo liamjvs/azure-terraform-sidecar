@@ -1,6 +1,6 @@
 param(
-    [Parameter][bool]$cicd_ado = $false,
-    [Parameter][string]$terraform_plan_file = "terraform.tfbackend",
+    [bool]$cicd_ado = $false,
+    [string]$terraform_plan_file = "terraform.tfbackend",
     [string]$output_folder = "" # No trailing slash please :)
 )
 

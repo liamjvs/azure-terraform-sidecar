@@ -31,4 +31,7 @@ steps:
         -azure_subscription_id ${{ parameters.azure_subscription_id }}
         -migrate_backend $${{ parameters.migrate_backend }}
       workingDirectory: '${{ parameters.working_directory }}'
-    displayName: terraform init
+    ${{ if eq(parameters.migrate_backend, true) }}:
+      displayName: terraform migrate
+    ${{ if eq(parameters.migrate_backend, false) }}:
+      displayName: terraform init
