@@ -19,6 +19,6 @@ steps:
       filePath: '$(Build.SourcesDirectory)/scripts/utils/create_state_file.ps1'
       workingDirectory: ${{ parameters.working_directory }}
       arguments: >
-        -terraform_plan_file ${{ parameters.state_file }}
-        -output_folder ${{ parameters.output_folder }}
+        -terraform_plan_file "${{ parameters.state_file }}"
+        -output_folder "${{ parameters.output_folder }}"
     displayName: Create ${{ parameters.state_file }}
