@@ -7,4 +7,3 @@ steps:
       workingDirectory: '$(Build.SourcesDirectory)'
     displayName: az logout
     condition: succeededOrFailed()
-    

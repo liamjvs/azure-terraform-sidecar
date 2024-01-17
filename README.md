@@ -1,5 +1,4 @@
 # Azure Terraform Sidecar
-
 ![Azure Terraform Sidecar](./docs/images/sidecar.png)
 
 Sidecar is a solution to provide a minimal Terraform environment for future Terraform deployments. Sidecar caters for if you're starting off executing Terraform locally or you're looking to integrate Terraform into your CI/CD environment, Sidecar will provide you with a Terraform environment in Azure. Whether you're deploying your Terraform solution directly to a subscription and need a simple way of deploying a Storage Account to store your Terraform state files or you're looking to deploy a new Azure Landing Zone within a new tenant via your Azure DevOps environment or provide a Bring-Your-Own-Runner (BYOR) functionality to application teams via GitHub, Sidecar will provide you with a Terraform environment in Azure.
