@@ -27,7 +27,7 @@ steps:
       filePath: '$(Build.SourcesDirectory)/scripts/tf/init.ps1'
       pwsh: true
       arguments: >
-        -backend_config ${{ convertToJson(parameters.backend_config) }}
+        -terraform_backend_config ${{ convertToJson(parameters.backend_config) }}
         -azure_subscription_id ${{ parameters.azure_subscription_id }}
         -migrate_backend $${{ parameters.migrate_backend }}
       workingDirectory: '${{ parameters.working_directory }}'
