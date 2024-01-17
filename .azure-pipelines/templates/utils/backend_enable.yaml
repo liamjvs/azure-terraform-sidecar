@@ -1,0 +1,15 @@
+parameters:
+- name: working_directory
+  type: string
+  default: '$(Build.SourcesDirectory)'
+  displayName: Working Directory
+
+steps:
+  - task: PowerShell@2
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/scripts/modify_backend.ps1'
+      workingDirectory: ${{ parameters.working_directory }}
+      arguments: >
+        -enable $true
+    displayName: Disable backend.tf

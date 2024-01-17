@@ -2,17 +2,19 @@ parameters:
   - name: service_connection
     type: string
     displayName: Service Connection To Use
+    default: ''
   - name: managed_identity
     type: boolean
     displayName: Managed Identity?
     default: false
-  - name: azure_subscription_id
-    type: string
-    displayName: Azure Subscription ID
   - name: task_name
     type: string
     displayName: Task Name
     default: 'az_login'
+  - name: azure_subscription_id
+    type: string
+    displayName: Azure Subscription ID
+    default: ''
 
 steps:
   - ${{ if eq(parameters.managed_identity, false) }}:
@@ -27,21 +29,36 @@ steps:
         scriptType: pscore
         scriptLocation: inlineScript
         inlineScript: |
+          Write-Verbose "Logging in to Azure using Service Connection `${{ parameters.service_connection }}`." -Verbose
           # Translate Service Connection Environment Variables to Terrraform Environment Variables
-          Write-Host "##vso[task.setvariable variable=ARM_CLIENT_ID]$($env:ARM_CLIENT_ID)"
-          Write-Host "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true]$($env:servicePrincipalKey)"
-          Write-Host "##vso[task.setvariable variable=ARM_TENANT_ID]$($env:tenantId)"
+
+          Write-Verbose "Setting `$env:ARM_CLIENT_ID to `$env:servicePrincipalId`." -Verbose
+          Write-Host "##vso[task.setvariable variable=ARM_CLIENT_ID;]$($env:servicePrincipalId)"
+
+          Write-Verbose "Setting `$env:ARM_CLIENT_SECRET to `$env:servicePrincipalKey`." -Verbose
+          Write-Host "##vso[task.setvariable variable=ARM_CLIENT_SECRET;]$($env:servicePrincipalKey)"
+
+          Write-Verbose "Setting `$env:ARM_TENANT_ID to `$env:tenantId`." -Verbose
+          Write-Host "##vso[task.setvariable variable=ARM_TENANT_ID;]$($env:tenantId)"
+
+          if("${{ parameters.azure_subscription_id }}" -ne '') {
+            Write-Verbose "Setting `$env:ARM_SUBSCRIPTION_ID to `${{ parameters.azure_subscription_id }}`." -Verbose
+            Write-Host "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;]${{ parameters.azure_subscription_id }}"
+          }
       displayName: az login
-  - ${{ if eq(parameters.managed_identity, true) }}:
-    - task: PowerShell@2
-      ${{ if eq(parameters['task_name'], 'az_login') }}:
-        name: az_login_mi
-      ${{ else }}:
-        name: az_login_${{ parameters['task_name'] }}
-      inputs:
-        targetType: 'filePath'
-        filePath: '$(Build.SourcesDirectory)/scripts/az/login.ps1'
-        arguments: >
-          -managed_identity ${{ parameters.managed_identity }}
-        workingDirectory: '$(Build.SourcesDirectory)'
-      displayName: az login identity
+  - task: PowerShell@2
+    ${{ if eq(parameters['task_name'], 'az_login') }}:
+      name: az_login_mi
+    ${{ else }}:
+      name: az_login_${{ parameters['task_name'] }}
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/scripts/az/login.ps1'
+      pwsh: true
+      arguments: >
+        -managed_identity $${{ parameters.managed_identity }}
+      workingDirectory: '$(Build.SourcesDirectory)'
+    displayName: az login identity
+    env:
+      ${{ if eq(parameters.managed_identity, false) }}:
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)

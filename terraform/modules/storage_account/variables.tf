@@ -68,7 +68,7 @@ variable "private_dns_zone_ids" {
 variable "containers" {
   description = "The containers to create in the storage account."
   type        = set(string)
-  default     = ["tfstate"]
+  default     = ["container"]
 }
 
 variable "container_role_definition_name" {

@@ -1,4 +1,4 @@
-resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
+resource "azurerm_linux_virtual_machine_scale_set" "this" {
   name                = var.name
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -19,7 +19,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
 
   disable_password_authentication = false
 
-  upgrade_mode           = "Manual"
+  upgrade_mode           = var.upgrade_mode
   single_placement_group = false
 
   network_interface {
@@ -50,13 +50,16 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
     storage_account_uri = null # This will use the Managed Storage Account for boot diagnostics
   }
 
-  automatic_os_upgrade_policy {
-    disable_automatic_rollback  = var.automatic_os_upgrade_policy.disable_automatic_rollback
-    enable_automatic_os_upgrade = var.automatic_os_upgrade_policy.enable_automatic_os_upgrade
+  dynamic "automatic_os_upgrade_policy" {
+    for_each = var.upgrade_mode != "Manual" ? ["policy"] : []
+    content {
+      disable_automatic_rollback  = var.automatic_os_upgrade_policy.disable_automatic_rollback
+      enable_automatic_os_upgrade = var.automatic_os_upgrade_policy.enable_automatic_os_upgrade
+    }
   }
 
   dynamic "identity" {
-    for_each = var.enable_managed_identity ? ["foo"] : []
+    for_each = var.enable_managed_identity ? ["identity"] : []
     content {
       type = "SystemAssigned"
     }

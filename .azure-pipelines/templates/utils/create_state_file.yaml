@@ -1,0 +1,19 @@
+parameters:
+- name: working_directory
+  type: string
+  default: '$(Build.SourcesDirectory)'
+  displayName: Working Directory
+- name: state_file
+  type: string
+  displayName: State File
+  default: 'terraform.tfstate'
+
+steps:
+  - task: PowerShell@2
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/scripts/create_state_file.ps1'
+      workingDirectory: ${{ parameters.working_directory }}
+      arguments: >
+        -terraform_plan_file ${{ parameters.state_file }}
+    displayName: Create ${{ parameters.state_file }}

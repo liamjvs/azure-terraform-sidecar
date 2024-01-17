@@ -16,7 +16,7 @@ module "virtual_network" {
   location            = var.location
   address_space       = var.virtual_network_address_space
   subnets             = local.subnets
-  private_dns_zones = [ 
+  private_dns_zones = [
     "privatelink.blob.core.windows.net"
   ]
 }
@@ -33,6 +33,7 @@ module "storage_account" {
   account_access_tier           = var.backend_storage_account_tier
   public_network_access_enabled = true
   principal_ids_role_assignment = local.backend_principal_ids
+  containers                    = local.storage_account_containers
 }
 
 module "linux_virtual_machine_scale_set" {

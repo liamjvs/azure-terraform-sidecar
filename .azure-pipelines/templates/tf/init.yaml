@@ -1,7 +1,4 @@
 parameters:
-  - name: managed_identity
-    type: boolean
-    displayName: Managed Identity Toggle
   - name: backend_config
     type: object
     displayName: Backend Config
@@ -27,10 +24,11 @@ steps:
   - task: PowerShell@2
     inputs:
       targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/scripts/terraform_init.ps1'
+      filePath: '$(Build.SourcesDirectory)/scripts/tf/init.ps1'
+      pwsh: true
       arguments: >
-        -backend_config ${{ parameters.backend_config | json }}
+        -backend_config ${{ convertToJson(parameters.backend_config) }}
         -azure_subscription_id ${{ parameters.azure_subscription_id }}
-        -migrate_backend ${{ parameters.migrate_backend }}
+        -migrate_backend $${{ parameters.migrate_backend }}
       workingDirectory: '${{ parameters.working_directory }}'
     displayName: terraform init

@@ -93,11 +93,13 @@ variable "backend_storage_account_replication_type" {
 variable "backend_storage_account_containers" {
   description = "The containers to create in the storage account."
   type        = list(string)
-  default     = ["tfstate"]
-  validation {
-    condition     = length(var.backend_storage_account_containers) > 0
-    error_message = "The storage account must have at least one container."
-  }
+  default     = []
+}
+
+variable "backend_storage_account_container" {
+  description = "The container to store this Sidecar Terraform deployment into post-deployment."
+  type        = string
+  default     = ""
 }
 
 variable "backend_additional_principal_ids" {

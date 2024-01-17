@@ -1,68 +1,115 @@
 pool:
   vmImage: ubuntu-latest
 
+trigger: none
+
 parameters:
   - name: service_connection
     type: string
     displayName: Service Connection To Use
-  - name: ado_service_connection
-    type: string
-    default: ''
-    displayName: (Optional) ADO Service Connection To Use
-  - name: ado_agent_pool_vmss_id
-    type: string
-    displayName: Azure VMSS ID
-  - name: ado_service_connection_name
-    type: string
-    displayName: New ADO Service Connection Name
-  - name: ado_agent_pool_name
-    type: string
-    displayName: New ADO Agent Pool Name
-  - name: subscription_name
-    type: string
-    displayName: Subscription Name (for new ADO Service Connection)
-  - name: skip_checks
-    type: boolean
-    default: false
-    displayName: Skip ADO Checks?
+  # - name: ado_service_connection
+  #   type: string
+  #   default: ''
+  #   displayName: (Optional) ADO Service Connection To Use
+  # - name: ado_agent_pool_vmss_id
+  #   type: string
+  #   displayName: Azure VMSS ID
+  # - name: ado_service_connection_name
+  #   type: string
+  #   displayName: New ADO Service Connection Name
+  # - name: ado_agent_pool_name
+  #   type: string
+  #   displayName: New ADO Agent Pool Name
+  # - name: subscription_name
+  #   type: string
+  #   displayName: Subscription Name (for new ADO Service Connection)
+  # - name: skip_checks
+  #   type: boolean
+  #   default: false
+  #   displayName: Skip ADO Checks?
 
 stages:
-- stage: check_ado
-  displayName: Check ADO
+- stage: validation
+  displayName: Validate
   jobs:
   - job: check_ado
     displayName: Check ADO
     steps:
-      - template: templates/ado/check_ado.yaml
-        parameters:
-          service_connection: ${{ coalesce(parameters.ado_service_connection, parameters.service_connection) }}
-          skip: ${{ parameters.skip_checks }}
-          ado_org: $(System.TeamFoundationCollectionUri)
-          ado_project: $(System.TeamProject)
-      - template: templates/ado/register_agent.yaml
-        parameters:
-          ado_service_connection: ${{ parameters.ado_service_connection }}
-          ado_service_connection_name: ${{ parameters.ado_service_connection_name }}
-          ado_agent_pool_name: ${{ parameters.ado_agent_pool_name }}
-          ado_agent_pool_vmss_id: ${{ parameters.ado_agent_pool_vmss_id }}
-          service_connection: ${{ parameters.service_connection }}
-          subscription_name: ${{ parameters.subscription_name }}
-          ado_org: $(System.TeamFoundationCollectionUri)
-          ado_project: $(System.TeamProject)
-  - job: tf_init
+      - ${{ if eq(parameters.skip_checks, true) }}:
+        - template: templates/ado/check_ado.yaml
+          parameters:
+            service_connection: ${{ coalesce(parameters.ado_service_connection, parameters.service_connection) }}
+            skip: ${{ parameters.skip_checks }}
+            ado_org: $(System.TeamFoundationCollectionUri)
+            ado_project: $(System.TeamProject)
+  - job: tf_plan
     displayName: terraform plan
     steps:
       - template: templates/utils/cloud_init.yaml
       - checkout: self
         persistCredentials: true
-      - template: templates/utils/remove_backend.yaml
+        displayName: git checkout
+      - template: templates/utils/backend_disable.yaml
+        parameters:
+          working_directory: '$(Build.SourcesDirectory)/terraform'
       - template: templates/az/login.yaml
         parameters:
           service_connection: ${{ parameters.service_connection }}
           managed_identity: false
+          azure_subscription_id: ${{ parameters.subscription_name }}
       - template: templates/tf/init.yaml
         parameters:
           azure_subscription_id: ${{ parameters.subscription_name }}
           working_directory: '$(Build.SourcesDirectory)/terraform'
-
-      
+      - template: templates/tf/plan.yaml
+        parameters:
+          working_directory: '$(Build.SourcesDirectory)/terraform'
+      - template: templates/az/logout.yaml
+- stage: deployment
+  
+  
+  displayName: Deploy
+  dependsOn: validation
+  condition: succeeded()
+  jobs:
+  - deployment: tf_apply
+    displayName: terraform apply
+    environment: 'terraform'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - template: templates/utils/cloud_init.yaml
+            - checkout: self
+              persistCredentials: true
+              displayName: git checkout
+            - task: DownloadBuildArtifacts@1
+              displayName: 'Download Artifact'
+              inputs:
+                buildType: 'current'
+                downloadType: 'single'
+                artifactName: 'terraform_plan'
+                downloadPath: '$(Build.SourcesDirectory)/terraform'
+            - template: templates/utils/backend_disable.yaml
+              parameters:
+                working_directory: '$(Build.SourcesDirectory)/terraform'
+            - template: templates/az/login.yaml
+              parameters:
+                service_connection: ${{ parameters.service_connection }}
+                managed_identity: false
+                azure_subscription_id: ${{ parameters.subscription_name }}
+            - template: templates/tf/init.yaml
+              parameters:
+                azure_subscription_id: ${{ parameters.subscription_name }}
+                working_directory: '$(Build.SourcesDirectory)/terraform'
+            - template: templates/tf/apply.yaml
+              parameters:
+                working_directory: '$(Build.SourcesDirectory)/terraform'
+            - template: templates/utils/backend_enable.yaml
+              parameters:
+                working_directory: '$(Build.SourcesDirectory)/terraform'
+            - template: templates/utils/create_state_file.yaml
+              parameters:
+                working_directory: '$(Build.SourcesDirectory)/terraform'
+            - template: templates/az/logout.yaml
+    
