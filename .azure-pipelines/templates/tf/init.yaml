@@ -29,12 +29,12 @@ steps:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/scripts/tf/init.ps1'
       pwsh: true
-      ${{ if lt(length(parameters.backend_config), 1) }}:
+      ${{ if eq(length(parameters.backend_config), 0) }}:
         arguments: >
           -azure_subscription_id ${{ parameters.azure_subscription_id }}
           -terraform_migrate $${{ parameters.migrate_backend }}
           -terraform_backend $${{ parameters.backend }}
-      ${{ if gt(length(parameters.backend_config), 0) }}:
+      ${{ if ge(length(parameters.backend_config), 1) }}:
         arguments: >
           -azure_subscription_id ${{ parameters.azure_subscription_id }}
           -terraform_migrate $${{ parameters.migrate_backend }}
