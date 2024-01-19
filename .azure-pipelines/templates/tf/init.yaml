@@ -2,8 +2,7 @@ parameters:
   - name: backend_config
     type: object
     displayName: Backend Config
-    default:
-      null
+    default: []
   - name: backend
     type: boolean
     displayName: Backend?
@@ -32,7 +31,7 @@ steps:
       pwsh: true
       arguments: >
         -azure_subscription_id ${{ parameters.azure_subscription_id }}
-        -migrate_backend $${{ parameters.migrate_backend }}
+        -terraform_migrate $${{ parameters.migrate_backend }}
         -terraform_backend_config ${{ convertToJson(parameters.backend_config) }}
         -terraform_backend $${{ parameters.backend }}
       workingDirectory: '${{ parameters.working_directory }}'
