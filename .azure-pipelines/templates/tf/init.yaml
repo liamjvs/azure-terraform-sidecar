@@ -4,6 +4,10 @@ parameters:
     displayName: Backend Config
     default:
       null
+  - name: backend
+    type: boolean
+    displayName: Backend?
+    default: true
   - name: azure_subscription_id
     type: string
     displayName: Azure Subscription ID
@@ -30,6 +34,7 @@ steps:
         -terraform_backend_config ${{ convertToJson(parameters.backend_config) }}
         -azure_subscription_id ${{ parameters.azure_subscription_id }}
         -migrate_backend $${{ parameters.migrate_backend }}
+        -backend $${{ parameters.backend }}
       workingDirectory: '${{ parameters.working_directory }}'
     ${{ if eq(parameters.migrate_backend, true) }}:
       displayName: terraform migrate
