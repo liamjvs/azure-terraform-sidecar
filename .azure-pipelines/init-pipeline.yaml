@@ -52,9 +52,9 @@ stages:
       - checkout: self
         persistCredentials: true
         displayName: git checkout
-      - template: templates/utils/backend_disable.yaml
-        parameters:
-          working_directory: '$(Build.SourcesDirectory)/terraform'
+      # - template: templates/utils/backend_disable.yaml
+      #   parameters:
+      #     working_directory: '$(Build.SourcesDirectory)/terraform'
       - template: templates/az/login.yaml
         parameters:
           service_connection: ${{ parameters.service_connection }}
@@ -64,6 +64,7 @@ stages:
         parameters:
           azure_subscription_id: '3f96fd38-eec2-48f5-8d76-c9b6c17c8c95'
           working_directory: '$(Build.SourcesDirectory)/terraform'
+          backend: false
       - template: templates/tf/plan.yaml
         parameters:
           working_directory: '$(Build.SourcesDirectory)/terraform'
@@ -91,9 +92,9 @@ stages:
                 downloadType: 'single'
                 artifactName: 'terraform_plan'
                 downloadPath: '$(Build.SourcesDirectory)/terraform'
-            - template: templates/utils/backend_disable.yaml
-              parameters:
-                working_directory: '$(Build.SourcesDirectory)/terraform'
+            # - template: templates/utils/backend_disable.yaml
+            #   parameters:
+            #     working_directory: '$(Build.SourcesDirectory)/terraform'
             - template: templates/az/login.yaml
               parameters:
                 service_connection: ${{ parameters.service_connection }}
@@ -103,12 +104,13 @@ stages:
               parameters:
                 azure_subscription_id: ${{ variables.azure_subscription_id }}
                 working_directory: '$(Build.SourcesDirectory)/terraform'
+                backend: false
             - template: templates/tf/apply.yaml
               parameters:
                 working_directory: '$(Build.SourcesDirectory)/terraform'
-            - template: templates/utils/backend_enable.yaml
-              parameters:
-                working_directory: '$(Build.SourcesDirectory)/terraform'
+            # - template: templates/utils/backend_enable.yaml
+            #   parameters:
+            #     working_directory: '$(Build.SourcesDirectory)/terraform'
             - template: templates/tf/init.yaml
               parameters:
                 azure_subscription_id: ${{ variables.azure_subscription_id }}
