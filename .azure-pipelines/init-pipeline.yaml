@@ -9,7 +9,7 @@ parameters:
     displayName: Service Connection To Use
   - name: ado_service_connection
     type: string
-    default: null
+    default: ''
     displayName: (Optional) ADO Service Connection To Use
   # - name: ado_agent_pool_vmss_id
   #   type: string
