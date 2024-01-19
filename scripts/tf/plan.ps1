@@ -22,28 +22,11 @@ if($terraform_var_file){
 }
 
 if($terraform_vars){
-    if(Test-Json $terraform_vars -ErrorAction SilentlyContinue){
-        $terraform_vars_object = ConvertFrom-Json $terraform_vars -Depth 100
-    } else {
-        $terraform_vars_object = $terraform_vars
-    }
-    switch ($terraform_vars_object.GetType().FullName) {
-        "System.String" {
-            # Force string; was erroring without this
-            Write-Verbose ('Adding "-var=`"{0}`""' -f ("{0}" -f $terraform_vars_object)) -Verbose
-            $terraform_params += ("-var=`"{0}`"" -f $terraform_vars_object)
-        }
-        "System.Management.Automation.PSCustomObject" {
-            foreach($item in $terraform_vars_object.PSObject.Properties.Name)
-            {
-                $line_item = "{0}={1}" -f $item, $terraform_vars_object.$item 
-                Write-Verbose ("Adding `"var={0}`"" -f $line_item) -Verbose
-                $inputObject += ("var=`"{0}`"" -f $line_item)
-            }
-        }
-        Default {
-            Write-Error "Unknown type"
-        }
+    $terraform_vars_split = $terraform_vars.Split(" ")
+    foreach($item in $terraform_vars_split)
+    {
+        Write-Verbose ('Adding "var={0}"' -f $item) -Verbose
+        $inputObject += ('var="{0}"' -f $line_item)
     }
 }
 

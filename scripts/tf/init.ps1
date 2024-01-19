@@ -38,7 +38,7 @@ if(!$terraform_backend){
         $backend_object = $terraform_backend_config
     }
 
-    if($backend_object){
+    if($backend_object -and $null -ne $backend_object){
     # On the conversion, switch on what type of object we have; it can be a single line to point to a backend config file or a series of strings
     switch ($backend_object.GetType().FullName) {
         "System.String" {
