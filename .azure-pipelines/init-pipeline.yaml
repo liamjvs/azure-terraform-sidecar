@@ -120,6 +120,7 @@ stages:
                 azure_subscription_id: ${{ variables.azure_subscription_id }}
                 working_directory: "$(Build.SourcesDirectory)/terraform"
                 migrate_backend: true
-                backend_config: "$(Build.SourcesDirectory)/variables/terraform.tfbackend"
+                backend_config: 
+                  - "$(Build.SourcesDirectory)/variables/terraform.tfbackend"
             - template: templates/az/logout.yaml
     
