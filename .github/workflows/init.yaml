@@ -2,12 +2,6 @@ name: Init
 
 on:
   workflow_dispatch:
-    inputs:
-      skip_checks:
-        description: 'Skip ADO Checks?'
-        default: false
-        required: true
-        type: boolean
 
 jobs:
   tf_plan:
