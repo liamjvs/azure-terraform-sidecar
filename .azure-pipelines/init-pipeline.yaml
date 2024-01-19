@@ -9,7 +9,7 @@ parameters:
     displayName: Service Connection To Use
   # - name: ado_service_connection
   #   type: string
-  #   default: ''
+  #   default: ""
   #   displayName: (Optional) ADO Service Connection To Use
   # - name: ado_agent_pool_vmss_id
   #   type: string
@@ -54,7 +54,7 @@ stages:
         displayName: git checkout
       - template: templates/utils/backend_disable.yaml
         parameters:
-          working_directory: '$(Build.SourcesDirectory)/terraform'
+          working_directory: "$(Build.SourcesDirectory)/terraform"
       - template: templates/az/login.yaml
         parameters:
           service_connection: ${{ parameters.service_connection }}
@@ -62,11 +62,11 @@ stages:
           azure_subscription_id: ${{ variables.azure_subscription_id }}
       - template: templates/tf/init.yaml
         parameters:
-          azure_subscription_id: '3f96fd38-eec2-48f5-8d76-c9b6c17c8c95'
-          working_directory: '$(Build.SourcesDirectory)/terraform'
+          azure_subscription_id: "3f96fd38-eec2-48f5-8d76-c9b6c17c8c95"
+          working_directory: "$(Build.SourcesDirectory)/terraform"
       - template: templates/tf/plan.yaml
         parameters:
-          working_directory: '$(Build.SourcesDirectory)/terraform'
+          working_directory: "$(Build.SourcesDirectory)/terraform"
       - template: templates/az/logout.yaml
 - stage: deployment
   displayName: Deploy
@@ -75,7 +75,7 @@ stages:
   jobs:
   - deployment: tf_apply
     displayName: terraform apply
-    environment: 'terraform'
+    environment: "terraform"
     strategy:
       runOnce:
         deploy:
@@ -85,15 +85,15 @@ stages:
               persistCredentials: true
               displayName: git checkout
             - task: DownloadBuildArtifacts@1
-              displayName: 'Download Artifact'
+              displayName: "Download Artifact"
               inputs:
-                buildType: 'current'
-                downloadType: 'single'
-                artifactName: 'terraform_plan'
-                downloadPath: '$(Build.SourcesDirectory)/terraform'
+                buildType: "current"
+                downloadType: "single"
+                artifactName: "terraform_plan"
+                downloadPath: "$(Build.SourcesDirectory)/terraform"
             - template: templates/utils/backend_disable.yaml
               parameters:
-                working_directory: '$(Build.SourcesDirectory)/terraform'
+                working_directory: "$(Build.SourcesDirectory)/terraform"
             - template: templates/az/login.yaml
               parameters:
                 service_connection: ${{ parameters.service_connection }}
@@ -102,21 +102,21 @@ stages:
             - template: templates/tf/init.yaml
               parameters:
                 azure_subscription_id: ${{ variables.azure_subscription_id }}
-                working_directory: '$(Build.SourcesDirectory)/terraform'
+                working_directory: "$(Build.SourcesDirectory)/terraform"
             - template: templates/tf/apply.yaml
               parameters:
-                working_directory: '$(Build.SourcesDirectory)/terraform'
+                working_directory: "$(Build.SourcesDirectory)/terraform"
             - template: templates/utils/backend_enable.yaml
               parameters:
-                working_directory: '$(Build.SourcesDirectory)/terraform'
+                working_directory: "$(Build.SourcesDirectory)/terraform"
             - template: templates/tf/init.yaml
               parameters:
                 azure_subscription_id: ${{ variables.azure_subscription_id }}
-                working_directory: '$(Build.SourcesDirectory)/terraform'
+                working_directory: "$(Build.SourcesDirectory)/terraform"
                 migrate_backend: true
-                backend_config: "variables/terraform.tfbackend.json"
+                backend_config: "variables/terraform.tfbackend"
             - template: templates/utils/create_state_file.yaml
               parameters:
-                working_directory: '$(Build.SourcesDirectory)/terraform'
+                working_directory: "$(Build.SourcesDirectory)/terraform"
             - template: templates/az/logout.yaml
     
