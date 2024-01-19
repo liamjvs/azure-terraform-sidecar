@@ -32,8 +32,14 @@ if(!$terraform_backend){
     $terraform_params += "-backend=false" # Use a backend
 } else {
     Write-Verbose $terraform_backend_config -Verbose
+    
     # Backend Config; we can pass multiple -backend-config parameters or a single -backend-config parameter with a JSON file
-    $backend_object = ConvertFrom-Json $terraform_backend_config -Depth 100
+    if(Test-Json $terraform_backend_config -ErrorAction SilentlyContinue){
+        $backend_object = ConvertFrom-Json $terraform_backend_config -Depth 100
+    } else {
+        $backend_object = $terraform_backend_config
+    }
+
     if($backend_object){
     # On the conversion, switch on what type of object we have; it can be a single line to point to a backend config file or a series of strings
     switch ($backend_object.GetType().FullName) {
