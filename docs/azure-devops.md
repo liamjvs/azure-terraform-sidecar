@@ -27,6 +27,19 @@ The first job performs a few checks ensuring that the Service Connection has the
 - Checking that the Service Connection has access to create Agent Pools (Creator role or greater)
 - Checking that the Service Connection has access to create Service Connections (Creator role or greater)
 
+#### Terraform Plan
+The second job will perform a Terraform plan against the Terraform code. This will provide a list of resources that will be created, updated or deleted.
+
+### Deploy
+#### Terraform Apply
+The third job will download the artifacts from the previous plan stage and then perform a Terraform apply against this. This will create the resources in Azure.
+
+#### Creation of the Terraform Backend File
+Terraform will output the backend state resources within the Azure DevOps job. This stage will execute `terraform output` to fetch the values, create a `.tfbackend` file, migrate the state to the backend (removing the local state file) and then re-run `terraform init` to ensure the backend is configured correctly. The state file will now be stored in the Storage Account created during the Terraform apply stage and no longer locally.
+
+#### Creation of Azure DevOps Artifacts
+The final stage will create the Service Connection and Agent Pool within Azure DevOps. The Service Connection will use the initial Service Principal or the optionally created Service Principal. The Agent Pool will use the Service Connection created.
+
 ## FAQ
 ### The Service Connection does not have access to the Azure DevOps Project
 Add the Service Principal to the Azure DevOps Organisation as you would a user.
