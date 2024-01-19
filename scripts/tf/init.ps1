@@ -20,10 +20,8 @@ if($azure_subscription_id -and $azure_subscription_id -ne $env:ARM_SUBSCRIPTION_
 
 $terraform_params = @()
 
-Write-Verbose ("TFM: {0}" -f $terraform_migrate) -Verbose
-
 # Terraform does not like input=false and -migrate-state together...
-if($terraform_migrate){
+if($terraform_migrate -eq $true){
     $terraform_params += "-migrate-state" # Migrate state from local to remote
     $terraform_params += "-force-copy" # Force copy of state from local to remote
 } else {
