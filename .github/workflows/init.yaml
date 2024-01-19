@@ -17,6 +17,10 @@ jobs:
       - name: cloud-init
         shell: pwsh
         run: |
-          ./${{ github.repository }}/scripts/utils/cloud_init.yaml
+          ./${{ github.repository }}/scripts/utils/cloud_init.ps1
         working-directory: ${{ github.repository }}/terraform
-        
+      - name: az login
+        shell: pwsh
+        run: |
+          ./${{ github.repository }}/scripts/az/login.ps1
+        working-directory: ${{ github.repository }}/terraform
