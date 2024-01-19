@@ -1,7 +1,8 @@
 param(
     [bool]$cicd_ado = $false,
     [string]$terraform_plan_file = "terraform.tfbackend",
-    [string]$output_folder = "" # No trailing slash please :)
+    [string]$output_folder = "", # No trailing slash please :)
+    [string]$key = "terraform.tfstate"
 )
 
 $valid_backend_outputs = @(
@@ -39,6 +40,11 @@ foreach($key in $tfstate_file.PSObject.Properties.Name){
     } else {
         Write-Warning "Unknown backend output: $key" -Verbose
     }
+}
+
+if($tfstate_out | Where-Object {$_ -notlike "*$key*"}){
+    $tfstate_out += "{0} = `"{1}`"" -f "key", $key
+    Write-Verbose "key = `"$key`"" -Verbose
 }
 
 $folder = $output_folder -and $output_folder -ne "" ? $output_folder : (Get-Location).Path
