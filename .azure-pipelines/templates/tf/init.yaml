@@ -25,6 +25,8 @@ parameters:
     default: '$(Build.SourcesDirectory)'
 
 steps:
+  - pwsh: |
+      Write-Verbose ${{ convertToJson(parameters.backend_config) }} -Verbose
   - task: PowerShell@2
     inputs:
       targetType: 'filePath'
