@@ -25,8 +25,8 @@ if($terraform_vars){
     $terraform_vars_split = $terraform_vars.Split(" ")
     foreach($item in $terraform_vars_split)
     {
-        Write-Verbose ('Adding "var={0}"' -f $item) -Verbose
-        $inputObject += ('var="{0}"' -f $line_item)
+        Write-Verbose ('Adding "-var={0}"' -f $item) -Verbose
+        $terraform_params += ('-var="{0}"' -f $item)
     }
 }
 

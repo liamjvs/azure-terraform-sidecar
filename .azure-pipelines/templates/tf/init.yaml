@@ -32,7 +32,7 @@ steps:
       arguments: >
         -azure_subscription_id ${{ parameters.azure_subscription_id }}
         -terraform_migrate $${{ parameters.migrate_backend }}
-        -terraform_backend_config "${{ convertToJson(parameters.backend_config) }}"
+        -terraform_backend_config ${{ join(', ', parameters.backend_config) }}
         -terraform_backend $${{ parameters.backend }}
       workingDirectory: '${{ parameters.working_directory }}'
     ${{ if eq(parameters.migrate_backend, true) }}:

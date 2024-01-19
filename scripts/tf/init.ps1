@@ -38,28 +38,15 @@ if(!$terraform_backend){
         $backend_object = $terraform_backend_config
     }
 
-    if($backend_object -and $null -ne $backend_object){
-    # On the conversion, switch on what type of object we have; it can be a single line to point to a backend config file or a series of strings
-    switch ($backend_object.GetType().FullName) {
-        "System.String" {
-            # Force string; was erroring without this
-            Write-Verbose ('Adding "-backend-config=\"{0}\""' -f ("{0}" -f $backend_object)) -Verbose
-            $terraform_params += ('-backend-config="{0}"' -f $backend_object)
+    if($backend_object){
+        $backend_object_split = $backend_object.Split(" ")
+        foreach($item in $backend_object_split)
+        {
+            Write-Verbose ('Adding "-backend-config={0}"' -f $item) -Verbose
+            $terraform_params += ('-backend-config="{0}"' -f $item)
         }
-        "System.Management.Automation.PSCustomObject" {
-            foreach($item in $backend_object.PSObject.Properties.Name)
-            {
-                $line_item = "{0}={1}" -f $item, $backend_object.$item 
-                Write-Verbose ('Adding "-backend-config={0}"' -f $line_item) -Verbose
-                $inputObject += ("-backend-config=`"{0}`"" -f $line_item)
-            }
-        }
-        Default {
-            Write-Error 'Unknown type'
-        }
-    }
     } else {
-    Write-Verbose "terraform_backend_config is null" -Verbose
+        Write-Verbose "terraform_backend_config is null" -Verbose
     }
 }
 
