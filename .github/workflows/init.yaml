@@ -1,0 +1,22 @@
+name: Init
+
+on:
+  init:
+    inputs:
+      skip_checks:
+        description: 'Skip ADO Checks?'
+        default: false
+        required: true
+        type: boolean
+
+jobs:
+  tf_plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    steps:
+      - name: cloud-init
+        shell: pwsh
+        run: |
+          ./${{ github.repository }}/scripts/utils/cloud_init.yaml
+        working-directory: ${{ github.repository }}/terraform
+        
