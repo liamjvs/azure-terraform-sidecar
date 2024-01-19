@@ -6,7 +6,7 @@ parameters:
 - name: state_file
   type: string
   displayName: State File
-  default: 'terraform.tfstate'
+  default: 'terraform.tfbackend'
 - name: output_folder
   type: string
   displayName: Output Folder
