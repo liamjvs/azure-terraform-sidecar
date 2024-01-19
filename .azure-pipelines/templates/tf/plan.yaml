@@ -27,8 +27,7 @@ parameters:
 steps:
   - pwsh: |
       Write-Verbose '${{ convertToJson(parameters.terraform_vars) }}' -Verbose
-      Write-Verbose '${{ replace(convertToJson(parameters.terraform_vars),'"','`"') }}' -Verbose
-      Write-Verbose "${{ replace(convertToJson(parameters.terraform_vars),'"','`"') }}" -Verbose
+      Write-Verbose '${{ replace(convertToJson(parameters.terraform_vars),'\n','') }}' -Verbose
   - task: PowerShell@2
     inputs:
       targetType: 'filePath'
@@ -38,9 +37,7 @@ steps:
         -refresh_only $${{ parameters.refresh_only }}
         -terraform_publish_plan $${{ parameters.publish_plan }}
         -terraform_plan_file "${{ parameters.plan_name }}"
-        -terraform_vars "@
-          ${{ convertToJson(parameters.terraform_vars) }}
-        @"
+        -terraform_vars '${{ convertToJson(parameters.terraform_vars) }}'
       workingDirectory: '${{ parameters.working_directory }}'
     displayName: terraform plan
   - ${{ if eq(parameters.publish_plan, true) }}:
