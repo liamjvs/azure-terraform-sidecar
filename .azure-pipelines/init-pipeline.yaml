@@ -106,10 +106,10 @@ stages:
             - template: templates/tf/apply.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
-            - template: templates/utils/backend_enable.yaml
+            - template: templates/utils/create_state_file.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
-            - template: templates/utils/create_state_file.yaml
+            - template: templates/utils/backend_enable.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
             - template: templates/tf/init.yaml
