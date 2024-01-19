@@ -6,4 +6,4 @@ steps:
       filePath: '$(Build.SourcesDirectory)/scripts/az/logout.ps1'
       workingDirectory: '$(Build.SourcesDirectory)'
     displayName: az logout
-    condition: succeededOrFailed()
+    condition: always()
