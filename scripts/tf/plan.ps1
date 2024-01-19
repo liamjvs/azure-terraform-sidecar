@@ -3,7 +3,7 @@ param(
     [string]$terraform_vars, # only a JSON string NEED TO ADD SUPPORT
     [string]$terraform_var_file,
     [string]$terraform_publish_plan = $true,
-    [string]$terraform_plan_file = 'terraform.plan'
+    [string]$terraform_plan_file = "terraform.plan"
 )
 
 $terraform_params = @()
@@ -30,26 +30,26 @@ if($terraform_vars){
     switch ($terraform_vars_object.GetType().FullName) {
         "System.String" {
             # Force string; was erroring without this
-            Write-Verbose ('Adding "-var=\"{0}\""' -f ("{0}" -f $terraform_vars_object)) -Verbose
-            $terraform_params += ('-var="{0}"' -f $terraform_vars_object)
+            Write-Verbose ('Adding "-var=`"{0}`""' -f ("{0}" -f $terraform_vars_object)) -Verbose
+            $terraform_params += ("-var=`"{0}`"" -f $terraform_vars_object)
         }
         "System.Management.Automation.PSCustomObject" {
             foreach($item in $terraform_vars_object.PSObject.Properties.Name)
             {
                 $line_item = "{0}={1}" -f $item, $terraform_vars_object.$item 
-                Write-Verbose ('Adding "var={0}"' -f $line_item) -Verbose
+                Write-Verbose ("Adding `"var={0}`"" -f $line_item) -Verbose
                 $inputObject += ("var=`"{0}`"" -f $line_item)
             }
         }
         Default {
-            Write-Error 'Unknown type'
+            Write-Error "Unknown type"
         }
     }
 }
 
 $terraform_params += "-detailed-exitcode"
 
-Write-Verbose ("Running 'terraform plan {0}'" -f ($terraform_params -join ' ')) -Verbose
+Write-Verbose ("Running `"terraform plan {0}`"" -f ($terraform_params -join ' ')) -Verbose
 terraform plan @terraform_params
 
 $terraform_exit_code = $LASTEXITCODE
