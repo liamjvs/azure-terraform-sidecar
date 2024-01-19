@@ -23,11 +23,12 @@ parameters:
     type: object
     displayName: Terraform Vars
     default:
-      null
 
 steps:
   - pwsh: |
-      Write-Verbose ${{ convertToJson(parameters.terraform_vars) }} -Verbose
+      Write-Verbose '${{ convertToJson(parameters.terraform_vars) }}' -Verbose
+      Write-Verbose '${{ replace(convertToJson(parameters.terraform_vars),'"','`"') }}' -Verbose
+      Write-Verbose "${{ replace(convertToJson(parameters.terraform_vars),'"','`"') }}" -Verbose
   - task: PowerShell@2
     inputs:
       targetType: 'filePath'
