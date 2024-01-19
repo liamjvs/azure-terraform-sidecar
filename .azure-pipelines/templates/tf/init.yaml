@@ -31,10 +31,10 @@ steps:
       filePath: '$(Build.SourcesDirectory)/scripts/tf/init.ps1'
       pwsh: true
       arguments: >
-        -terraform_backend_config ${{ convertToJson(parameters.backend_config) }}
         -azure_subscription_id ${{ parameters.azure_subscription_id }}
         -migrate_backend $${{ parameters.migrate_backend }}
-        -backend $${{ parameters.backend }}
+        -terraform_backend_config ${{ convertToJson(parameters.backend_config) }}
+        -terraform_backend $${{ parameters.backend }}
       workingDirectory: '${{ parameters.working_directory }}'
     ${{ if eq(parameters.migrate_backend, true) }}:
       displayName: terraform migrate
