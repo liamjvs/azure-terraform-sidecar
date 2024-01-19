@@ -45,8 +45,8 @@ if(!$terraform_backend){
     switch ($backend_object.GetType().FullName) {
         "System.String" {
             # Force string; was erroring without this
-            Write-Verbose ('Adding "-backend-config={0}"' -f ("{0}" -f $backend_object)) -Verbose
-            $terraform_params += ('-backend-config={0}' -f $backend_object)
+            Write-Verbose ('Adding "-backend-config=\"{0}\""' -f ("{0}" -f $backend_object)) -Verbose
+            $terraform_params += ('-backend-config="{0}"' -f $backend_object)
         }
         "System.Management.Automation.PSCustomObject" {
             foreach($item in $backend_object.PSObject.Properties.Name)

@@ -43,4 +43,4 @@ foreach($key in $tfstate_file.PSObject.Properties.Name){
 
 $folder = $output_folder -and $output_folder -ne "" ? $output_folder : (Get-Location).Path
 Write-Verbose "Writing terraform.tfstate file to $folder" -Verbose
-$tfstate_out | Out-File -FilePath "$folder/$terraform_plan_file" -Encoding utf8 -Force
+$tfstate_out | Out-File -FilePath "$folder/$terraform_plan_file" -Encoding ascii -Force
