@@ -68,8 +68,8 @@ stages:
         parameters:
           working_directory: "$(Build.SourcesDirectory)/terraform"
           terraform_vars:
-            - resource_group_name="sidecar$(Build.BuildNumber)"
-            - backend_storage_account_name="sidecar$(Build.BuildNumber)"
+            - resource_group_name="sidecar$Build.BuildNumber)"
+            - backend_storage_account_name="sidecar${{ replace(Build.BuildNumber, '.', '') }}"
       - template: templates/az/logout.yaml
 - stage: deployment
   displayName: Deploy
