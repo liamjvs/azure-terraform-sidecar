@@ -31,6 +31,7 @@ if($terraform_migrate){
 if(!$terraform_backend){
     $terraform_params += "-backend=false" # Use a backend
 } else {
+    Write-Verbose $terraform_backend_config -Verbose
     # Backend Config; we can pass multiple -backend-config parameters or a single -backend-config parameter with a JSON file
     $backend_object = ConvertFrom-Json $terraform_backend_config -Depth 100
     if($backend_object){
