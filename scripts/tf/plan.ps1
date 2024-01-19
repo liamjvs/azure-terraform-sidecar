@@ -13,7 +13,7 @@ if($terraform_publish_plan){
     $terraform_params += "-out=`"$terraform_plan_file`""
 }
 
-if($terraform_refresh_plan){
+if($terraform_refresh_plan -eq $true){
     $terraform_params += "-refresh=true"
 }
 

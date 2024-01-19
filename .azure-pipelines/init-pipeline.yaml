@@ -68,8 +68,8 @@ stages:
         parameters:
           working_directory: "$(Build.SourcesDirectory)/terraform"
           terraform_vars:
-            - resource_group_name="sidecar$(Build.BuildNumber)"
-            - backend_storage_account_name="sidecar$(Build.BuildId)"
+            resource_group_name="sidecar$(Build.BuildNumber)"
+            backend_storage_account_name="sidecar$(Build.BuildId)"
       - template: templates/az/logout.yaml
 - stage: deployment
   displayName: Deploy
@@ -121,6 +121,6 @@ stages:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
                 migrate_backend: true
                 backend_config: 
-                  - "$(Build.SourcesDirectory)/variables/terraform.tfbackend"
+                  "$(Build.SourcesDirectory)/variables/terraform.tfbackend"
             - template: templates/az/logout.yaml
     
