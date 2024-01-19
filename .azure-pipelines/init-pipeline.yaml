@@ -35,10 +35,10 @@ stages:
 - stage: validation
   displayName: Validate
   jobs:
-  - job: check_ado
-    displayName: Check ADO
-    steps:
-      - ${{ if eq(parameters.skip_checks, true) }}:
+  - ${{ if eq(parameters.skip_checks, true) }}:
+    - job: check_ado
+      displayName: Check ADO
+      steps:
         - template: templates/ado/check_ado.yaml
           parameters:
             service_connection: ${{ coalesce(parameters.ado_service_connection, parameters.service_connection) }}
