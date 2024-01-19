@@ -1,7 +1,7 @@
 name: Init
 
 on:
-  init:
+  workflow_dispatch:
     inputs:
       skip_checks:
         description: 'Skip ADO Checks?'
