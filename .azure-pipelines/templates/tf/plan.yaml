@@ -19,6 +19,11 @@ parameters:
     type: string
     displayName: Plan Name
     default: $(Build.Repository.Name)_$(Build.SourceBranchName)_$(Build.BuildNumber).tfplan
+  - name: terraform_vars
+    type: object
+    displayName: Terraform Vars
+    default:
+      null
 
 steps:
   - task: PowerShell@2
@@ -30,7 +35,7 @@ steps:
         -refresh_only $${{ parameters.refresh_only }}
         -terraform_publish_plan $${{ parameters.publish_plan }}
         -terraform_plan_file ${{ parameters.plan_name }}
-        -terraform_vars 'resource_group_name=sidecar$(Build.BuildNumber)'
+        -terraform_vars ${{ convertToJson(parameters.terraform_vars) }}
       workingDirectory: '${{ parameters.working_directory }}'
     displayName: terraform plan
   - ${{ if eq(parameters.publish_plan, true) }}:
