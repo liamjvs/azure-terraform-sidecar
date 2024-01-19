@@ -30,7 +30,7 @@ steps:
         -refresh_only $${{ parameters.refresh_only }}
         -terraform_publish_plan $${{ parameters.publish_plan }}
         -terraform_plan_file ${{ parameters.plan_name }}
-        -terraform_vars 'resource_group_name=sidecar2'
+        -terraform_vars 'resource_group_name=sidecar$(Build.BuildNumber)'
       workingDirectory: '${{ parameters.working_directory }}'
     displayName: terraform plan
   - ${{ if eq(parameters.publish_plan, true) }}:
