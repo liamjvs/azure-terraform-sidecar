@@ -114,7 +114,7 @@ stages:
                 azure_subscription_id: ${{ variables.azure_subscription_id }}
                 working_directory: '$(Build.SourcesDirectory)/terraform'
                 migrate_backend: true
-                backend_config: ../variables/terraform.tfbackend.json
+                backend_config: "variables/terraform.tfbackend.json"
             - template: templates/utils/create_state_file.yaml
               parameters:
                 working_directory: '$(Build.SourcesDirectory)/terraform'
