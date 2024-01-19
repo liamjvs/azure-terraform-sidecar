@@ -7,10 +7,10 @@ parameters:
   - name: service_connection
     type: string
     displayName: Service Connection To Use
-  # - name: ado_service_connection
-  #   type: string
-  #   default: ""
-  #   displayName: (Optional) ADO Service Connection To Use
+  - name: ado_service_connection
+    type: string
+    default: ""
+    displayName: (Optional) ADO Service Connection To Use
   # - name: ado_agent_pool_vmss_id
   #   type: string
   #   displayName: Azure VMSS ID
@@ -35,7 +35,7 @@ stages:
 - stage: validation
   displayName: Validate
   jobs:
-  - ${{ if eq(parameters.skip_checks, true) }}:
+  - ${{ if eq(parameters.skip_checks, false) }}:
     - job: check_ado
       displayName: Check ADO
       steps:
