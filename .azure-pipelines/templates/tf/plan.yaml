@@ -35,7 +35,7 @@ steps:
         -refresh_only $${{ parameters.refresh_only }}
         -terraform_publish_plan $${{ parameters.publish_plan }}
         -terraform_plan_file "${{ parameters.plan_name }}"
-        -terraform_vars '${{ convertToJson(parameters.terraform_vars) }}'
+        -terraform_vars '${{ parameters.terraform_vars }}'
       workingDirectory: '${{ parameters.working_directory }}'
     displayName: terraform plan
   - ${{ if eq(parameters.publish_plan, true) }}:
