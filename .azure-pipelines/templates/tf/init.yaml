@@ -2,7 +2,8 @@ parameters:
   - name: backend_config
     type: object
     displayName: Backend Config
-    default: []
+    default:
+      null
   - name: backend
     type: boolean
     displayName: Backend?
