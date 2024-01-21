@@ -19,10 +19,6 @@ parameters:
     type: string
   - name: subscription_name
     type: string
-  - name: skipChecks
-    type: boolean
-    default: false
-    displayName: Skip ADO Checks?
 
 steps:
   - ${{ if ne(parameters.ado_service_connection, '') }}:
@@ -50,7 +46,7 @@ steps:
       azureSubscription: ${{ parameters.service_connection }}
       scriptType: 'pscore'
       scriptLocation: 'scriptPath'
-      scriptPath: '$(Build.SourcesDirectory)/scripts/register_vmss.ps1'
+      scriptPath: '$(Build.SourcesDirectory)/scripts/ado/register_vmss.ps1'
       failOnStandardError: true
       arguments: >
         -ado_project ${{ parameters.ado_project }}

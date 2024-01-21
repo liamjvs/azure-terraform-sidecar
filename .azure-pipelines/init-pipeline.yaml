@@ -126,4 +126,14 @@ stages:
                 migrate_backend: true
                 backend_config: 
                   "$(Build.SourcesDirectory)/variables/terraform.tfbackend"
+            - template: templates/ado/register_agent.yaml
+              parameters:
+                service_connection: ${{ parameters.service_connection }}
+                ado_service_connection: ${{ variables.ado_service_connection }}
+                ado_agent_pool_vmss_id: $(TF_OUTPUT_VIRTUAL_MACHINE_SCALE_SET_ID)
+                ado_service_connection_name: "sc_$(Build.BuildId)"
+                ado_agent_pool_name: "agent_pool_$(Build.BuildId)"
+                subscription_name: "MCAPS-Test"
+                ado_org: $(System.TeamFoundationCollectionUri)
+                ado_project: $(System.TeamProject)
             - template: templates/az/logout.yaml
