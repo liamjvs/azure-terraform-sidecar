@@ -19,28 +19,19 @@ $valid_backend_outputs = @(
     "sas_token"
 )
 
-gci env:* | sort-object name
-
-$terraform_output = terraform output -json
-$output_object = $terraform_output | ConvertFrom-Json -Depth 100
-
-$tfstate_file = $output_object.tfstate_file.value
-
-if($tfstate_file -eq $null){
-    Write-Error "Unable to find tfstate_file in terraform output"
-    exit 1
-}
+$terraform_output = gci env:* | where-object {$_.Name -like "TF_OUTPUT_*"}
 
 $tfstate_out = @()
-foreach($key in $tfstate_file.PSObject.Properties.Name){
-    if($key -in $valid_backend_outputs){
+foreach($key in $terraform_output.PSObject.Properties.Name){
+    $sanitized_key = ($key.Replace("TF_OUTPUT_", "").ToLower()
+    if($sanitized_key -in $valid_backend_outputs)){
         # Terraform likes true and false, PowerShell likes $True and $False. Terraform does not like True or False.
-        $value = $tfstate_file.$key.GetType() -eq [System.Boolean] ? $tfstate_file.$key.ToString().ToLower() : $tfstate_file.$key
-        $line_item = "{0} = `"{1}`"" -f $key, $value
+        $value = $terraform_output.$key.GetType() -eq [System.Boolean] ? $terraform_output.$key.ToString().ToLower() : $terraform_output.$key
+        $line_item = "{0} = `"{1}`"" -f $sanitized_key, $value
         $tfstate_out += $line_item
         Write-Verbose $line_item -Verbose
     } else {
-        Write-Warning "Unknown backend output: $key" -Verbose
+        Write-Warning "Skipping output: $sanitized_key" -Verbose
     }
 }
 

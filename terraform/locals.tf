@@ -13,13 +13,6 @@ locals {
 
   storage_account_containers = concat(var.backend_storage_account_containers, [local.default_resource_names.storage_account_container_sidecar])
 
-  tfstate_file = {
-    resource_group_name       = azurerm_resource_group.resource_group.name
-    storage_account_name      = module.storage_account.azurerm_storage_account.name
-    container_name            = local.default_resource_names.storage_account_container_sidecar
-    use_azuread_auth          = true
-  }
-
   resource_names = {
     resource_group_name               = coalesce(var.resource_group_name, local.default_resource_names.resource_group_name)
     virtual_network_name              = coalesce(var.virtual_network_name, local.default_resource_names.virtual_network_name)

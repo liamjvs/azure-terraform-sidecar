@@ -12,12 +12,10 @@ if($tfoutput -eq $null){
     exit 1
 }
 
-$tfoutput_array = @()
 foreach($key in $tfoutput.PSObject.Properties.Name){
     $line_item = "{0} = `"{1}`"" -f $key, $tfoutput.$key.value
     if($cicd_ado){
         Write-Host ("##vso[task.setvariable variable=TF_OUTPUT_{0};]{1}" -f ($key.ToUpper()), $tfoutput.$key.value)
     }
-    $tfstate_out += $line_item
-    Write-Verbose $line_item -Verbose
+    Write-Verbose ("TF_OUTPUT_{0} set to {1}" -f $key.ToUpper(), $tfoutput.$key.value) -Verbose
 }
