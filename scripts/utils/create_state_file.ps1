@@ -26,7 +26,7 @@ foreach($output in $terraform_output){
     $sanitized_key = $output.Name.Replace("TF_OUTPUT_", "").ToLower()
     if($sanitized_key -in $valid_backend_outputs){
         # Terraform likes true and false, PowerShell likes $True and $False. Terraform does not like True or False.
-        $value = $output -contains $True ? "true" : $output -contains $False ? "false" : $output.Value
+        $value = $output.Value -eq "True" ? "true" : $output.Value -contains "False" ? "false" : $output.Value
         $line_item = "{0} = `"{1}`"" -f $sanitized_key, $value
         $tfstate_out += $line_item
         Write-Verbose $line_item -Verbose
