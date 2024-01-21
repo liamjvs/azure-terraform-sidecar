@@ -17,7 +17,6 @@ locals {
     resource_group_name       = azurerm_resource_group.resource_group.name
     storage_account_name      = module.storage_account.azurerm_storage_account.name
     container_name            = local.default_resource_names.storage_account_container_sidecar
-    virtual_machine_scale_set = module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.id
     use_azuread_auth          = true
   }
 

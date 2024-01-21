@@ -124,4 +124,3 @@ stages:
                 backend_config: 
                   "$(Build.SourcesDirectory)/variables/terraform.tfbackend"
             - template: templates/az/logout.yaml
-    

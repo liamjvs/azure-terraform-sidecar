@@ -19,6 +19,8 @@ $valid_backend_outputs = @(
     "sas_token"
 )
 
+gci env:* | sort-object name
+
 $terraform_output = terraform output -json
 $output_object = $terraform_output | ConvertFrom-Json -Depth 100
 

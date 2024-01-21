@@ -6,4 +6,4 @@ steps:
       filePath: '$(Build.SourcesDirectory)/scripts/az/refresh.ps1'
       pwsh: true
       workingDirectory: '$(Build.SourcesDirectory)'
-    displayName: az refresh
+    displayName: az refresh token
