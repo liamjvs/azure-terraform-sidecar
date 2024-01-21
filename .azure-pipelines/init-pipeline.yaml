@@ -115,6 +115,7 @@ stages:
             - template: templates/utils/backend_enable.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
+            - template: templates/az/refresh.yaml
             - template: templates/tf/init.yaml
               parameters:
                 azure_subscription_id: ${{ variables.azure_subscription_id }}
