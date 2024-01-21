@@ -31,8 +31,8 @@ if($terraform_migrate -eq $true){
 if(!$terraform_backend){
     $terraform_params += "-backend=false" # Use a backend
 } else {    
-    if($backend_object){
-        $backend_object_split = $backend_object.Split(" ")
+    if($terraform_backend_config){
+        $backend_object_split = $terraform_backend_config.Split(" ")
         foreach($item in $backend_object_split)
         {
             Write-Verbose ('Adding "-backend-config={0}"' -f $item) -Verbose
