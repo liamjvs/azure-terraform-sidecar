@@ -109,6 +109,7 @@ stages:
             - template: templates/tf/apply.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
+            - template: templates/tf/output.yaml
             - template: templates/utils/create_state_file.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
