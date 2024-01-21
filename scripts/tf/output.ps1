@@ -1,15 +1,19 @@
 param(
-    [bool]$cicd_ado = $true
+    [bool]$cicd_ado = $true,
+    [bool]$error_on_no_output = $true
 )
 
 $terraform_output = terraform output -json
 $output_object = $terraform_output | ConvertFrom-Json -Depth 100
 
-$tfoutput = $output_object.value
-
-if($tfoutput -eq $null){
-    Write-Error "Unable to find outputs in terraform output"
-    exit 1
+if($output_object -eq $null){
+    if($error_on_no_output){
+        Write-Error "Unable to find outputs in terraform output"
+        exit 1
+    } else {
+        Write-Warning "Unable to find outputs in terraform output"
+        exit 0
+    }
 }
 
 foreach($key in $tfoutput.PSObject.Properties.Name){

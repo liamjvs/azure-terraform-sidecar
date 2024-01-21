@@ -3,6 +3,10 @@ parameters:
   type: string
   default: '$(Build.SourcesDirectory)'
   displayName: Working Directory
+- name: error_on_no_output
+  type: boolean
+  default: true
+  displayName: Error On No Output?
 
 steps:
   - task: PowerShell@2
@@ -12,4 +16,5 @@ steps:
       workingDirectory: ${{ parameters.working_directory }}
       arguments: >
         -cicd_ado $true
+        -error_on_no_output $${{ parameters.error_on_no_output }}
     displayName: terrraform output
