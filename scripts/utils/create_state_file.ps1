@@ -22,11 +22,11 @@ $valid_backend_outputs = @(
 $terraform_output = gci env:* | where-object {$_.Name -like "TF_OUTPUT_*"}
 
 $tfstate_out = @()
-foreach($key in $terraform_output.PSObject.Properties.Name){
-    $sanitized_key = $key.Replace("TF_OUTPUT_", "").ToLower()
+foreach($output in $terraform_output){
+    $sanitized_key = $output.Name.Replace("TF_OUTPUT_", "").ToLower()
     if($sanitized_key -in $valid_backend_outputs){
         # Terraform likes true and false, PowerShell likes $True and $False. Terraform does not like True or False.
-        $value = $terraform_output.$key.GetType() -eq [System.Boolean] ? $terraform_output.$key.ToString().ToLower() : $terraform_output.$key
+        $value = $output -contains $True ? "true" : $output -contains $False ? "false" : $output.Value
         $line_item = "{0} = `"{1}`"" -f $sanitized_key, $value
         $tfstate_out += $line_item
         Write-Verbose $line_item -Verbose
