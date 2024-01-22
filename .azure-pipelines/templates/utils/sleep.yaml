@@ -6,11 +6,15 @@ parameters:
     default: 'Sleeping'
   - name: display_name
     type: string
-    default: 'Sleep for ${{ parameters.duration }} seconds'
+    default: ''
+
+variables:
+  - name: sleep_display_name
+    value: coalesce(parameters.display_name, 'Sleep for ${{ parameters.duration }} seconds')
 
 steps:
   - task: PowerShell@2
-    displayName: ${{ parameters.display_name }}
+    displayName: ${{ parameters.sleep_display_name }}
     inputs:
       targetType: 'inline'
       script: |
