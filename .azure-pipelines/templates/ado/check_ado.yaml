@@ -22,7 +22,7 @@ steps:
         addSpnToEnvironment: true
         scriptType: pscore
         scriptLocation: scriptPath
-        scriptPath: '$(Build.SourcesDirectory)/scripts/check_ado.ps1'
+        scriptPath: '$(Build.SourcesDirectory)/scripts/ado/check_ado.ps1'
         arguments: >
           -ado_project ${{ parameters.ado_project }}
           -ado_org ${{ parameters.ado_org }}
