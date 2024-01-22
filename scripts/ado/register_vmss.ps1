@@ -4,8 +4,6 @@ param(
   [string]$ado_service_connection_name,
   [string]$ado_agent_pool_vmss_id,
   [string]$ado_agent_pool_name,
-  [string]$ado_client_id,
-  [string]$ado_tenant_id,
   [string]$subscription_name,
   [string]$vmss_operator_name
 )
@@ -48,11 +46,11 @@ if (!$vmss_sp) {
   }
 }
 
-if($ado_client_id -and $ado_tenant_id -and $env:ADO_CLIENT_SECRET){
+if($env:ADO_CLIENT_ID -and $env:ADO_TENANT_ID -and $env:ADO_CLIENT_SECRET){
   Write-Verbose "Logging out of Service Connection" -Verbose
   az logout
   Write-Verbose "Logging into Azure DevOps Service Connection" -Verbose
-  az login --service-principal --username $ado_client_id --password $env:ADO_CLIENT_SECRET --tenant $ado_tenant_id --allow-no-subscriptions --only-show-errors
+  az login --service-principal --username $env:ADO_CLIENT_ID --password $env:ADO_CLIENT_SECRET --tenant $env:ADO_TENANT_ID --allow-no-subscriptions --only-show-errors
   Write-Verbose "Successfully Logged into Azure DevOps Service Connection" -Verbose
 }
 
