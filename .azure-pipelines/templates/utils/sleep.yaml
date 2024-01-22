@@ -10,7 +10,7 @@ parameters:
 
 steps:
   - task: PowerShell@2
-    displayName: ${{ coalesce(parameters.display_name, 'Sleep for ${{ parameters.duration }} seconds') }}
+    displayName: ${{ coalesce(parameters.display_name, format('Sleep for {0} seconds',parameters.duration)) }}
     inputs:
       targetType: 'inline'
       script: |
