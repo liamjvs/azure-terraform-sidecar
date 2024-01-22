@@ -41,7 +41,7 @@ stages:
       steps:
         - template: templates/ado/check_ado.yaml
           parameters:
-            service_connection: ${{ parameters.service_connection }} #${{ coalesce(parameters.ado_service_connection, parameters.service_connection) }}
+            service_connection: ${{ coalesce(variables.ado_service_connection, parameters.service_connection) }}
             skip: ${{ parameters.skip_checks }}
             ado_org: $(System.TeamFoundationCollectionUri)
             ado_project: $(System.TeamProject)
