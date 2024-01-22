@@ -1,0 +1,18 @@
+parameters:
+  - name: duration
+    type: int
+  - name: message
+    type: string
+    default: 'Sleeping'
+  - name: display_name
+    type: string
+    default: 'Sleep for ${{ parameters.duration }} seconds'
+
+steps:
+  - task: PowerShell@2
+    displayName: ${{ parameters.display_name }}
+    inputs:
+      targetType: 'inline'
+      script: |
+        Write-Verbose "${{ parameters.message }}" -Verbose
+        Start-Sleep -Seconds ${{ parameters.duration }}

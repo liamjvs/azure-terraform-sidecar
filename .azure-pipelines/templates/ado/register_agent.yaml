@@ -31,14 +31,18 @@ steps:
         scriptLocation: inlineScript
         inlineScript: |
           # Output ADO SP Environment Variables
-          Write-Host "##vso[task.setvariable variable=ADO_CLIENT_ID]$env:servicePrincipalId"
-          Write-Host "##vso[task.setvariable variable=ADO_CLIENT_SECRET;issecret=true]$env:servicePrincipalKey"
-          Write-Host "##vso[task.setvariable variable=ADO_TENANT_ID]$env:tenantId"
 
-          if( "${{ parameters.skipChecks }}" -eq "true" ){
-            Write-Verbose "Skipping Checks" -Verbose
-            exit 0
-          }
+          Write-Verbose "Logging in to Azure using Service Connection `${{ parameters.ado_service_connection }}`." -Verbose
+          # Translate Service Connection Environment Variables to Terrraform Environment Variables
+
+          Write-Verbose "Setting `$env:ADO_CLIENT_ID to `$env:servicePrincipalId`." -Verbose
+          Write-Host "##vso[task.setvariable variable=ADO_CLIENT_ID;]$($env:servicePrincipalId)"
+
+          Write-Verbose "Setting `$env:ADO_CLIENT_SECRET to `$env:servicePrincipalKey`." -Verbose
+          Write-Host "##vso[task.setvariable variable=ADO_CLIENT_SECRET;]$($env:servicePrincipalKey)"
+
+          Write-Verbose "Setting `$env:ADO_TENANT_ID to `$env:tenantId`." -Verbose
+          Write-Host "##vso[task.setvariable variable=ADO_TENANT_ID;]$($env:tenantId)"
   - task: AzureCLI@2
     displayName: 'Register VMSS [${{ parameters.service_connection }}]'
     inputs:
@@ -54,9 +58,9 @@ steps:
         -ado_agent_pool_vmss_id ${{ parameters.ado_agent_pool_vmss_id }}
         -ado_service_connection_name ${{ parameters.ado_service_connection_name }}
         -ado_agent_pool_name ${{ parameters.ado_agent_pool_vmss_id }}
+        -ado_client_id $(ADO_CLIENT_ID)
+        -ado_tenant_id $(ADO_TENANT_ID)
         -subscription_name ${{ parameters.subscription_name }}
         -vmss_operator_name ${{ parameters.ado_service_connection_name }}-vmss-operator
     env:
-      ADO_CLIENT_ID: $(ADO_CLIENT_ID)
       ADO_CLIENT_SECRET: $(ADO_CLIENT_SECRET)
-      ADO_TENANT_ID: $(ADO_TENANT_ID)

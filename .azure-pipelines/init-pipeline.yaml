@@ -119,6 +119,10 @@ stages:
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
             - template: templates/az/refresh.yaml
+            - template: templates/utils/sleep.yaml
+              parameters:
+                duration: 10
+                message: "Waiting for Storage Account RBAC to Propagate"
             - template: templates/tf/init.yaml
               parameters:
                 azure_subscription_id: ${{ variables.azure_subscription_id }}
