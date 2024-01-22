@@ -3,4 +3,4 @@ variables:
 - name: azure_subscription_id
   value: '3f96fd38-eec2-48f5-8d76-c9b6c17c8c95'
 - name: ado_service_connection
-  value: ''
+  value: 'LSEGroup'
