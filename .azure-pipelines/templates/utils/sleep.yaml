@@ -1,6 +1,6 @@
 parameters:
   - name: duration
-    type: int
+    type: number
   - name: message
     type: string
     default: 'Sleeping'
