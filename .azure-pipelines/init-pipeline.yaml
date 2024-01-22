@@ -7,10 +7,10 @@ parameters:
   - name: service_connection
     type: string
     displayName: Service Connection To Use
-  - name: ado_service_connection
-    type: string
-    displayName: (Optional) ADO Service Connection To Use
-    default: ''
+  # - name: ado_service_connection
+  #   type: string
+  #   displayName: (Optional) ADO Service Connection To Use
+  #   default: ''
   # - name: ado_agent_pool_vmss_id
   #   type: string
   #   displayName: Azure VMSS ID
@@ -41,7 +41,7 @@ stages:
       steps:
         - template: templates/ado/check_ado.yaml
           parameters:
-            service_connection: ${{ coalesce(parameters.ado_service_connection, parameters.service_connection) }}
+            service_connection: ${{ parameters.service_connection }} #${{ coalesce(parameters.ado_service_connection, parameters.service_connection) }}
             skip: ${{ parameters.skip_checks }}
             ado_org: $(System.TeamFoundationCollectionUri)
             ado_project: $(System.TeamProject)
