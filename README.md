@@ -9,6 +9,13 @@ Sidecar is a solution to provide a minimal Terraform environment for future Terr
   - [Why would I use this?](#why-would-i-use-this)
 
 
+To-Do:
+- [ ] Create flow diagram
+- [ ] Create architecture diagram
+- [ ] Create ADO git commit
+- [ ] Create GitHub integration
+- [ ] Create PWSH integration
+
 
 # FAQ
 
