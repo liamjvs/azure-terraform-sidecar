@@ -1,0 +1,24 @@
+parameters:
+- name: terraform_state_file
+  type: string
+  default: 'terraform.tfbackend'
+  displayName: Terraform Backend File
+- name: terraform_working_dir
+  type: string
+  default: '$(Build.SourcesDirectory)'
+  displayName: Terraform Working Directory
+- name: fail_on_existance
+  type: boolean
+  default: true
+  displayName: Fail on Existance
+
+steps:
+- task: PowerShell@2
+  displayName: tf state file existance
+  inputs:
+    targetType: 'inline'
+    filePath: '$(Build.SourcesDirectory)/scripts/utils/check_state_file.ps1'
+    arguments: >
+      -terraform_state_file $(parameters.terraform_state_file)
+      -terraform_working_dir $(parameters.terraform_working_dir)
+      -fail_on_existance $${{ parameters.fail_on_existance }}

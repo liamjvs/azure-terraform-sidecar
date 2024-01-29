@@ -15,6 +15,8 @@ parameters:
 
 variables:
   - template: ../variables/ado-variables.yaml
+  - name: pipeline_terraform_state_file
+    value: coalesce(variables['terraform_state_file'], 'terraform.tfbackend')
 
 stages:
 - stage: checks
@@ -30,6 +32,15 @@ stages:
             - azure_service_connection
             - azure_subscription_id
             - register_vm
+  - job: state_file
+    displayName: state file
+    steps:
+      - checkout: none
+      - template: templates/utils/check_state_file.yaml
+        parameters:
+          terraform_state_file: ${{ variables.pipeline_terraform_state_file }}
+          terraform_working_dir: "$(Build.SourcesDirectory)/variables"
+          fail_on_existance: true
   - ${{ if eq(parameters.skip_checks_ado, false) }}:
     - job: ado
       displayName: azure devops
@@ -123,8 +134,7 @@ stages:
             - template: templates/utils/create_state_file.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
-                ${{ if ne(variables.terraform_state_file, '') }}:
-                  state_file: ${{ variables.terraform_state_file }}
+                state_file: ${{ variables.pipeline_terraform_state_file }}
             - template: templates/utils/backend_enable.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
@@ -139,7 +149,7 @@ stages:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
                 migrate_backend: true
                 backend_config: 
-                  "${{ format('{0}/variables/{1}', variables['Build.SourcesDirectory'], coalesce(variables['terraform_state_file'], 'terraform.tfbackend')) }}"
+                  '$(Build.SourcesDirectory)/variables/${{ variables.pipeline_terraform_state_file }}'
             - template: templates/utils/git_commit.yaml
               parameters:
                 commit_message: "Added Backend Config"
