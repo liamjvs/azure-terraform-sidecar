@@ -1,5 +1,5 @@
 pool:
-  vmImage: ubuntu-latest
+  vmImage: ${{ coalesce(variables.vmImage, 'ubuntu-latest') }}
 
 trigger: none
 
@@ -36,12 +36,21 @@ stages:
   displayName: Validate
   jobs:
   - ${{ if eq(parameters.skip_checks, false) }}:
+    - job: check_variables
+      displayName: Check Required Variables
+      steps:
+        - template: templates/utils/precheck.yaml
+          parameters:
+            variables_to_check: |
+              azure_service_connection
+              azure_subscription_id
+              register_vm
     - job: check_ado
       displayName: Check ADO
       steps:
         - template: templates/ado/check_ado.yaml
           parameters:
-            service_connection: ${{ coalesce(variables.ado_service_connection, parameters.service_connection) }}
+            service_connection: ${{ coalesce(variables.ado_service_connection, variables.azure_service_connection) }}
             skip: ${{ parameters.skip_checks }}
             ado_org: $(System.TeamFoundationCollectionUri)
             ado_project: $(System.TeamProject)
@@ -57,12 +66,12 @@ stages:
           working_directory: "$(Build.SourcesDirectory)/terraform"
       - template: templates/az/login.yaml
         parameters:
-          service_connection: ${{ parameters.service_connection }}
+          service_connection: ${{ variables.azure_service_connection }}
           managed_identity: false
           azure_subscription_id: ${{ variables.azure_subscription_id }}
       - template: templates/tf/init.yaml
         parameters:
-          azure_subscription_id: "3f96fd38-eec2-48f5-8d76-c9b6c17c8c95"
+          azure_subscription_id: ${{ variables.azure_subscription_id }}
           working_directory: "$(Build.SourcesDirectory)/terraform"
       - template: templates/tf/plan.yaml
         parameters:
@@ -99,7 +108,7 @@ stages:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
             - template: templates/az/login.yaml
               parameters:
-                service_connection: ${{ parameters.service_connection }}
+                service_connection: ${{ variables.azure_service_connection }}
                 managed_identity: false
                 azure_subscription_id: ${{ variables.azure_subscription_id }}
             - template: templates/tf/init.yaml
@@ -130,14 +139,16 @@ stages:
                 migrate_backend: true
                 backend_config: 
                   "$(Build.SourcesDirectory)/variables/terraform.tfbackend"
-            - template: templates/ado/register_agent.yaml
-              parameters:
-                service_connection: ${{ parameters.service_connection }}
-                ado_service_connection: ${{ variables.ado_service_connection }}
-                ado_agent_pool_vmss_id: $(TF_OUTPUT_VIRTUAL_MACHINE_SCALESET_ID)
-                ado_service_connection_name: "sc_$(Build.BuildId)"
-                ado_agent_pool_name: "agent_pool_$(Build.BuildId)"
-                subscription_name: "MCAPS-Test"
-                ado_org: $(System.TeamFoundationCollectionUri)
-                ado_project: $(System.TeamProject)
+            
+            - ${{ if eq(variables.register_vm, 'true') }}:
+              - template: templates/ado/register_agent.yaml
+                parameters:
+                  service_connection: ${{ variables.azure_service_connection }}
+                  ado_service_connection: ${{ variables.ado_service_connection }}
+                  ado_agent_pool_vmss_id: $(TF_OUTPUT_VIRTUAL_MACHINE_SCALESET_ID)
+                  ado_service_connection_name: ${{ coalesce(variables.ado_agent_pool_name, format('sc_{0}',$(Build.BuildId)) }}
+                  ado_agent_pool_name: ${{ coalesce(variables.ado_agent_pool_name, format('agent_pool_{0}',$(Build.BuildId)) }}
+                  subscription_name: ${{ variables.subscription_name }}
+                  ado_org: $(System.TeamFoundationCollectionUri)
+                  ado_project: $(System.TeamProject)
             - template: templates/az/logout.yaml

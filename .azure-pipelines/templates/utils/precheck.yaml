@@ -1,0 +1,18 @@
+parameters:
+  - name: variables_to_check
+    type: string
+    displayName: Variables To Check
+
+steps:
+  - ${{ foreach variable in parameters.variables_to_check }}:
+    - task: PowerShell@2
+      displayName: Check '${{ variable }}'
+      inputs:
+        targetType: 'inline'
+        script: |
+          Write-Verbose "Checking ${{ variable }}" -Verbose
+          if ($env:${{ variable }} -eq '') {
+            Write-Error "Variable ${{ variable }} is not set"
+            exit 1
+          }
+          Write-Verbose "Variable ${{ variable }} is set" -Verbose

@@ -1,0 +1,53 @@
+parameters:
+  - name: commit_message
+    type: string
+  - name: branch
+    type: string
+    default: $(format('feature/{0}', Build.BuildId)
+  - name: working_directory
+    type: string
+    default: '$(Build.SourcesDirectory)'
+  - name: target_branch
+    type: string
+    default: 'main'
+
+steps:
+  - task: PowerShell@2
+    displayName: 'Commit Changes'
+    inputs:
+      targetType: 'inline'
+      script: |
+        Write-Verbose "git config --global user.email '$(Build.RequestedForEmail)'" -Verbose
+        git config --global user.email "$(Build.RequestedForEmail)"
+        Write-Verbose "git config --global user.name '$(Build.RequestedFor)'" -Verbose
+        git config --global user.name "$(Build.RequestedFor)"
+
+        Write-Verbose "git checkout -b ${{ parameters.branch }}" -Verbose
+        git checkout -b ${{ parameters.branch }}
+
+        Write-Verbose "git add ." -Verbose
+        git add .
+
+        Write-Verbose "git commit -m '$(parameters.commit_message)'" -Verbose
+        git commit -m '$(parameters.commit_message)'
+
+        Write-Verbose "git push origin ${{ parameters.branch }}" -Verbose
+        git push origin ${{ parameters.branch }}
+
+        Write-Verbose "az repos pr create --description '$(parameters.commit_message)' --title '$(parameters.commit_message)' --auto-complete --repository $(Build.Repository.Name) --source-branch ${{ parameters.branch }} --target-branch ${{ parameters.target_branch }}" -Verbose
+        az repos pr create --description '$(parameters.commit_message)' \
+                           --title '$(parameters.commit_message)' \
+                           --auto-complete \
+                           --repository $(Build.Repository.Name) \
+                           --source-branch ${{ parameters.branch }} \
+                           --target-branch ${{ parameters.target_branch }} \
+                           --only-show-errors
+
+        if($LASTEXITCODE -ne 0) {
+          Write-Error "Failed to create PR"
+          exit 1
+        } else {
+          Write-Verbose "PR Created Successfully" -Verbose
+        }
+    env:
+      AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
