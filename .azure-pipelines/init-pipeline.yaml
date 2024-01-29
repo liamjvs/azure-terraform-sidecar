@@ -27,9 +27,9 @@ stages:
         - template: templates/utils/precheck.yaml
           parameters:
             variables_to_check:
-              azure_service_connection
-              azure_subscription_id
-              register_vm
+              - azure_service_connection
+              - azure_subscription_id
+              - register_vm
   - ${{ if eq(parameters.skip_checks_ado, false) }}:
     - job: check_ado
       displayName: Check ADO
