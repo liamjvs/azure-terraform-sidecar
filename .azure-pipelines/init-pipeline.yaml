@@ -1,5 +1,5 @@
 pool:
-  vmImage: ${{ coalesce(variables.vmImage, 'ubuntu-latest') }}
+  vmImage: ubuntu-latest
 
 trigger: none
 
