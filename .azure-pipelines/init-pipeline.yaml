@@ -26,7 +26,7 @@ stages:
   jobs:
   - ${{ if eq(parameters.skip_checks_variables, false) }}:
     - job: check_variables
-      displayName: Check Required Variables
+      displayName: Required Variables
       steps:
         - checkout: none
         - template: templates/utils/check_variables.yaml
@@ -37,9 +37,8 @@ stages:
               - register_vm
   - ${{ if eq(parameters.skip_checks_ado, false) }}:
     - job: check_ado
-      displayName: Check ADO
+      displayName: Azure DevOps
       steps:
-        - checkout: none
         - template: templates/ado/check_ado.yaml
           parameters:
             service_connection: ${{ coalesce(variables.ado_service_connection, variables.azure_service_connection) }}
@@ -47,7 +46,7 @@ stages:
             ado_project: $(System.TeamProject)
   - ${{ if eq(parameters.skip_checks_azure, false) }}:
     - job: check_azure
-      displayName: Check Azure
+      displayName: Azure
       steps:
         - checkout: none
         - template: templates/utils/check_azure.yaml
