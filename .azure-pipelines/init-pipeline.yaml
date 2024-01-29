@@ -123,7 +123,7 @@ stages:
             - template: templates/utils/create_state_file.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
-                ${{ if ne(variables.terraform_state_file, "") }}:
+                ${{ if ne(variables.terraform_state_file, '') }}:
                   state_file: ${{ variables.terraform_state_file }}
             - template: templates/utils/backend_enable.yaml
               parameters:
@@ -143,7 +143,7 @@ stages:
             - template: templates/utils/git_commit.yaml
               parameters:
                 commit_message: "Added Backend Config"
-            - ${{ if eq(variables.register_vm, "true") }}:
+            - ${{ if eq(variables.register_vm, 'true') }}:
               - template: templates/ado/register_agent.yaml
                 parameters:
                   service_connection: ${{ variables.azure_service_connection }}
