@@ -16,7 +16,7 @@ steps:
 - task: PowerShell@2
   displayName: tf state file existance
   inputs:
-    targetType: 'inline'
+    targetType: 'filePath'
     filePath: '$(Build.SourcesDirectory)/scripts/utils/check_state_file.ps1'
     arguments: >
       -terraform_state_file $(parameters.terraform_state_file)
