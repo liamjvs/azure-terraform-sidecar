@@ -4,29 +4,14 @@ pool:
 trigger: none
 
 parameters:
-  - name: service_connection
-    type: string
-    displayName: Service Connection To Use
-  # - name: ado_service_connection
-  #   type: string
-  #   displayName: (Optional) ADO Service Connection To Use
-  #   default: ''
-  # - name: ado_agent_pool_vmss_id
-  #   type: string
-  #   displayName: Azure VMSS ID
-  # - name: ado_service_connection_name
-  #   type: string
-  #   displayName: New ADO Service Connection Name
-  # - name: ado_agent_pool_name
-  #   type: string
-  #   displayName: New ADO Agent Pool Name
-  # - name: subscription_name
-  #   type: string
-  #   displayName: Subscription Name (for new ADO Service Connection)
-  - name: skip_checks
+  - name: skip_checks_ado
     type: boolean
     default: false
     displayName: Skip ADO Checks?
+  - name: skip_checks_variables
+    type: boolean
+    default: false
+    displayName: Skip Variable Checks
 
 variables:
   - template: ../variables/ado-variables.yaml
@@ -35,7 +20,7 @@ stages:
 - stage: validation
   displayName: Validate
   jobs:
-  - ${{ if eq(parameters.skip_checks, false) }}:
+  - ${{ if eq(parameters.skip_checks_variables, false) }}:
     - job: check_variables
       displayName: Check Required Variables
       steps:
@@ -45,6 +30,7 @@ stages:
               azure_service_connection
               azure_subscription_id
               register_vm
+  - ${{ if eq(parameters.skip_checks_ado, false) }}:
     - job: check_ado
       displayName: Check ADO
       steps:
