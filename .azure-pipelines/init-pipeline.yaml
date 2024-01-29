@@ -35,7 +35,6 @@ stages:
   - job: state_file
     displayName: state file
     steps:
-      - checkout: none
       - template: templates/utils/check_state_file.yaml
         parameters:
           terraform_state_file: ${{ variables.pipeline_terraform_state_file }}
