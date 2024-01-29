@@ -16,7 +16,7 @@ parameters:
 variables:
   - template: ../variables/ado-variables.yaml
   - name: pipeline_terraform_state_file
-    value: coalesce(variables['terraform_state_file'], 'terraform.tfbackend')
+    value: $(coalesce(variables['terraform_state_file'], 'terraform.tfbackend'))
 
 stages:
 - stage: checks
