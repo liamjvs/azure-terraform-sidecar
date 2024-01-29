@@ -56,7 +56,8 @@ stages:
 - stage: plan
   displayName: Plan
   condition: succeeded()
-  dependsOn: checks
+  ${{ if and(eq(parameters.skip_checks_variables, false), eq(parameters.skip_checks_ado, false), eq(parameters.skip_checks_azure, false)) }}:
+    dependsOn: checks
   jobs:
   - job: tf_plan
     displayName: terraform plan
