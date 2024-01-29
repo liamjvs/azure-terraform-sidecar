@@ -11,7 +11,7 @@ parameters:
   - name: skip_checks_ado
     type: boolean
     default: false
-    displayName: Skip ADO Checks?
+    displayName: Skip ADO Checks
   - name: skip_checks_azure
     type: boolean
     default: false
@@ -25,8 +25,8 @@ stages:
   displayName: Check
   jobs:
   - ${{ if eq(parameters.skip_checks_variables, false) }}:
-    - job: check_variables
-      displayName: Required Variables
+    - job: variables
+      displayName: variables
       steps:
         - checkout: none
         - template: templates/utils/check_variables.yaml
@@ -36,8 +36,8 @@ stages:
               - azure_subscription_id
               - register_vm
   - ${{ if eq(parameters.skip_checks_ado, false) }}:
-    - job: check_ado
-      displayName: Azure DevOps
+    - job: ado
+      displayName: azure devops
       steps:
         - template: templates/ado/check_ado.yaml
           parameters:
@@ -45,8 +45,8 @@ stages:
             ado_org: $(System.TeamFoundationCollectionUri)
             ado_project: $(System.TeamProject)
   - ${{ if eq(parameters.skip_checks_azure, false) }}:
-    - job: check_azure
-      displayName: Azure
+    - job: azure
+      displayName: azure
       steps:
         - checkout: none
         - template: templates/utils/check_azure.yaml
@@ -54,6 +54,7 @@ stages:
             service_connection: ${{ variables.azure_service_connection }}
             azure_subscription_id: ${{ variables.azure_subscription_id }}
 - stage: plan
+  displayName: Plan
   condition: succeeded()
   dependsOn: checks
   jobs:
@@ -127,6 +128,8 @@ stages:
             - template: templates/utils/create_state_file.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
+                ${{ if ne(variables.terraform_state_file, '') }}:
+                  state_file: ${{ variables.terraform_state_file }}
             - template: templates/utils/backend_enable.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
@@ -142,14 +145,17 @@ stages:
                 migrate_backend: true
                 backend_config: 
                   "$(Build.SourcesDirectory)/variables/terraform.tfbackend"
+            - template: templates/utils/git_commit.yaml
+              parameters:
+                commit_message: "Added Backend Config"
             - ${{ if eq(variables.register_vm, 'true') }}:
               - template: templates/ado/register_agent.yaml
                 parameters:
                   service_connection: ${{ variables.azure_service_connection }}
                   ado_service_connection: ${{ variables.ado_service_connection }}
                   ado_agent_pool_vmss_id: $(TF_OUTPUT_VIRTUAL_MACHINE_SCALESET_ID)
-                  ado_service_connection_name: ${{ coalesce(variables.ado_agent_pool_name, format('sc_{0}',variables.Build.BuildId)) }}
-                  ado_agent_pool_name: ${{ coalesce(variables.ado_agent_pool_name, format('agent_pool_{0}',variables.Build.BuildId)) }}
+                  ado_service_connection_name: ${{ coalesce(variables.ado_agent_pool_name, format('sc_{0}',variables.$(Build.BuildId))) }}
+                  ado_agent_pool_name: ${{ coalesce(variables.ado_agent_pool_name, format('agent_pool_{0}',variables.$(Build.BuildId))) }}
                   subscription_name: ${{ variables.subscription_name }}
                   ado_org: $(System.TeamFoundationCollectionUri)
                   ado_project: $(System.TeamProject)

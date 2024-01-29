@@ -25,3 +25,5 @@ variables:
 ## Azure DevOps Agent Pool Name
 - name: subscription_name
   value: 'MCAPS-Test'
+- name: terraform_state_file
+  value: 'tf.tfbackend'
