@@ -4,7 +4,7 @@ parameters:
     displayName: Variables To Check
 
 steps:
-  - ${{ foreach variable in parameters.variables_to_check }}:
+  - ${{ each variable in parameters.variables_to_check }}:
     - task: PowerShell@2
       displayName: Check '${{ variable }}'
       inputs:
