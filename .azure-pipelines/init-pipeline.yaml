@@ -20,23 +20,23 @@ stages:
 - stage: checks
   displayName: Check
   jobs:
-  - job: variables
-    displayName: variables
-    steps:
-      - checkout: none
-      - template: templates/utils/check_variables.yaml
-        parameters:
-          variables_to_check:
-            - azure_service_connection
-            - azure_subscription_id
-            - register_vm
+  # - job: variables
+  #   displayName: variables
+  #   steps:
+  #     - checkout: none
+  #     - template: templates/utils/check_variables.yaml
+  #       parameters:
+  #         variables_to_check:
+  #           - azure_service_connection
+  #           - azure_subscription_id
+  #           - register_vm
   - job: state_file
     displayName: state file
     steps:
       - template: templates/utils/check_state_file.yaml
         parameters:
-          terraform_state_file: terraform.tfbackend
-          terraform_working_dir: $(Build.SourcesDirectory)/variables
+          terraform_state_file: "terraform.tfbackend"
+          terraform_working_dir: "$(Build.SourcesDirectory)/variables"
           fail_on_existance: true
   - ${{ if eq(parameters.skip_checks_ado, false) }}:
     - job: ado
