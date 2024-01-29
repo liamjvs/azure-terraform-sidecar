@@ -35,7 +35,7 @@ stages:
     steps:
       - template: templates/utils/check_state_file.yaml
         parameters:
-          terraform_state_file: $(coalesce(variables['terraform_state_file'], 'terraform.tfbackend'))
+          terraform_state_file: terraform.tfbackend
           terraform_working_dir: $(Build.SourcesDirectory)/variables
           fail_on_existance: true
   - ${{ if eq(parameters.skip_checks_ado, false) }}:
