@@ -37,7 +37,6 @@ stages:
         - template: templates/ado/check_ado.yaml
           parameters:
             service_connection: ${{ coalesce(variables.ado_service_connection, variables.azure_service_connection) }}
-            skip: ${{ parameters.skip_checks }}
             ado_org: $(System.TeamFoundationCollectionUri)
             ado_project: $(System.TeamProject)
   - job: tf_plan
