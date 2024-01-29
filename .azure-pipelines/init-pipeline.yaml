@@ -4,10 +4,6 @@ pool:
 trigger: none
 
 parameters:
-  - name: skip_checks_variables
-    type: boolean
-    default: false
-    displayName: Skip Variable Checks
   - name: skip_checks_ado
     type: boolean
     default: false
@@ -24,7 +20,6 @@ stages:
 - stage: checks
   displayName: Check
   jobs:
-  - ${{ if eq(parameters.skip_checks_variables, false) }}:
     - job: variables
       displayName: variables
       steps:
@@ -56,8 +51,7 @@ stages:
 - stage: plan
   displayName: Plan
   condition: succeeded()
-  ${{ if or(eq(parameters.skip_checks_variables, false), eq(parameters.skip_checks_ado, false), eq(parameters.skip_checks_azure, false)) }}:
-    dependsOn: checks
+  dependsOn: checks
   jobs:
   - job: tf_plan
     displayName: terraform plan
@@ -145,7 +139,7 @@ stages:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
                 migrate_backend: true
                 backend_config: 
-                  "$(Build.SourcesDirectory)/variables/terraform.tfbackend"
+                  $(format("{0}/variables/{1}", variables['Build.SourcesDirectory'], coalesce(variables['terraform_state_file'], 'terraform.tfbackend')))
             - template: templates/utils/git_commit.yaml
               parameters:
                 commit_message: "Added Backend Config"
