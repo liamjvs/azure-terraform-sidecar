@@ -83,7 +83,7 @@ stages:
       - template: templates/az/logout.yaml
 - stage: deployment
   displayName: Deploy
-  dependsOn: validation
+  dependsOn: plan
   condition: succeeded()
   jobs:
   - deployment: tf_apply
