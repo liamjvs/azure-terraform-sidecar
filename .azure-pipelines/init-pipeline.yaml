@@ -28,6 +28,7 @@ stages:
     - job: check_variables
       displayName: Check Required Variables
       steps:
+        - checkout: none
         - template: templates/utils/check_variables.yaml
           parameters:
             variables_to_check:
@@ -38,6 +39,7 @@ stages:
     - job: check_ado
       displayName: Check ADO
       steps:
+        - checkout: none
         - template: templates/ado/check_ado.yaml
           parameters:
             service_connection: ${{ coalesce(variables.ado_service_connection, variables.azure_service_connection) }}
@@ -47,6 +49,7 @@ stages:
     - job: check_azure
       displayName: Check Azure
       steps:
+        - checkout: none
         - template: templates/utils/check_azure.yaml
           parameters:
             service_connection: ${{ variables.azure_service_connection }}
