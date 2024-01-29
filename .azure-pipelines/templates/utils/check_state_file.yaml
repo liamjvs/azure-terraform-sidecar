@@ -20,5 +20,5 @@ steps:
     filePath: '$(Build.SourcesDirectory)/scripts/utils/check_state_file.ps1'
     arguments: >
       -terraform_state_file $(parameters.terraform_state_file)
-      -terraform_working_dir '$(parameters.terraform_working_dir)'
+      -terraform_working_dir "$(parameters.terraform_working_dir)"
       -fail_on_existance $${{ parameters.fail_on_existance }}

@@ -38,7 +38,7 @@ stages:
       - template: templates/utils/check_state_file.yaml
         parameters:
           terraform_state_file: ${{ variables.pipeline_terraform_state_file }}
-          terraform_working_dir: "$(Build.SourcesDirectory)/variables"
+          terraform_working_dir: $(Build.SourcesDirectory)/variables
           fail_on_existance: true
   - ${{ if eq(parameters.skip_checks_ado, false) }}:
     - job: ado
