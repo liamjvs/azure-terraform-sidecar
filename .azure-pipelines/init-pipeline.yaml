@@ -4,14 +4,18 @@ pool:
 trigger: none
 
 parameters:
-  - name: skip_checks_ado
-    type: boolean
-    default: false
-    displayName: Skip ADO Checks?
   - name: skip_checks_variables
     type: boolean
     default: false
     displayName: Skip Variable Checks
+  - name: skip_checks_ado
+    type: boolean
+    default: false
+    displayName: Skip ADO Checks?
+  - name: skip_checks_azure
+    type: boolean
+    default: false
+    displayName: Skip Azure Checks
 
 variables:
   - template: ../variables/ado-variables.yaml
@@ -24,7 +28,7 @@ stages:
     - job: check_variables
       displayName: Check Required Variables
       steps:
-        - template: templates/utils/precheck.yaml
+        - template: templates/utils/check_variables.yaml
           parameters:
             variables_to_check:
               - azure_service_connection
@@ -39,6 +43,14 @@ stages:
             service_connection: ${{ coalesce(variables.ado_service_connection, variables.azure_service_connection) }}
             ado_org: $(System.TeamFoundationCollectionUri)
             ado_project: $(System.TeamProject)
+  - ${{ if eq(parameters.skip_checks_azure, false) }}:
+    - job: check_azure
+      displayName: Check Azure
+      steps:
+        - template: templates/ado/check_azure.yaml
+          parameters:
+            service_connection: ${{ variables.azure_service_connection }}
+            azure_subscription_id: ${{ variables.azure_subscription_id }}
   - job: tf_plan
     displayName: terraform plan
     steps:
@@ -124,7 +136,6 @@ stages:
                 migrate_backend: true
                 backend_config: 
                   "$(Build.SourcesDirectory)/variables/terraform.tfbackend"
-            
             - ${{ if eq(variables.register_vm, 'true') }}:
               - template: templates/ado/register_agent.yaml
                 parameters:
