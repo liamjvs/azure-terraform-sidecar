@@ -3,7 +3,7 @@ parameters:
     type: string
   - name: branch
     type: string
-    default: $(format('feature/{0}', Build.BuildId)
+    default: $(format('feature/{0}', variables['Build.BuildId'])
   - name: working_directory
     type: string
     default: '$(Build.SourcesDirectory)'

@@ -154,9 +154,10 @@ if (!($elastic_pools_object.value | Where-Object { $_.azureId -eq $ado_agent_poo
     timeToLiveMinutes    = 15
   }
   $payload_json = $payload | ConvertTo-Json -Compress -Depth 10
-  Write-Verbose ("Payload: {0}" -f ($payload_json)) -Verbose
+  Write-Debug ("Payload: {0}" -f ($payload_json))
   Out-File -FilePath payload.json -Encoding ascii -Force -InputObject $payload_json
-  az rest --uri $agent_pool_uri --method post --resource '499b84ac-1321-427f-aa17-267ca6975798' --output json --body '@payload.json'
+  $out = az rest --uri $agent_pool_uri --method post --resource '499b84ac-1321-427f-aa17-267ca6975798' --output json --body '@payload.json'
+  Write-Debug $out
   Write-Verbose "Successfully Register VMSS" -Verbose
 } else {
   Write-Verbose "Failed to Register VMSS - VMSS is already registered" -Verbose
