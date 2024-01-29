@@ -1,6 +1,6 @@
 parameters:
   - name: variables_to_check
-    type: string
+    type: object
     displayName: Variables To Check
 
 steps:
