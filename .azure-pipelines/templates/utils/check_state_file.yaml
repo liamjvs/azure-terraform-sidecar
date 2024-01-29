@@ -20,4 +20,4 @@ steps:
     filePath: '$(Build.SourcesDirectory)/scripts/utils/check_state_file.ps1'
     workingDirectory: ${{ parameters.terraform_working_dir }}
     arguments: >
-      -terraform_state_file "$(parameters.terraform_state_file)"
+      -terraform_state_file "${{ parameters.terraform_state_file }}"
