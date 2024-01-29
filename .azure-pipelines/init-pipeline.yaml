@@ -20,16 +20,16 @@ stages:
 - stage: checks
   displayName: Check
   jobs:
-    - job: variables
-      displayName: variables
-      steps:
-        - checkout: none
-        - template: templates/utils/check_variables.yaml
-          parameters:
-            variables_to_check:
-              - azure_service_connection
-              - azure_subscription_id
-              - register_vm
+  - job: variables
+    displayName: variables
+    steps:
+      - checkout: none
+      - template: templates/utils/check_variables.yaml
+        parameters:
+          variables_to_check:
+            - azure_service_connection
+            - azure_subscription_id
+            - register_vm
   - ${{ if eq(parameters.skip_checks_ado, false) }}:
     - job: ado
       displayName: azure devops
@@ -139,7 +139,7 @@ stages:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
                 migrate_backend: true
                 backend_config: 
-                  ${{ format("{0}/variables/{1}", variables['Build.SourcesDirectory'], coalesce(variables['terraform_state_file'], 'terraform.tfbackend')) }}
+                  $(format("{0}/variables/{1}", variables['Build.SourcesDirectory'], coalesce(variables['terraform_state_file'], 'terraform.tfbackend')))
             - template: templates/utils/git_commit.yaml
               parameters:
                 commit_message: "Added Backend Config"
