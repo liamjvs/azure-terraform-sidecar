@@ -9,6 +9,7 @@ param(
 )
 
 try {
+    Import-Module ../scripts/ado/funcs/agent_pool.ps1 -Force
     Import-Module ../scripts/ado/funcs/service_connection.ps1 -Force
     Import-Module ../scripts/ado/funcs/project.ps1 -Force
 }
@@ -77,9 +78,11 @@ if(!$subscription_id) {
 
 # prompt the user if the az name for the subscription name is ok
 $subscription_name = az account show --query "name" -o tsv
-$answer = Read-Host "Is the subscription name '$subscription_name' ok? (y/n)."
-if($answer -ne "y") {
-    $subscription_name = Read-Host "Enter the Azure Subscription Name"
+$answer = Read-Host "Enter the Azure Subscription Name (blank: $subscription_name)"
+if(!$answer) {
+    $subscription_name = $subscription_name
+} else {
+    $subscription_name = $answer
 }
 
 # prompt the user for their service principal id
@@ -146,6 +149,21 @@ if(!$service_connection) {
 } else {
     Write-Host "Service Connection created successfully"
 }
+
+# Get Object ID of the Service Principal
+Write-Host "Getting ID of the Service Principal"
+$service_principal_object_id = az ad sp show --id $($service_principal).appId --query "id" -o tsv
+
+# Add Service Principal to the ADO environment
+Write-Host "Adding Service Principal to the ADO environment"
+$service_principal_entitlement = New-ServicePrincipalEntitlement -ado_org $ado_organization -service_principal_object_id $service_principal_object_id -project_id $ado_project_id
+
+Write-Host "Assigning Creator Role for Service Connections to Service Principal"
+$service_connection = Set-ServiceConnectionSecurity -ado_org $ado_organization -user_id $($service_principal_entitlement).id -project_id $ado_project_id -role "Creator"
+
+Write-Host "Assigning Creator Role for Agent Pools to Service Principal"
+$agent_pool = Set-AgentPoolSecurity -ado_org $ado_organization -project_id $ado_project_id -user_id $($service_principal_entitlement).id -role "Creator"
+
 
 # Write new line
 Write-Host ""

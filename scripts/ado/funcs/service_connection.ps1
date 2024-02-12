@@ -69,3 +69,27 @@ function Get-ServiceConnections {
 
     return $service_endpoints_search
 }
+
+function Set-ServiceConnectionSecurity {
+    param (
+        [Parameter(Mandatory=$true)][string]$ado_org,
+        [Parameter(Mandatory=$true)][string]$user_id,
+        [Parameter(Mandatory=$true)][string]$project_id,
+        [Parameter(Mandatory=$true)][string]$role
+    )
+
+    $uri = "$($ado_org)/_apis/securityroles/scopes/distributedtask.project.serviceendpointrole/roleassignments/resources/$($project_id)?api-version=7.1-preview.1"
+
+    $payload = @(
+        @{
+            "roleName" = $role
+            "userId" = $user_id
+        }
+    ) | ConvertTo-Json -Compress -Depth 10
+
+    $payload | Out-File -FilePath "payload.json" -Encoding ascii -Force
+    $out = az rest --uri $uri --method put --resource "499b84ac-1321-427f-aa17-267ca6975798" --output json --body "@payload.json"
+    Remove-Item -Path "payload.json" -Force
+    $out = $out | ConvertFrom-Json -Depth 10
+    return $out
+}
