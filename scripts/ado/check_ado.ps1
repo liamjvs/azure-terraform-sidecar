@@ -39,7 +39,7 @@ $member_entitlement_object = $output | Select-Object -ExpandProperty items | Sel
 $continuation_token = $output.continuationToken
 while($continuation_token){
     $query_with_token = $query + @{continuationToken = $continuation_token} | ConvertTo-Json -Compress | Out-File "query.json" -Force
-    $output = az rest --uri $member_entitlements_uri --method get --resource $ado_graph_app --output json --uri-parameters "@query.json"
+    $output = az rest --uri $query_with_token --method get --resource $ado_graph_app --output json --uri-parameters "@query.json"
     $output = $output | ConvertFrom-Json -Depth 10
     $member_entitlement_object += $output.items | Select-Object -Property $select_query
     $continuation_token = $output.continuationToken
