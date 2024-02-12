@@ -1,0 +1,29 @@
+variables:
+# Required Variables
+## Azure Subscription ID to Deploy to
+- name: azure_subscription_id
+  value: ''
+## Azure Service Connection Name
+- name: azure_service_connection
+  value: ''
+## Register Virutal Machine with ADO
+- name: register_vm
+  value: 'true' # must be a string, sorry
+# Azure DevOps Required Variables
+## Azure Register VM Name
+- name: ado_vm_pool
+  value: ''
+## Azure DevOps Service Connection
+- name: ado_service_connection
+  value: ''
+## Azure DevOps Agent Service Connection
+- name: ado_agent_service_connection
+  value: ''
+## Azure DevOps Agent Pool Name
+- name: ado_agent_pool_name
+  value: ''
+## Azure DevOps Agent Pool Name
+- name: subscription_name
+  value: ''
+- name: terraform_state_file
+  value: 'tf.tfbackend'
