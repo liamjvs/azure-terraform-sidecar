@@ -138,7 +138,7 @@ stages:
             - template: templates/az/refresh.yaml
             - template: templates/utils/sleep.yaml
               parameters:
-                duration: 20
+                duration: 60
                 message: "Waiting for Storage Account RBAC to Propagate"
             - template: templates/tf/init.yaml
               parameters:

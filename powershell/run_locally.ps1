@@ -31,10 +31,5 @@ if(!$azure_subscription_id) {
     }
 }
 
-## Check we are in the right directory
-Write-Host "Checking if we are in the right directory"
-$tf_files = Get-ChildItem -Path . -Filter "main.tf" -Recurse
-
-
 Write-Host "Running Terraform init"
 ./scripts/tf/init.ps1 -azure_subscription_id $azure_subscription_id

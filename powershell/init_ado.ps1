@@ -67,9 +67,14 @@ if(!$ado_projectObject) {
 }
 $ado_project_id = $ado_projectObject.id
 
+
+# get the current azure subscription name and id into json
+$azure_subscription = az account show --output json
+$azure_subscription = $azure_subscription | ConvertFrom-Json -Depth 2
+
 # prompt the user for their subscription id
 if(!$azure_subscription_id) {
-    $azure_subscription_id = Read-Host "Enter the Azure Subscription ID"
+    $azure_subscription_id = (Read-Host ("Enter the Azure Subscription ID (blank: {0})" -f $($azure_subscription).id))
     #subscription should be a valid azure subscription id
     while($azure_subscription_id -notmatch "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$") {
         Write-Host "Subscription id must be valid"
@@ -77,9 +82,7 @@ if(!$azure_subscription_id) {
     }
 }
 
-# prompt the user if the az name for the subscription name is ok
-$subscription_name = az account show --query "name" -o tsv
-$answer = Read-Host "Enter the Azure Subscription Name (blank: $subscription_name)"
+$answer = (Read-Host ("Enter the Azure Subscription Name (blank: {0})" -f $($azure_subscription).name))
 if(!$answer) {
     $subscription_name = $subscription_name
 } else {
