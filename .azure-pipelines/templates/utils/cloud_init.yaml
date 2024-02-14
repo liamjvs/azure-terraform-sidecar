@@ -12,7 +12,7 @@ steps:
       done
 
       # Output the cloud-init log to the console
-      tail -f /var/log/cloud-init.log &
+      tail -f /var/log/cloud-init-output.log &
 
       # Store the tail process ID
       PID_TAIL=$!
