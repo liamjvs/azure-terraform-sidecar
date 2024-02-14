@@ -23,7 +23,7 @@ steps:
         git config --global user.name "$(Build.RequestedFor)"
 
         $branch = "feature/$(Build.BuildId)"
-        Write-Verbose ()"git checkout -b {0}" -f $branch) -Verbose
+        Write-Verbose ("git checkout -b {0}" -f $branch) -Verbose
         git checkout -b $branch
 
         Write-Verbose "git add ." -Verbose
