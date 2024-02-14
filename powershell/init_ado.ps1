@@ -133,6 +133,9 @@ if($confirm -ne "y") {
     exit
 }
 
+# Write new line
+Write-Host ""
+
 # Create Service Principal and Service Connection
 Write-Host "Creating Service Principal"
 $service_principal = az ad sp create-for-rbac --name $service_connection_name --role Owner --scopes "/subscriptions/$subscription_id" --only-show-errors --output json

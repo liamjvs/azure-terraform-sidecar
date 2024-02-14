@@ -21,6 +21,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
 
   upgrade_mode           = var.upgrade_mode
   single_placement_group = false
+  do_not_run_extensions_on_overprovisioned_machines = var.do_not_run_extensions_on_overprovisioned_vm
 
   network_interface {
     name = local.nic_name

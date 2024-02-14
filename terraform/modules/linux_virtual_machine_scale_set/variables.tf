@@ -127,3 +127,9 @@ variable "automatic_os_upgrade_policy" {
     disable_automatic_rollback  = false
   }
 }
+
+variable "do_not_run_extensions_on_overprovisioned_vm" {
+  description = "Specifies whether to run extensions on overprovisioned virtual machines."
+  type        = bool
+  default     = false
+}

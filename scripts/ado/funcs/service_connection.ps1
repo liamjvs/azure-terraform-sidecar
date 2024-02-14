@@ -80,7 +80,7 @@ function Set-ServiceConnectionSecurity {
 
     $uri = "$($ado_org)/_apis/securityroles/scopes/distributedtask.project.serviceendpointrole/roleassignments/resources/$($project_id)?api-version=7.1-preview.1"
 
-    $payload = @(
+    $payload = ,@(
         @{
             "roleName" = $role
             "userId" = $user_id
@@ -88,6 +88,7 @@ function Set-ServiceConnectionSecurity {
     ) | ConvertTo-Json -Compress -Depth 10
 
     $payload | Out-File -FilePath "payload.json" -Encoding ascii -Force
+
     $out = az rest --uri $uri --method put --resource "499b84ac-1321-427f-aa17-267ca6975798" --output json --body "@payload.json"
     Remove-Item -Path "payload.json" -Force
     $out = $out | ConvertFrom-Json -Depth 10

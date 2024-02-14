@@ -21,7 +21,11 @@ terraform {
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    virtual_machine_scale_set {
+      roll_instances_when_required = tru
+    }
+  }
   skip_provider_registration = true
   storage_use_azuread        = true
 }

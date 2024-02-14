@@ -53,6 +53,8 @@ module "linux_virtual_machine_scale_set" {
     version   = "latest"
   }
 
+  do_not_run_extensions_on_overprovisioned_vm = true
+
   custom_data = data.cloudinit_config.multipart.rendered
 }
 
