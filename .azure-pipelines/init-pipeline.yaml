@@ -15,8 +15,6 @@ parameters:
 
 variables:
   - template: ../variables/ado-variables.yaml
-  - name: pipeline_terraform_state_file
-    value: $(coalesce(variables['terraform_state_file'], 'terraform.tfbackend'))
 
 stages:
 - stage: checks
@@ -133,7 +131,7 @@ stages:
             - template: templates/utils/create_state_file.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
-                state_file: ${{ variables.pipeline_terraform_state_file }}
+                state_file: $(coalesce(variables['terraform_state_file'], 'terraform.tfbackend'))
             - template: templates/utils/backend_enable.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
@@ -148,7 +146,7 @@ stages:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
                 migrate_backend: true
                 backend_config: 
-                  '$(Build.SourcesDirectory)/variables/${{ variables.pipeline_terraform_state_file }}'
+                  '$(Build.SourcesDirectory)/variables/$(coalesce(variables['terraform_state_file'], 'terraform.tfbackend'))
             - template: templates/utils/git_commit.yaml
               parameters:
                 commit_message: "Added Backend Config"
