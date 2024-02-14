@@ -9,12 +9,13 @@ param(
 )
 
 try {
-    Import-Module ../scripts/ado/funcs/agent_pool.ps1 -Force
-    Import-Module ../scripts/ado/funcs/service_connection.ps1 -Force
-    Import-Module ../scripts/ado/funcs/project.ps1 -Force
+    Import-Module scripts/ado/funcs/agent_pool.ps1 -ErrorAction Break
+    Import-Module scripts/ado/funcs/service_connection.ps1 -ErrorAction Break
+    Import-Module scripts/ado/funcs/project.ps1 -ErrorAction Break
 }
 catch {
     Write-Error "Failed to import the required modules. Please make sure the modules are present in the correct location."
+    Write-Warning "Please make sure you are the root of the repository and try again."
     exit
 }
 

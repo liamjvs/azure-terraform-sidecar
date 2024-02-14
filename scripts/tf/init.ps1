@@ -36,7 +36,7 @@ if(!$terraform_backend){
         foreach($item in $backend_object_split)
         {
             Write-Verbose ('Adding "-backend-config={0}"' -f $item) -Verbose
-            $terraform_params += ('-backend-config="{0}"' -f $item)
+            $terraform_params += ('-backend-config={0}' -f $item)
         }
     } else {
         Write-Verbose "terraform_backend_config is null" -Verbose
