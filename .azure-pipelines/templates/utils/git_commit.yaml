@@ -41,12 +41,12 @@ steps:
         git push origin ${{ parameters.branch }}
 
         Write-Verbose "az repos pr create --description '$(parameters.commit_message)' --title '$(parameters.commit_message)' --auto-complete --repository $(Build.Repository.Name) --source-branch ${{ parameters.branch }} --target-branch ${{ parameters.target_branch }}" -Verbose
-        az repos pr create --description '$(parameters.commit_message)' \
-                           --title '$(parameters.commit_message)' \
-                           --auto-complete \
-                           --repository $(Build.Repository.Name) \
-                           --source-branch ${{ parameters.branch }} \
-                           --target-branch ${{ parameters.target_branch }} \
+        az repos pr create --description '$(parameters.commit_message)' `
+                           --title '$(parameters.commit_message)' `
+                           --auto-complete `
+                           --repository $(Build.Repository.Name) `
+                           --source-branch ${{ parameters.branch }} `
+                           --target-branch ${{ parameters.target_branch }} `
                            --only-show-errors
 
         if($LASTEXITCODE -ne 0) {

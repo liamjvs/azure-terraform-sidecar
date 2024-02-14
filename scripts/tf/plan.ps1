@@ -10,7 +10,7 @@ $terraform_params = @()
 $terraform_params += "-input=false" # Don't prompt for input
 
 if($terraform_publish_plan){
-    $terraform_params += "-out=`"$terraform_plan_file`""
+    $terraform_params += "-out=$terraform_plan_file"
 }
 
 if($terraform_refresh_plan -eq $true){
