@@ -4,7 +4,7 @@ param(
     [string]$ado_organization = "https://dev.azure.com/lismithmcaps",
     [string]$ado_project = "Code",
     [string]$service_connection_name,
-    [string]$subscription_id = "3f96fd38-eec2-48f5-8d76-c9b6c17c8c95",
+    [string]$azure_subscription_id = "3f96fd38-eec2-48f5-8d76-c9b6c17c8c95",
     [string]$service_principal_id
 )
 
@@ -67,12 +67,12 @@ if(!$ado_projectObject) {
 $ado_project_id = $ado_projectObject.id
 
 # prompt the user for their subscription id
-if(!$subscription_id) {
-    $subscription_id = Read-Host "Enter the Azure Subscription ID"
+if(!$azure_subscription_id) {
+    $azure_subscription_id = Read-Host "Enter the Azure Subscription ID"
     #subscription should be a valid azure subscription id
-    while($subscription_id -notmatch "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$") {
+    while($azure_subscription_id -notmatch "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$") {
         Write-Host "Subscription id must be valid"
-        $subscription_id = Read-Host "Enter the Azure Subscription ID"
+        $azure_subscription_id = Read-Host "Enter the Azure Subscription ID"
     }
 }
 
@@ -123,7 +123,7 @@ Write-Host ""
 # Confirm with the user the values entered
 Write-Host "ADO Organization: $ado_organization"
 Write-Host "ADO Project: $ado_project"
-Write-Host "Subscription ID: $subscription_id"
+Write-Host "Subscription ID: $azure_subscription_id"
 Write-Host "Subscription Name: $subscription_name"
 Write-Host "Service Principal ID: $service_principal_id"
 Write-Host "Service Connection Name: $service_connection_name"
@@ -138,7 +138,7 @@ Write-Host ""
 
 # Create Service Principal and Service Connection
 Write-Host "Creating Service Principal"
-$service_principal = az ad sp create-for-rbac --name $service_connection_name --role Owner --scopes "/subscriptions/$subscription_id" --only-show-errors --output json
+$service_principal = az ad sp create-for-rbac --name $service_connection_name --role Owner --scopes "/subscriptions/$azure_subscription_id" --only-show-errors --output json
 $service_principal = $service_principal | ConvertFrom-Json -Depth 10
 if(!$service_principal) {
     Write-Error "Service Principal creation failed. Do you have the required permissions to create a service principal?"
@@ -146,7 +146,7 @@ if(!$service_principal) {
 
 # Create Service Connection
 Write-Host "Creating Service Connection"
-$service_connection = New-ServiceConnection -ado_org $ado_organization -ado_project $ado_project -ado_project_id $ado_project_id -subscription_id $subscription_id -subscription_name $subscription_name -service_principal_id $($service_principal).appId -service_principal_secret $($service_principal).password -tenant_id $($service_principal).tenant -ado_service_connection_name $service_connection_name
+$service_connection = New-ServiceConnection -ado_org $ado_organization -ado_project $ado_project -ado_project_id $ado_project_id -subscription_id $azure_subscription_id -subscription_name $subscription_name -service_principal_id $($service_principal).appId -service_principal_secret $($service_principal).password -tenant_id $($service_principal).tenant -ado_service_connection_name $service_connection_name
 if(!$service_connection) {
     Write-Error "Service Connection creation failed. Do you have the required permissions to create a service connection?"
 } else {
@@ -177,7 +177,7 @@ Write-Host "ADO Environment initialized successfully" -ForegroundColor Green
 # Write new line
 Write-Host ""
 Write-Host "Please create a pipeline and use the service connection '$service_connection_name' to deploy the application to ADO."
-Write-Host "The pipeline will also need the subscription id '$subscription_id' added."
+Write-Host "The pipeline will also need the subscription id '$azure_subscription_id' added."
 
 # Clean up the environment
 Write-Verbose "Cleaning up the environment"
