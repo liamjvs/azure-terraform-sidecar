@@ -1,5 +1,35 @@
 steps:
   - script: |
-      echo "Waiting for cloud-init to finish..."
-      cloud-init status --wait
+      echo "Waiting for cloud-init to start..."
+      while true; do
+          if systemctl --all --type service | grep -q "cloud-final.service"; then
+              echo "cloud-init has been loaded. \n\n"
+              break
+          else
+              echo "cloud-init has not loaded yet into systemctl. Waiting..."
+              sleep 2
+          fi
+      done
+
+      # Output the cloud-init log to the console
+      tail -f /var/log/cloud-init.log &
+
+      # Store the tail process ID
+      PID_TAIL=$!
+
+      # Wait for cloud-init to finish
+      while true; do
+          status=$(cloud-init status --wait --long)
+          if [[ $status == *"done"* ]]; then
+              # Kill the tail process
+              kill $TAIL_PID
+              break
+          else
+              # Wait for 2 seconds
+              sleep 2
+          fi
+      done
+
+      echo "\n\ncloud-init has finished."
     displayName: cloud-init
+    timeoutInMinutes: 5
