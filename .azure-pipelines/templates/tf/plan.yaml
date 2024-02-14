@@ -41,7 +41,7 @@ steps:
     - task: CopyFiles@2
       inputs:
         Contents: |
-          ${{ parameters.plan_name }}
+          "${{ parameters.plan_name }}"
           .terraform.lock.hcl
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         SourceFolder: '${{ parameters.working_directory }}'
