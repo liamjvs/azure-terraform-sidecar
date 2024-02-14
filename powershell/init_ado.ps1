@@ -75,10 +75,13 @@ $azure_subscription = $azure_subscription | ConvertFrom-Json -Depth 2
 # prompt the user for their subscription id
 if(!$azure_subscription_id) {
     $azure_subscription_id = (Read-Host ("Enter the Azure Subscription ID (blank: {0})" -f $($azure_subscription).id))
-    #subscription should be a valid azure subscription id
-    while($azure_subscription_id -notmatch "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$") {
-        Write-Host "Subscription id must be valid"
-        $azure_subscription_id = Read-Host "Enter the Azure Subscription ID"
+    if($azure_subscription_id -eq "") {
+        $azure_subscription_id = $azure_subscription.id
+    else {
+        while($azure_subscription_id -notmatch "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$") {
+            Write-Host "Subscription ID must be valid"
+            $azure_subscription_id = Read-Host "Enter the Azure Subscription ID"
+        }
     }
 }
 

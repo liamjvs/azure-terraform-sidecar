@@ -21,15 +21,23 @@ if(!$tf_version){
     Write-Host "Terraform is installed."
 }
 
+# get the current azure subscription name and id into json
+$azure_subscription = az account show --output json
+$azure_subscription = $azure_subscription | ConvertFrom-Json -Depth 2
+
 # prompt the user for their subscription id
 if(!$azure_subscription_id) {
-    $azure_subscription_id = Read-Host "Enter the Azure Subscription ID"
-    #subscription should be a valid azure subscription id
-    while($azure_subscription_id -notmatch "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$") {
-        Write-Host "Subscription id must be valid"
-        $azure_subscription_id = Read-Host "Enter the Azure Subscription ID"
+    $azure_subscription_id = (Read-Host ("Enter the Azure Subscription ID (blank: {0})" -f $($azure_subscription).id))
+    if($azure_subscription_id -eq "") {
+        $azure_subscription_id = $azure_subscription.id
+    } else {
+        while($azure_subscription_id -notmatch "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$") {
+            Write-Host "Subscription ID must be valid"
+            $azure_subscription_id = Read-Host "Enter the Azure Subscription ID"
+        }
     }
 }
 
+cd .\terraform
 Write-Host "Running Terraform init"
-./scripts/tf/init.ps1 -azure_subscription_id $azure_subscription_id
+../scripts/tf/init.ps1 -azure_subscription_id $azure_subscription_id
