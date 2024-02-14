@@ -146,7 +146,7 @@ stages:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
                 migrate_backend: true
                 backend_config: 
-                  '$(Build.SourcesDirectory)/variables/$(coalesce(variables['terraform_state_file'], 'terraform.tfbackend'))
+                  "$(Build.SourcesDirectory)/variables/$(coalesce(variables['terraform_state_file'], 'terraform.tfbackend'))"
             - template: templates/utils/git_commit.yaml
               parameters:
                 commit_message: "Added Backend Config"
