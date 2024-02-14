@@ -69,6 +69,10 @@ try {
         exit 1
     }
 
+    Write-Host "Creating Terraform State File"
+    ../scripts/utils/create_state_file.ps1 -output_folder "terraform"
+
+
 } catch {
     Write-Host "An error occurred: $_"
     exit 1
