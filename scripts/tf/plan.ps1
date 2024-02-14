@@ -26,7 +26,7 @@ if($terraform_vars){
     foreach($item in $terraform_vars_split)
     {
         Write-Verbose ('Adding "-var={0}"' -f $item) -Verbose
-        $terraform_params += ('-var="{0}"' -f $item)
+        $terraform_params += ("-var='{0}'" -f $item)
     }
 }
 
