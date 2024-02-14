@@ -1,4 +1,6 @@
 container_name = "sidecar"
-resource_group_name = "rg-uks-sidecar"
+resource_group_name = "rg-terraform-demo"
 storage_account_name = "saukssidecar84"
-use_azuread_auth = "true"
+use_azuread_auth = "True"
+virtual_machine_scaleset_id = "/subscriptions/3f96fd38-eec2-48f5-8d76-c9b6c17c8c95/resourceGroups/rg-terraform-demo/providers/Microsoft.Compute/virtualMachineScaleSets/vmss-uks-sidecar"
+key = "terraform.tfstate"

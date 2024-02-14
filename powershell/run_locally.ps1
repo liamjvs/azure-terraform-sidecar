@@ -69,8 +69,11 @@ try {
         exit 1
     }
 
+    Write-Host "Getting Terraform Outputs"
+    ../scripts/tf/output.ps1 -cicd_ado $false
+
     Write-Host "Creating Terraform State File"
-    ../scripts/utils/create_state_file.ps1 -output_folder "terraform"
+    ../scripts/utils/create_state_file.ps1 -cicd_ado $false
 
 
 } catch {
