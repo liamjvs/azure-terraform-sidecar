@@ -1,0 +1,1 @@
+{"accessControlEntries":[{"deny":0,"descriptor":"Microsoft.VisualStudio.Services.Claims.AadServicePrincipal;0dc98e1a-4ef6-492a-8abf-277eeccd1c1f\\fcb31af4-8d2f-4eed-95b5-ea8a7f20f055","allow":16384}],"merge":true,"token":"repoV2/3a3a3dc4-1a5a-451d-865a-963fdd1de014/87df9faa-a07a-4760-b176-b319f939bf3c/"}
