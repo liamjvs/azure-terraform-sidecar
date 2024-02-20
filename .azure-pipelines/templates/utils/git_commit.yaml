@@ -35,6 +35,7 @@ steps:
         Write-Verbose ("git checkout -b {0}" -f $branch) -Verbose
         git checkout -b $branch
 
+        Write-Verbose 'Files: ${{ convertToJson(parameters.files) }}' -Verbose
         $files = "${{ convertToJson(parameters.files) }}" | ConvertFrom-Json
         foreach($file in $files) {
           # remove leading, trailing whitespace and speech marks
