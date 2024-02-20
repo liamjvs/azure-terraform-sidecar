@@ -35,8 +35,11 @@ steps:
         Write-Verbose ("git checkout -b {0}" -f $branch) -Verbose
         git checkout -b $branch
 
-        Write-Verbose "git add ${{ parameters.files }}" -Verbose
-        git add ${{ parameters.files }}
+        $files = "${{ convertToJson(parameters.files) }}" | ConvertFrom-Json
+        foreach($file in $files) {
+          Write-Verbose "git add $file" -Verbose
+          git add $file
+        }
 
         Write-Verbose "git commit -m '${{ parameters.commit_message }}'" -Verbose
         git commit -m '$(parameters.commit_message)'
