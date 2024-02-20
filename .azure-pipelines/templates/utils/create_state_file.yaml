@@ -21,4 +21,5 @@ steps:
       arguments: >
         -terraform_plan_file "${{ parameters.state_file }}"
         -output_folder "${{ parameters.output_folder }}"
+        -cicd_ado $$true
     displayName: Create ${{ parameters.state_file }}

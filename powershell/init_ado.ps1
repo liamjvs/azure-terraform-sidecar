@@ -9,9 +9,9 @@ param(
 )
 
 try {
-    Import-Module scripts/ado/funcs/agent_pool.ps1 -ErrorAction Break
-    Import-Module scripts/ado/funcs/service_connection.ps1 -ErrorAction Break
-    Import-Module scripts/ado/funcs/project.ps1 -ErrorAction Break
+    Import-Module ./scripts/ado/funcs/agent_pool.ps1
+    Import-Module ./scripts/ado/funcs/service_connection.ps1
+    Import-Module ./scripts/ado/funcs/project.ps1
 }
 catch {
     Write-Error "Failed to import the required modules. Please make sure the modules are present in the correct location."
@@ -84,10 +84,11 @@ if(!$azure_subscription_id) {
         }
     }
 }
+}
 
 $answer = (Read-Host ("Enter the Azure Subscription Name (blank: {0})" -f $($azure_subscription).name))
 if(!$answer) {
-    $subscription_name = $subscription_name
+    $subscription_name = $($azure_subscription).name
 } else {
     $subscription_name = $answer
 }
