@@ -10,7 +10,12 @@ param(
 
 if($git_bearer_token -and $git_repo_uri){
     Write-Verbose "Setting Git Bearer Token" -Verbose
-    git config --global http.$($get_repo_uri).extraheader "AUTHORIZATION: bearer $($git_bearer_token)"
+    if($az_bearer_token -eq $true){
+        $bearer = az account get-access-token --resource "499b84ac-1321-427f-aa17-267ca6975798" --query accessToken -o tsv
+    } else {
+        $bearer = $git_bearer_token
+    }
+    git config --global http.$($get_repo_uri).extraheader "AUTHORIZATION: bearer $($bearer)"
 }
 
 if($azure_subscription_id -and $azure_subscription_id -ne $env:ARM_SUBSCRIPTION_ID){

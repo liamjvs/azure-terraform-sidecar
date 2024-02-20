@@ -36,9 +36,7 @@ steps:
         git checkout -b $branch
 
         Write-Verbose 'Files: ${{ convertToJson(parameters.files) }}' -Verbose
-        $files = ,@"
-        ${{ convertToJson(parameters.files) }}
-        @" -replace '\r\n', '' -replace '\n', '' -replace '\r', '' -replace '\t', '' -replace ' ', '' | ConvertFrom-Json
+        $files = ,'${{ convertToJson(parameters.files) }}' | ConvertFrom-Json
         foreach($file in $files) {
           # remove leading, trailing whitespace and speech marks
           $file = $file -replace '\"', ''
