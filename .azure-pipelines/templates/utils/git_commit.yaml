@@ -17,7 +17,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        if(${{ parameters.branch }} -eq '') {
+        if("${{ parameters.branch }}" -eq "") {
           $branch = "feature/${{ variables['Build.BuildId'] }}"
         } else {
           $branch = "${{ parameters.branch }}"
@@ -40,7 +40,7 @@ steps:
         Write-Verbose "git push origin ${{ parameters.branch }}" -Verbose
         git push origin ${{ parameters.branch }}
 
-        Write-Verbose "az repos pr create --description '$(parameters.commit_message)' --title '$(parameters.commit_message)' --auto-complete --repository $(Build.Repository.Name) --source-branch ${{ parameters.branch }} --target-branch ${{ parameters.target_branch }}" -Verbose
+        Write-Verbose "az repos pr create --description '$(parameters.commit_message)' --title '$(parameters.commit_message)' --auto-complete --repository '$(Build.Repository.Name)' --source-branch '${{ parameters.branch }}' --target-branch '${{ parameters.target_branch }}'" -Verbose
         az repos pr create --description '$(parameters.commit_message)' `
                            --title '$(parameters.commit_message)' `
                            --auto-complete `
