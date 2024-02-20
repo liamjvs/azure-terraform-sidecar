@@ -150,6 +150,8 @@ stages:
             - template: templates/utils/git_commit.yaml
               parameters:
                 commit_message: "Added Backend Config"
+                files: 
+                  - variables/${{ coalesce(variables['terraform_state_file'], 'terraform.tfbackend') }}"
             - ${{ if eq(variables.register_vm, 'true') }}:
               - template: templates/ado/register_agent.yaml
                 parameters:

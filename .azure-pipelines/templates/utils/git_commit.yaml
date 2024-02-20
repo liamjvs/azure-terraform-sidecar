@@ -10,6 +10,10 @@ parameters:
   - name: target_branch
     type: string
     default: 'main'
+  - name: files
+    type: object
+    default: 
+      - '.'
 
 steps:
   - task: PowerShell@2
@@ -31,8 +35,8 @@ steps:
         Write-Verbose ("git checkout -b {0}" -f $branch) -Verbose
         git checkout -b $branch
 
-        Write-Verbose "git add ." -Verbose
-        git add .
+        Write-Verbose "git add ${{ parameters.files }}" -Verbose
+        git add ${{ parameters.files }}
 
         Write-Verbose "git commit -m '${{ parameters.commit_message }}'" -Verbose
         git commit -m '$(parameters.commit_message)'
