@@ -51,6 +51,7 @@ steps:
       scriptType: 'pscore'
       scriptLocation: 'scriptPath'
       scriptPath: '$(Build.SourcesDirectory)/scripts/ado/register_vmss.ps1'
+      workingDirectory: '$(Build.SourcesDirectory)/scripts/ado'
       failOnStandardError: true
       arguments: >
         -ado_project ${{ parameters.ado_project }}
