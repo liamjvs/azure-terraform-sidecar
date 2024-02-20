@@ -34,7 +34,7 @@ steps:
         Write-Verbose "git add ." -Verbose
         git add .
 
-        Write-Verbose "git commit -m '$(parameters.commit_message)'" -Verbose
+        Write-Verbose "git commit -m '${{ parameters.commit_message }}'" -Verbose
         git commit -m '$(parameters.commit_message)'
 
         Write-Verbose "git push origin ${{ parameters.branch }}" -Verbose
@@ -45,8 +45,8 @@ steps:
                            --title '${{parameters.commit_message }}' `
                            --auto-complete `
                            --repository $(Build.Repository.Name) `
-                           --source-branch ${{ parameters.branch }} `
-                           --target-branch ${{ parameters.target_branch }} `
+                           --source-branch $(Build.SourceBranchName) `
+                           --target-branch $branch `
                            --only-show-errors
 
         if($LASTEXITCODE -ne 0) {
