@@ -41,8 +41,8 @@ steps:
         Write-Verbose "git commit -m '${{ parameters.commit_message }}'" -Verbose
         git commit -m '$(parameters.commit_message)'
 
-        Write-Verbose "git push origin ${{ parameters.branch }}" -Verbose
-        git push origin ${{ parameters.branch }}
+        Write-Verbose "git push origin $branch" -Verbose
+        git push origin $branch
 
         Write-Verbose "az repos pr create --description '${{ parameters.commit_message }}' --title '${{ parameters.commit_message }}' --auto-complete --repository '$(Build.Repository.Name)' --source-branch '${{ parameters.branch }}' --target-branch '${{ parameters.target_branch }}'" -Verbose
         az repos pr create --description '${{parameters.commit_message }}' `
