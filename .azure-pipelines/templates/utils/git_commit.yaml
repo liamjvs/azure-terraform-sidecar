@@ -3,7 +3,7 @@ parameters:
     type: string
   - name: branch
     type: string
-    default: ''
+    default: feature/$(Build.BuildId)
   - name: working_directory
     type: string
     default: '$(Build.SourcesDirectory)'
@@ -21,11 +21,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        if("${{ parameters.branch }}" -eq "") {
-          $branch = "feature/${{ variables['Build.BuildId'] }}"
-        } else {
-          $branch = "${{ parameters.branch }}"
-        }
+        $branch = "${{ parameters.branch }}"
 
         Write-Verbose "git config --global user.email '$(Build.RequestedForEmail)'" -Verbose
         git config --global user.email "$(Build.RequestedForEmail)"
