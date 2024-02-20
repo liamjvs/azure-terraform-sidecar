@@ -4,7 +4,8 @@ param(
     [string]$git_repo_uri,
     [string]$terraform_migrate = $false,
     [string]$terraform_backend_config,
-    [bool]$terraform_backend = $true
+    [bool]$terraform_backend = $true,
+    [bool]$az_bearer_token = $false
 )
 
 if($git_bearer_token -and $git_repo_uri){
