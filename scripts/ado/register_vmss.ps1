@@ -8,9 +8,9 @@ param(
   [string]$vmss_operator_name
 )
 
-Import-Module funcs/project.ps1 -Force
-Import-Module funcs/service_connection.ps1 -Force
-Import-Module funcs/agent_pool.ps1 -Force
+Import-Module ./funcs/project.ps1 -Force
+Import-Module ./funcs/service_connection.ps1 -Force
+Import-Module ./funcs/agent_pool.ps1 -Force
 
 Write-Verbose "Organisation: $ado_org" -Verbose
 Write-Verbose "Project: $ado_project" -Verbose
