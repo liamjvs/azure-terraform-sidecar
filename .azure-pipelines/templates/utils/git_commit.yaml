@@ -37,6 +37,8 @@ steps:
 
         $files = "${{ convertToJson(parameters.files) }}" | ConvertFrom-Json
         foreach($file in $files) {
+          # remove leading, trailing whitespace and speech marks
+          $file = $file -replace '^\s+|\s+$|["]', ''
           Write-Verbose "git add $file" -Verbose
           git add $file
         }
