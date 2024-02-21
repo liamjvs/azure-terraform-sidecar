@@ -158,8 +158,8 @@ stages:
                   service_connection: ${{ variables.azure_service_connection }}
                   ado_service_connection: ${{ variables.ado_service_connection }}
                   ado_agent_pool_vmss_id: $(TF_OUTPUT_VIRTUAL_MACHINE_SCALESET_ID)
-                  ado_service_connection_name: $[ coalesce(variables['ado_agent_pool_name], format('sc_{0}', variables['Build.BuildId'])) ]
-                  ado_agent_pool_name: $[ coalesce(variables['ado_agent_pool_name'], format('agent_pool_{0}', variables['Build.BuildId'])) ]
+                  ado_service_connection_name: sc_$(Build.BuildId)
+                  ado_agent_pool_name: agent_pool_$(Build.BuildId)
                   subscription_name: ${{ variables.subscription_name }}
                   ado_org: $(System.TeamFoundationCollectionUri)
                   ado_project: $(System.TeamProject)
