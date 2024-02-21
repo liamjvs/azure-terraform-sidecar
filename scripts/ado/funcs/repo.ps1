@@ -86,7 +86,7 @@ function Set-RepositorySecurity {
     }
 
     $uri = "$($ado_org)/_apis/AccessControlEntries/2e9eb7ed-3c0a-47d4-87c1-0ffdd275fd87?api-version=7.1-preview.1"
-    Write-Verbose "Setting Repository Security: $uri" -Verbose
+    Write-Verbose "Setting Repository Security: $uri"
 
     $payload = @{
             "token" = "repoV2/$($project_id)/$($repo_id)/"

@@ -3,7 +3,7 @@
 param(
     [string]$ado_organization = "https://dev.azure.com/lismithmcaps",
     [string]$ado_project = "Code",
-    [string]$repo_name,
+    [string]$repo_name = "azure-terraform-sidecar",
     [string]$service_connection_name,
     [string]$azure_subscription_id = "3f96fd38-eec2-48f5-8d76-c9b6c17c8c95",
     [string]$service_principal_id
@@ -152,34 +152,34 @@ if($service_connections) {
     }
 }
 
-$assign_creator_role_service_connections = Read-Host "Do you want to assign the creator role for service connections to the service principal? (default: y) (y/n)"
-if($assign_creator_role_service_connections -ne "n" -and $assign_creator_role_service_connections -ne "y") {
-    Write-Host "Invalid input. Defaulting to 'y'"
+$assign_creator_role_service_connections = Read-Host "Assign the creator role for service connections to the service principal? (default: y) (y/n)"
+if($assign_creator_role_service_connections -ne "n") {
+    if($assign_creator_role_service_connections -ne "y" -and $assign_creator_role_service_connections){
+        Write-Host "Invalid input. Defaulting to 'y'"
+    }
     $assign_creator_role_service_connections = $true
-} elseif($assign_creator_role_service_connections -eq "n") {
-    $assign_creator_role_service_connections = $false
 } else {
-    $assign_creator_role_service_connections = $true
+    $assign_creator_role_service_connections = $false
 }
 
-$assign_creator_role_agent_pools = Read-Host "Do you want to assign the creator role for agent pools to the service principal? (default: y) (y/n)"
-if($assign_creator_role_agent_pools -ne "n" -and $assign_creator_role_agent_pools -ne "y") {
-    Write-Host "Invalid input. Defaulting to 'y'"
+$assign_creator_role_agent_pools = Read-Host "Assign the creator role for agent pools to the service principal? (default: y) (y/n)"
+if($assign_creator_role_agent_pools -ne "n") {
+    if($assign_creator_role_agent_pools -ne "y" -and $assign_creator_role_agent_pools){
+        Write-Host "Invalid input. Defaulting to 'y'"
+    }
     $assign_creator_role_agent_pools = $true
-} elseif($assign_creator_role_agent_pools -eq "n") {
-    $assign_creator_role_agent_pools = $false
 } else {
-    $assign_creator_role_agent_pools = $true
+    $assign_creator_role_agent_pools = $false
 }
 
 $assign_repo_permissions = Read-Host "Do you want to assign the required access for your service connection to the repo? (default: y) (y/n)"
-if($assign_repo_permissions -ne "n" -and $assign_repo_permissions -ne "y") {
-    Write-Host "Invalid input. Defaulting to 'y'"
+if($assign_repo_permissions -ne "n") {
+    if($assign_repo_permissions -ne "y" -and $assign_repo_permissions){
+        Write-Host "Invalid input. Defaulting to 'y'"
+    }
     $assign_repo_permissions = $true
-} elseif($assign_repo_permissions -eq "n") {
-    $assign_repo_permissions = $false
 } else {
-    $assign_repo_permissions = $true
+    $assign_repo_permissions = $false
 }
 
 
