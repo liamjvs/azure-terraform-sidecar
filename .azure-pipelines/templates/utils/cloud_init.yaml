@@ -29,7 +29,6 @@ steps:
               sleep 2
           fi
       done
-
-      echo "\n\ncloud-init has finished."
+      echo -e "\n\ncloud-init has finished."
     displayName: cloud-init
     timeoutInMinutes: 5

@@ -49,8 +49,6 @@ if(!$terraform_backend){
     }
 }
 
-
-
 Write-Verbose ("Running 'terraform init {0}'" -f ($terraform_params -join ' ')) -Verbose
 terraform init @terraform_params
 
