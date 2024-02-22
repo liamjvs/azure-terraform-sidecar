@@ -52,7 +52,7 @@ function New-ServiceConnection {
 
     $service_endpoints_response = az rest --uri $service_connection_uri --method post --resource "499b84ac-1321-427f-aa17-267ca6975798" --output json --body "@payload.json"
     Remove-Item -Path "payload.json" -Force
-    $service_endpoints_object = ($service_endpoints_response | ConvertFrom-Json -Depth 10).value
+    $service_endpoints_object = ($service_endpoints_response | ConvertFrom-Json -Depth 10)
     return $service_endpoints_object
 }
 

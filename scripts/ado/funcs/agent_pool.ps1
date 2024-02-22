@@ -26,8 +26,8 @@ function New-AgentPool {
         maxSavedNodeCount = $maxSavedNodeCount
         osType = 1
         recycleAfterEachUse = $recycleAfterEachUse
-        serviceEndpointId = $serviceEndpointsObjectId
-        serviceEndpointScope = $adoProjectId
+        serviceEndpointId = $service_endpoints_object_id
+        serviceEndpointScope = $ado_project_id
         timeToLiveMinutes = $timeToLiveMinutes
     }
 
