@@ -1,4 +1,4 @@
-name: init-pipeline
+name: azure-terraform-sidecar-initdeployment
 # For initialising the pipeline
 # This pipeline runs on Microsoft-hosted agents and deployments the infrastructure to Azure
 # After deployment, this will migrate the state file to the backend storage account
