@@ -9,7 +9,7 @@ parameters:
     default: '$(Build.SourcesDirectory)'
   - name: target_branch
     type: string
-    default: 'main'
+    default: $(Build.SourceBranchName)
   - name: files
     type: object
     default: 
