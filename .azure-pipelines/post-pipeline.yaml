@@ -11,7 +11,7 @@ stages:
   displayName: Plan
   condition: succeeded()
   dependsOn: checks
-  pool: ${{ variables.agent_pool_name }}
+  pool: $[ variables.agent_pool_name ]
   jobs:
   - job: tf_plan
     displayName: terraform plan
@@ -41,7 +41,7 @@ stages:
   displayName: Deploy
   dependsOn: plan
   condition: succeeded()
-  pool: ${{ variables.agent_pool_name }}
+  pool: $[ variables.agent_pool_name ]
   jobs:
   - deployment: tf_apply
     displayName: terraform apply
