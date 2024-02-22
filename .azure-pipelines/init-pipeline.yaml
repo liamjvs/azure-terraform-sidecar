@@ -93,6 +93,7 @@ stages:
           terraform_vars:
             resource_group_name=sidecar$(Build.BuildId)
             backend_storage_account_name=sidecar$(Build.BuildId)
+            init=true
       - template: templates/az/logout.yaml
 - stage: deployment
   displayName: Deploy
