@@ -10,7 +10,7 @@ variables:
 - name: register_vm
   value: 'true' # must be a string, sorry
 - name: agent_pool_name
-  value: 'agent_pool_529'
+  value: agent_pool_529
 # Azure DevOps Required Variables
 ## Azure Register VM Name
 - name: ado_vm_pool
@@ -28,4 +28,4 @@ variables:
 - name: subscription_name
   value: ''
 - name: terraform_state_file
-  value: 'tf.tfbackend'
+  value: tf.tfbackend
