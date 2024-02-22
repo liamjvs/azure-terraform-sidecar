@@ -10,7 +10,6 @@ stages:
 - stage: plan
   displayName: Plan
   condition: succeeded()
-  dependsOn: checks
   pool: $[ variables.agent_pool_name ]
   jobs:
   - job: tf_plan
