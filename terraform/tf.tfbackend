@@ -1,5 +1,5 @@
 container_name = "sidecar"
 resource_group_name = "rg-terraform-demo"
 storage_account_name = "saukssidecar84"
-use_azuread_auth = "True"
+use_azuread_auth = "true"
 key = "terraform.tfstate"
