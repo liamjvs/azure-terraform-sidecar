@@ -10,7 +10,7 @@ locals {
     {
       for principal_id in {
         "${data.azurerm_client_config.current.object_id}" = data.azurerm_client_config.current.object_id
-      } : principal_id.key => principal_id.value
+      } : principal_id => principal_id
       if var.init
     }
   )
