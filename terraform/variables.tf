@@ -11,6 +11,12 @@ variable "context" {
   default     = "sidecar"
 }
 
+variable "private_deployment" {
+  description = "Make the solution private and only accessible via private endpoints."
+  type        = bool
+  default     = false
+}
+
 ## Resource Group
 variable "resource_group_name" {
   description = "The name of the resource group in which to create the virtual network."

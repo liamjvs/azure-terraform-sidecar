@@ -31,7 +31,7 @@ module "storage_account" {
   account_tier                  = var.backend_storage_account_tier
   account_replication_type      = var.backend_storage_account_replication_type
   account_access_tier           = var.backend_storage_account_tier
-  public_network_access_enabled = true
+  public_network_access_enabled = var.private_deployment ? false : true
   principal_ids_role_assignment = local.backend_principal_ids
   containers                    = local.storage_account_containers
 }

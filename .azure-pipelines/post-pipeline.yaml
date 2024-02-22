@@ -1,0 +1,76 @@
+name: post-pipeline
+# For deployments post-deployment/initialisation of the pipeline
+
+pool: ${{ variables.agent_pool_name }}
+
+trigger: none
+
+variables:
+  - template: ../variables/ado-variables.yaml
+
+stages:
+- stage: plan
+  displayName: Plan
+  condition: succeeded()
+  dependsOn: checks
+  jobs:
+  - job: tf_plan
+    displayName: terraform plan
+    steps:
+      - template: templates/utils/cloud_init.yaml
+      - checkout: self
+        persistCredentials: true
+        displayName: git checkout
+      - template: templates/az/login.yaml
+        parameters:
+          service_connection: ${{ variables.azure_service_connection }}
+          managed_identity: false
+          azure_subscription_id: ${{ variables.azure_subscription_id }}
+      - template: templates/tf/init.yaml
+        parameters:
+          azure_subscription_id: ${{ variables.azure_subscription_id }}
+          working_directory: "$(Build.SourcesDirectory)/terraform"
+      - template: templates/tf/plan.yaml
+        parameters:
+          working_directory: "$(Build.SourcesDirectory)/terraform"
+          terraform_vars:
+            resource_group_name=sidecar$(Build.BuildNumber)
+            backend_storage_account_name=sidecar$(Build.BuildId)
+            private_deployment=true
+      - template: templates/az/logout.yaml
+- stage: deployment
+  displayName: Deploy
+  dependsOn: plan
+  condition: succeeded()
+  jobs:
+  - deployment: tf_apply
+    displayName: terraform apply
+    environment: "terraform"
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - template: templates/utils/cloud_init.yaml
+            - checkout: self
+              persistCredentials: true
+              displayName: git checkout
+            - task: DownloadBuildArtifacts@1
+              displayName: "Download Artifact"
+              inputs:
+                buildType: "current"
+                downloadType: "single"
+                artifactName: "terraform_plan"
+                downloadPath: "$(Build.SourcesDirectory)/terraform"
+            - template: templates/az/login.yaml
+              parameters:
+                service_connection: ${{ variables.azure_service_connection }}
+                managed_identity: false
+                azure_subscription_id: ${{ variables.azure_subscription_id }}
+            - template: templates/tf/init.yaml
+              parameters:
+                azure_subscription_id: ${{ variables.azure_subscription_id }}
+                working_directory: "$(Build.SourcesDirectory)/terraform"
+            - template: templates/tf/apply.yaml
+              parameters:
+                working_directory: "$(Build.SourcesDirectory)/terraform"
+            - template: templates/az/logout.yaml

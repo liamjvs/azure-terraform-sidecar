@@ -1,3 +1,10 @@
+name: init-pipeline
+# For initialising the pipeline
+# This pipeline runs on Microsoft-hosted agents and deployments the infrastructure to Azure
+# After deployment, this will migrate the state file to the backend storage account
+# and then commit the backend file for future use to the repo. The pipeline will also
+# register the VMSS with Azure DevOps if the register_vm variable is set to true.
+
 pool:
   vmImage: ubuntu-latest
 
