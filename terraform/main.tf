@@ -55,6 +55,9 @@ module "linux_virtual_machine_scale_set" {
 
   do_not_run_extensions_on_overprovisioned_vm = true
 
+  // Boolean on whether to use managed identity or not
+  enable_managed_identity = local.authentication_method_managed_identity
+
   custom_data = data.cloudinit_config.multipart.rendered
 }
 
@@ -98,4 +101,14 @@ data "cloudinit_config" "multipart" {
       content      = file("${path.module}/cloud_init/${part.value}")
     }
   }
+}
+
+# RBAC
+
+resource "azurerm_role_assignment" "role_assignment" {
+  count = local.authentication_method_managed_identity ? 1 : 0
+
+  principal_id = local.rbac_assign_object_id
+  role_definition_name = "Owner" //may need to assign RBAC
+  scope = azurerm_resource_group.resource_group.id
 }

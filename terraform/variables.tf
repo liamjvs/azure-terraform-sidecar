@@ -20,9 +20,9 @@ variable "private_deployment" {
 variable "authentication_method" {
   description = "Post-deployment authentication method; either User, Service Principal or Managed Identity."
   type        = string
-  default     = "Managed Identity"
+  default     = "System Managed Identity"
   validation {
-    condition     = can(regex("^(User|Service Principal|Managed Identity)$", var.authentication_method))
+    condition     = can(regex("^(User|Service Principal|System Managed Identity)$", var.authentication_method))
     error_message = "The authentication method must be either User, Service Principal or Managed Identity."
   }
 }
