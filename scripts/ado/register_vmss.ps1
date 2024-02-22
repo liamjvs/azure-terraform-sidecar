@@ -79,7 +79,7 @@ if ($service_endpoints_search) {
 
 if (!$service_endpoints_object) {
   Write-Verbose "Creating Service Connection" -Verbose
-  $service_endpoints_object = New-ServiceConnection -ado_org $ado_org -ado_project $ado_project  -ado_service_connection_name $ado_service_connection_name -subscription_name $subscription_name -subscription_id $vmss_sp.subscriptionId -service_principal_id $vmss_sp.clientId -service_principal_secret $vmss_sp.clientSecret -tenant_id $vmss_sp.tenantId
+  $service_endpoints_object = New-ServiceConnection -ado_org $ado_org -ado_project $ado_project -ado_project_id $ado_project_id -ado_service_connection_name $ado_service_connection_name -subscription_name $subscription_name -subscription_id $vmss_sp.subscriptionId -service_principal_id $vmss_sp.clientId -service_principal_secret $vmss_sp.clientSecret -tenant_id $vmss_sp.tenantId
   Write-Verbose ("Service Connection: {0}" -f ($service_endpoints_object | ConvertTo-Json -Compress)) -Verbose
 } else {
   Write-Verbose "Service Connection Already Exists" -Verbose
