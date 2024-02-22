@@ -70,7 +70,7 @@ $ado_project_id = $ado_projectTargetObject.id
 $service_endpoints_search = Get-ServiceConnections -ado_org $ado_org -ado_project $ado_project
 
 if ($service_endpoints_search) {
-  if ($service_endpoints_search.value | where-object { $_.name -eq $ado_service_connection_name }) {
+  if ($service_endpoints_search | where-object { $_.name -eq $ado_service_connection_name }) {
     Write-Verbose "Service Connection Already Exists" -Verbose
     $service_endpoints_object = $service_endpoints_search.value | where-object { $_.name -eq $ado_service_connection_name }
   }
@@ -92,7 +92,7 @@ if (!($elastic_pools_object.value | Where-Object { $_.azureId -eq $ado_agent_poo
   Write-Verbose "VMSS is not registered"
   Write-Verbose "Sleep for 30; let Azure DevOps Service Connection be ready" -Verbose
   Start-Sleep -Seconds 30
-  $out = New-AgentPool -pool_name $ado_service_connection_name -ado_org $ado_org -ado_project_id $ado_project_id -ado_agent_pool_vmss_id $ado_agent_pool_vmss_id -service_endpoints_object_id $service_endpoints_object.id
+  $out = New-AgentPool -pool_name $ado_agent_pool_name -ado_org $ado_org -ado_project_id $ado_project_id -ado_agent_pool_vmss_id $ado_agent_pool_vmss_id -service_endpoints_object_id $service_endpoints_object.id
   Write-Verbose "Successfully Register VMSS" -Verbose
 } else {
   Write-Verbose "Failed to Register VMSS - VMSS is already registered" -Verbose

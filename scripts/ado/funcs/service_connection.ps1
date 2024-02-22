@@ -52,7 +52,7 @@ function New-ServiceConnection {
 
     $service_endpoints_response = az rest --uri $service_connection_uri --method post --resource "499b84ac-1321-427f-aa17-267ca6975798" --output json --body "@payload.json"
     Remove-Item -Path "payload.json" -Force
-    $service_endpoints_object = $service_endpoints_response | ConvertFrom-Json -Depth 10
+    $service_endpoints_object = ($service_endpoints_response | ConvertFrom-Json -Depth 10).value
     return $service_endpoints_object
 }
 
@@ -65,7 +65,7 @@ function Get-ServiceConnections {
     $service_connections_uri = "$($ado_org)/$($ado_project)/_apis/serviceendpoint/endpoints?api-version=7.1-preview.4"
     Write-Verbose "Trying for service connections: $service_connections_uri"
     $service_endpoints = az rest --uri $service_connections_uri --method get --resource '499b84ac-1321-427f-aa17-267ca6975798' --output json
-    $service_endpoints_search = ($service_endpoints | ConvertFrom-Json -Depth 10)
+    $service_endpoints_search = ($service_endpoints | ConvertFrom-Json -Depth 10).value
 
     return $service_endpoints_search
 }
@@ -91,6 +91,6 @@ function Set-ServiceConnectionSecurity {
 
     $out = az rest --uri $uri --method put --resource "499b84ac-1321-427f-aa17-267ca6975798" --output json --body "@payload.json"
     Remove-Item -Path "payload.json" -Force
-    $out = $out | ConvertFrom-Json -Depth 10
+    $out = ($out | ConvertFrom-Json -Depth 10).value
     return $out
 }

@@ -133,7 +133,7 @@ if(!$service_connection_name) {
 while($service_connection_to_be){
     $service_connections = Get-ServiceConnections -ado_org $ado_organization -ado_project $ado_project
     if($service_connections) {
-        $service_connection_names = $service_connections.value.name
+        $service_connection_names = $service_connections.name
         if($service_connection_names -contains $service_connection_to_be) {
             $service_connection_to_be = Read-Host "Service Connection name already exists. Please enter a unique name."
         } else {
