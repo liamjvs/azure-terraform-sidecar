@@ -2,7 +2,7 @@ locals {
   # storage_account_containers = { for container in var.backend_storage_account_containers : container.name => container }
   backend_principal_ids = concat([local.rbac_assign_object_id], var.backend_additional_principal_ids)
   # the object ID to assign rights to
-  rbac_assign_object_id             = local.authentication_method_managed_identity ? module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.identity[0].principal_id : ? data.azurerm_client_config.current.object_id
+  rbac_assign_object_id = local.authentication_method_managed_identity ? module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.identity[0].principal_id : data.azurerm_client_config.current.object_id
 
   subnets = {
     "${local.default_resource_names.subnet_runner_name}" = {
@@ -13,9 +13,9 @@ locals {
     }
   }
 
-  authentication_method_managed_identity = authentication_method == "System Managed Identity"
+  authentication_method_managed_identity  = authentication_method == "System Managed Identity"
   authentication_method_service_principal = authentication_method == "Service Principal"
-  authentication_method_user = authentication_method == "User"
+  authentication_method_user              = authentication_method == "User"
 
   storage_account_containers = concat(var.backend_storage_account_containers, [local.default_resource_names.storage_account_container_sidecar])
 

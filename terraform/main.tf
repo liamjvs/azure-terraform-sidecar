@@ -108,7 +108,7 @@ data "cloudinit_config" "multipart" {
 resource "azurerm_role_assignment" "role_assignment" {
   count = local.authentication_method_managed_identity ? 1 : 0
 
-  principal_id = local.rbac_assign_object_id
+  principal_id         = local.rbac_assign_object_id
   role_definition_name = "Owner" //may need to assign RBAC
-  scope = azurerm_resource_group.resource_group.id
+  scope                = azurerm_resource_group.resource_group.id
 }
