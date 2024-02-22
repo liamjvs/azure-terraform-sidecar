@@ -13,9 +13,9 @@ locals {
     }
   }
 
-  authentication_method_managed_identity  = authentication_method == "System Managed Identity"
-  authentication_method_service_principal = authentication_method == "Service Principal"
-  authentication_method_user              = authentication_method == "User"
+  authentication_method_managed_identity  = var.authentication_method == "System Managed Identity"
+  authentication_method_service_principal = var.authentication_method == "Service Principal"
+  authentication_method_user              = var.authentication_method == "User"
 
   storage_account_containers = concat(var.backend_storage_account_containers, [local.default_resource_names.storage_account_container_sidecar])
 
