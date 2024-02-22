@@ -1,19 +1,7 @@
 locals {
   # storage_account_containers = { for container in var.backend_storage_account_containers : container.name => container }
-  backend_principal_ids = merge(
-    {
-      for principal_id in var.backend_additional_principal_ids : principal_id => principal_id
-    },
-    {
-      "${local.rbac_assign_object_id}" = local.rbac_assign_object_id
-    },
-    {
-      for principal_id in {
-        "${data.azurerm_client_config.current.object_id}" = data.azurerm_client_config.current.object_id
-      } : principal_id => principal_id
-      if var.init
-    }
-  )
+  backend_principal_ids = var.init && local.authentication_method_managed_identity ? concat([module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.identity[0].principal_id], var.backend_additional_principal_ids, data.azurerm_client_config.current.object_id) : concat(var.backend_additional_principal_ids, data.azurerm_client_config.current.object_id)
+  
   # the object ID to assign rights to
   rbac_assign_object_id = local.authentication_method_managed_identity ? module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.identity[0].principal_id : data.azurerm_client_config.current.object_id
 

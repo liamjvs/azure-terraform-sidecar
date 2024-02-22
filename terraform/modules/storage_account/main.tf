@@ -13,7 +13,7 @@ resource "azurerm_storage_account" "this" {
 }
 
 resource "azurerm_role_assignment" "this" {
-  for_each             = var.principal_ids_role_assignment
+  for_each             = local.role_assignments
   scope                = azurerm_storage_account.this.id
   role_definition_name = var.container_role_definition_name
   principal_id         = each.value
