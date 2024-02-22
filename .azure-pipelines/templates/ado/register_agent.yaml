@@ -58,7 +58,7 @@ steps:
         -ado_org ${{ parameters.ado_org }}
         -ado_agent_pool_vmss_id ${{ parameters.ado_agent_pool_vmss_id }}
         -ado_service_connection_name ${{ parameters.ado_service_connection_name }}
-        -ado_agent_pool_name ${{ parameters.ado_agent_pool_vmss_id }}
+        -ado_agent_pool_name ${{ parameters.ado_agent_pool_name }}
         -subscription_name ${{ parameters.subscription_name }}
         -vmss_operator_name ${{ parameters.ado_service_connection_name }}-vmss-operator
     env:
