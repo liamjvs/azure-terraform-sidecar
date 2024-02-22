@@ -34,9 +34,8 @@ stages:
         parameters:
           working_directory: "$(Build.SourcesDirectory)/terraform"
           terraform_vars:
-            resource_group_name=sidecar$(Build.BuildNumber)
-            backend_storage_account_name=sidecar$(Build.BuildId)
-            private_deployment=true
+            resource_group_name=sidecar552
+            backend_storage_account_name=sidecar552
       - template: templates/az/logout.yaml
 - stage: deployment
   displayName: Deploy
