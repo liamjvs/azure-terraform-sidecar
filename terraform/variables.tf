@@ -17,6 +17,16 @@ variable "private_deployment" {
   default     = false
 }
 
+variable "authentication_method" {
+  description = "Post-deployment authentication method; either User, Service Principal or Managed Identity."
+  type        = string
+  default     = "Managed Identity"
+  validation {
+    condition     = can(regex("^(User|Service Principal|Managed Identity)$", var.authentication_method))
+    error_message = "The authentication method must be either User, Service Principal or Managed Identity."
+  }
+}
+
 ## Resource Group
 variable "resource_group_name" {
   description = "The name of the resource group in which to create the virtual network."
