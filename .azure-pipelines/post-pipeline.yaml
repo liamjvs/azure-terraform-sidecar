@@ -13,7 +13,8 @@ stages:
   jobs:
   - job: tf_plan
     displayName: terraform plan
-    pool: ${{ variables.agent_pool_name }}
+    pool: 
+      name: ${{ variables.agent_pool_name }}
     steps:
       - template: templates/utils/cloud_init.yaml
       - checkout: self
@@ -40,7 +41,8 @@ stages:
   displayName: Deploy
   dependsOn: plan
   condition: succeeded()
-  pool: ${{ variables.agent_pool_name }}
+  pool: 
+    name: ${{ variables.agent_pool_name }}
   jobs:
   - deployment: tf_apply
     displayName: terraform apply
