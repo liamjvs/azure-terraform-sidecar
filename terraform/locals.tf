@@ -1,9 +1,17 @@
 locals {
   # storage_account_containers = { for container in var.backend_storage_account_containers : container.name => container }
   backend_principal_ids = merge(
-    { for principal_id in var.backend_additional_principal_ids : "object_id" => principal_id },
+    {
+      for principal_id in var.backend_additional_principal_ids : principal_id => principal_id
+    },
     {
       "object_id" = data.azurerm_client_config.current.object_id
+    },
+    {
+      for principal_id in {
+        data.azurerm_client_config.current.object_id : data.azurerm_client_config.current.object_id
+      } : principal_id.key => principal_id.value
+      if var.init
     }
   )
   # the object ID to assign rights to
