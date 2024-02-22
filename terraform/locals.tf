@@ -5,7 +5,7 @@ locals {
       for principal_id in var.backend_additional_principal_ids : principal_id => principal_id
     },
     {
-      "object_id" = data.azurerm_client_config.current.object_id
+      "${local.rbac_assign_object_id}" = local.rbac_assign_object_id
     },
     {
       for principal_id in {
