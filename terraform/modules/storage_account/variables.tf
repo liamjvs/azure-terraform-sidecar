@@ -56,7 +56,7 @@ variable "private_endpoint_network" {
 
 variable "principal_ids_role_assignment" {
   description = "The IDs of the principals to assign the Storage Blob Data Contributor role to."
-  type        = set(string)
+  type        = map(string)
 }
 
 variable "private_dns_zone_ids" {
