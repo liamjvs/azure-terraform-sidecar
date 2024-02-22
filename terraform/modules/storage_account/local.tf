@@ -1,3 +1,0 @@
-# locals {
-#   role_assignments = 
-# }
