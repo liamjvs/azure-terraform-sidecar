@@ -27,6 +27,12 @@ if($azure_subscription_id -and $azure_subscription_id -ne $env:ARM_SUBSCRIPTION_
     $env:ARM_SUBSCRIPTION_ID = $azure_subscription_id
 }
 
+Write-Verbose "ARM_USE_MSI = $env:ARM_USE_MSI" -Verbose
+Write-Verbose "ARM_SUBSCRIPTION_ID = $env:ARM_SUBSCRIPTION_ID" -Verbose
+Write-Verbose "ARM_TENANT_ID = $env:ARM_TENANT_ID" -Verbose
+Write-Verbose "ARM_CLIENT_ID = $env:ARM_CLIENT_ID" -Verbose
+Write-Verbose "ARM_CLIENT_SECRET = $env:ARM_CLIENT_SECRET" -Verbose
+
 $terraform_params = @()
 
 # Terraform does not like input=false and -migrate-state together...
