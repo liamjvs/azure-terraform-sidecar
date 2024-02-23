@@ -1,7 +1,6 @@
 subscription_id = "3f96fd38-eec2-48f5-8d76-c9b6c17c8c95"
 resource_group_name = "sidecar552"
-use_msi = "true"
-use_azuread_auth = "false"
+use_msi = true
 storage_account_name = "sidecar552"
 tenant_id = "0dc98e1a-4ef6-492a-8abf-277eeccd1c1f"
 container_name = "sidecar"
