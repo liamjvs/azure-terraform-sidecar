@@ -25,9 +25,9 @@ output "tenant_id" {
 }
 
 output "use_azuread_auth" {
-  value = true # local.authentication_method_service_principal
+  value = true
 }
 
 output "use_msi" {
-  value = false # local.authentication_method_managed_identity
+  value = local.authentication_method_managed_identity
 }

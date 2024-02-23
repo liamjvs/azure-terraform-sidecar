@@ -1,16 +1,16 @@
 locals {
   # storage_account_containers = { for container in var.backend_storage_account_containers : container.name => container }
   backend_principal_ids = merge(
-    { 
-      for k,v in [true] : "system_managed_identity" => module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.identity[0].principal_id
+    {
+      for k, v in [true] : "system_managed_identity" => module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.identity[0].principal_id
       if local.authentication_method_managed_identity
     },
     {
-      for k,v in [true] : "service_principal" => data.azurerm_client_config.current.object_id
+      for k, v in [true] : "service_principal" => data.azurerm_client_config.current.object_id
       if local.authentication_method_service_principal || var.init
     },
     {
-      for _,v in var.backend_additional_principal_ids : v => v
+      for _, v in var.backend_additional_principal_ids : v => v
     }
   )
 

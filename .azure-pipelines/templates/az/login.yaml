@@ -40,11 +40,6 @@ steps:
 
           Write-Verbose "Setting `$env:ARM_TENANT_ID to `$env:tenantId`." -Verbose
           Write-Host "##vso[task.setvariable variable=ARM_TENANT_ID;]$($env:tenantId)"
-
-          if("${{ parameters.azure_subscription_id }}" -ne '') {
-            Write-Verbose "Setting `$env:ARM_SUBSCRIPTION_ID to `${{ parameters.azure_subscription_id }}`." -Verbose
-            Write-Host "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;]${{ parameters.azure_subscription_id }}"
-          }
       displayName: az login
   - task: PowerShell@2
     ${{ if eq(parameters['task_name'], 'az_login') }}:
@@ -58,6 +53,7 @@ steps:
       arguments: >
         -managed_identity $${{ parameters.managed_identity }}
         -cicd_ado $true
+        -azure_subscription_id ${{ parameters.azure_subscription_id }}
       workingDirectory: '$(Build.SourcesDirectory)'
     displayName: az login identity
     env:
