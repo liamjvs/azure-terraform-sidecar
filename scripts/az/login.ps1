@@ -21,6 +21,7 @@ if($managed_identity) {
 }
 
 if($subscription_id) {
+    Write-Verbose "Setting ARM_SUBSCRIPTION_ID to $subscription_id" -Verbose
     $env:ARM_SUBSCRIPTION_ID = $subscription_id
     if($cicd_ado) {
         Write-Host "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID; isOutput=true;]$subscription_id"

@@ -85,7 +85,6 @@ stages:
           azure_subscription_id: ${{ variables.azure_subscription_id }}
       - template: templates/tf/init.yaml
         parameters:
-          azure_subscription_id: ${{ variables.azure_subscription_id }}
           working_directory: "$(Build.SourcesDirectory)/terraform"
       - template: templates/tf/plan.yaml
         parameters:
@@ -128,7 +127,6 @@ stages:
                 azure_subscription_id: ${{ variables.azure_subscription_id }}
             - template: templates/tf/init.yaml
               parameters:
-                azure_subscription_id: ${{ variables.azure_subscription_id }}
                 working_directory: "$(Build.SourcesDirectory)/terraform"
             - template: templates/tf/apply.yaml
               parameters:
@@ -150,7 +148,6 @@ stages:
                 message: "Waiting for Storage Account RBAC to Propagate"
             - template: templates/tf/init.yaml
               parameters:
-                azure_subscription_id: ${{ variables.azure_subscription_id }}
                 working_directory: "$(Build.SourcesDirectory)/terraform"
                 migrate_backend: true
                 backend_config: 

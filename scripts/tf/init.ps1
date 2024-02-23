@@ -8,9 +8,6 @@ param(
     [bool]$az_bearer_token = $false
 )
 
-# write-verbose all environment variables
-Get-ChildItem env: | ForEach-Object { Write-Verbose ("{0} = {1}" -f $_.Name, $_.Value) -Verbose }
-
 if($git_bearer_token -and $git_repo_uri){
     Write-Verbose "Setting Git Bearer Token" -Verbose
     if($az_bearer_token -eq $true){
