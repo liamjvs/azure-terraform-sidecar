@@ -53,7 +53,7 @@ steps:
       arguments: >
         -managed_identity $${{ parameters.managed_identity }}
         -cicd_ado $true
-        -azure_subscription_id ${{ parameters.azure_subscription_id }}
+        -subscription_id ${{ parameters.azure_subscription_id }}
       workingDirectory: '$(Build.SourcesDirectory)'
     displayName: az login identity
     env:
