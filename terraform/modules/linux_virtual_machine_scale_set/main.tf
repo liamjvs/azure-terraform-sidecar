@@ -71,6 +71,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
       instances, # If we're making changes to the VMSS from this same deployment, we don't want Terraform to update the instances to 0.
       tags["__AzureDevOpsElasticPool"], # We don't want to update the tag if it's already set by Azure DevOps.
       tags["__AzureDevOpsElasticPoolTimeStamp"], # We don't want to update the tag if it's already set by Azure DevOps.
+      automatic_os_upgrade_policy, # Going to assume you have selected manual and this will prevent Terraform from wanting to constantly set false -> null
     ]
   }
 }
