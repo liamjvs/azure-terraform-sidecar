@@ -2,5 +2,4 @@ container_name = "sidecar"
 resource_group_name = "sidecar552"
 storage_account_name = "sidecar552"
 key = "terraform.tfstate"
-use_azuread_auth = false
 use_msi = true
