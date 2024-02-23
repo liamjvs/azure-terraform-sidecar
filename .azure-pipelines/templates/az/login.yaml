@@ -57,6 +57,7 @@ steps:
       pwsh: true
       arguments: >
         -managed_identity $${{ parameters.managed_identity }}
+        -cicd_ado $true
       workingDirectory: '$(Build.SourcesDirectory)'
     displayName: az login identity
     env:
