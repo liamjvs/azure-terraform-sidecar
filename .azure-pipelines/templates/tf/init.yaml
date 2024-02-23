@@ -7,9 +7,6 @@ parameters:
     type: boolean
     displayName: Backend?
     default: true
-  - name: azure_subscription_id
-    type: string
-    displayName: Azure Subscription ID
   - name: migrate_backend
     type: boolean
     displayName: Migrate Backend?
@@ -31,12 +28,10 @@ steps:
       pwsh: true
       ${{ if eq(length(parameters.backend_config), 0) }}:
         arguments: >
-          -azure_subscription_id ${{ parameters.azure_subscription_id }}
           -terraform_migrate $${{ parameters.migrate_backend }}
           -terraform_backend $${{ parameters.backend }}
       ${{ if ge(length(parameters.backend_config), 1) }}:
         arguments: >
-          -azure_subscription_id ${{ parameters.azure_subscription_id }}
           -terraform_migrate $${{ parameters.migrate_backend }}
           -terraform_backend_config ${{ parameters.backend_config }}
           -terraform_backend $${{ parameters.backend }}
