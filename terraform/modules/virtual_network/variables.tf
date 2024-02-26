@@ -24,8 +24,3 @@ variable "subnets" {
     address_prefixes = list(string)
   }))
 }
-
-variable "private_dns_zones" {
-  description = "The private DNS zones that are used the virtual network."
-  type        = set(string)
-}

@@ -16,9 +16,6 @@ module "virtual_network" {
   location            = var.location
   address_space       = var.virtual_network_address_space
   subnets             = local.subnets
-  private_dns_zones = [
-    "privatelink.blob.core.windows.net"
-  ]
 }
 
 module "storage_account" {
@@ -56,6 +53,10 @@ module "private_dns_zone" {
 
   name                = "privatelink.blob.core.windows.net"
   resource_group_name = azurerm_resource_group.resource_group.name
+
+  virtual_network_ids = {
+    "vnet" = module.virtual_network.azurerm_virtual_network.id
+  }
 }
 
 module "linux_virtual_machine_scale_set" {
