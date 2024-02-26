@@ -40,7 +40,7 @@ module "private_endpoint" {
   private_service_connection_name = "privateServiceConnection"
   location            = var.location
   resource_group_name = azurerm_resource_group.resource_group.name
-  subnet_id           = module.virtual_network.subnets[local.resource_names.subnet_private_endpoint_name].id
+  subnet_id           = module.virtual_network.azurerm_subnet[local.resource_names.subnet_private_endpoint_name].id
   subresource_names = [ "blob" ]
   private_connection_resource_id = module.storage_account.azurerm_storage_account.id
   private_dns_zone_ids = [
@@ -66,7 +66,7 @@ module "linux_virtual_machine_scale_set" {
   location            = var.location
   resource_group_name = azurerm_resource_group.resource_group.name
   sku                 = "Standard_B2s"
-  subnet_id           = module.virtual_network.subnets[local.resource_names.subnet_runner_name].id
+  subnet_id           = module.virtual_network.azurerm_subnet[local.resource_names.subnet_runner_name].id
   admin_password      = var.virtual_machine_scaleset_use_random_password ? random_password.admin_password[0].result : null
   admin_key           = var.virtual_machine_scaleset_use_azure_key_pair ? module.azure_key_pair[0].public_key : null
   source_image_reference = {
