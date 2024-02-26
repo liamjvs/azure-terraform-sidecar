@@ -36,6 +36,28 @@ module "storage_account" {
   containers                    = local.storage_account_containers
 }
 
+module "private_endpoint" {
+  source = "./modules/private_endpoint"
+
+  name                = "privateEndpoint"
+  private_service_connection_name = "privateServiceConnection"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.resource_group.name
+  subnet_id           = module.virtual_network.subnets[local.resource_names.subnet_private_endpoint_name].id
+  subresource_names = [ "blob" ]
+  private_connection_resource_id = module.storage_account.azurerm_storage_account.id
+  private_dns_zone_ids = [
+    module.private_dns_zone.azurerm_private_dns_zone.id
+  ]
+}
+
+module "private_dns_zone" {
+  source = "./modules/private_dns_zone"
+
+  name                = "privatelink.blob.core.windows.net"
+  resource_group_name = azurerm_resource_group.resource_group.name
+}
+
 module "linux_virtual_machine_scale_set" {
   source = "./modules/linux_virtual_machine_scale_set"
 
