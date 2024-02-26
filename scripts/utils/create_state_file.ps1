@@ -40,12 +40,11 @@ foreach($output in $terraform_output){
             $value = $output[$sanitized_key]
         }
         # Terraform likes true and false, PowerShell likes $True and $False. Terraform does not like True or False.
-        if($value.tolower -eq "true" -or $value.tolower -eq "false"){
+        if($value.tolower() -eq "true" -or $value.tolower() -eq "false"){
             $line_item = "{0} = {1}" -f $sanitized_key, $value.tolower()
         } else {
             $line_item = "{0} = `"{1}`"" -f $sanitized_key, $value
         }
-        $value = $value.ToString() -eq "True" ? "true" : $value.ToString() -eq "False" ? "false" : $value
         $tfstate_out += $line_item
         Write-Verbose $line_item -Verbose
     } else {
