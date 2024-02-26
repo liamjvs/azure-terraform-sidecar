@@ -55,4 +55,5 @@ if($tfstate_out | Where-Object {$_ -notlike "*$key*"}){
 $folder = $output_folder -and $output_folder -ne "" ? $output_folder : (Get-Location).Path
 Write-Verbose "Writing $key file to $folder" -Verbose
 # Terraform likes true and false, PowerShell likes $True and $False. Terraform does not like True or False.
-(Get-Content $tfstate_out -Raw) -replace '"True"', 'true' -replace '"False"', 'false' | Out-File -FilePath "$folder/$terraform_plan_file" -Encoding ascii -Force
+(Get-Content $($tfstate_out | ConvertTo-Json -Compress)) -replace "True", "true" -replace "False", "false" | Set-Content "$folder\$terraform_plan_file" -force
+ 
