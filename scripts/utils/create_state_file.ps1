@@ -39,7 +39,13 @@ foreach($output in $terraform_output){
         } else {
             $value = $output[$sanitized_key]
         }
-        $line_item = "{0} = `"{1}`"" -f $sanitized_key, $value
+        # Terraform likes true and false, PowerShell likes $True and $False. Terraform does not like True or False.
+        if($value.tolower -eq "true" -or $value.tolower -eq "false"){
+            $line_item = "{0} = {1}" -f $sanitized_key, $value.tolower()
+        } else {
+            $line_item = "{0} = `"{1}`"" -f $sanitized_key, $value
+        }
+        $value = $value.ToString() -eq "True" ? "true" : $value.ToString() -eq "False" ? "false" : $value
         $tfstate_out += $line_item
         Write-Verbose $line_item -Verbose
     } else {
@@ -54,6 +60,4 @@ if($tfstate_out | Where-Object {$_ -notlike "*$key*"}){
 
 $folder = $output_folder -and $output_folder -ne "" ? $output_folder : (Get-Location).Path
 Write-Verbose "Writing $key file to $folder" -Verbose
-# Terraform likes true and false, PowerShell likes $True and $False. Terraform does not like True or False.
-(Get-Content $($tfstate_out | ConvertTo-Json -Compress) -Raw) -replace "True", "true" -replace "False", "false" | Set-Content -Path "$folder\$terraform_plan_file" -Force
- 
+$tfstate_out | Out-File -FilePath "$folder/$terraform_plan_file" -Encoding ascii -Force
