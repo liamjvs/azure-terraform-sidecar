@@ -48,5 +48,5 @@ variable "private_dns_zone_ids" {
 variable "private_dns_zone_group_name" {
   description = "Name of the private DNS zone group"
   type        = string
-  default     = "dns-zone-group"
+  default     = "default"
 }
