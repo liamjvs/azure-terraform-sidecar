@@ -24,7 +24,7 @@ resource "time_sleep" "sleep_for_role_assignment_to_take_effect" {
   depends_on = [
     azurerm_role_assignment.this
   ]
-  create_duration = "20s"
+  create_duration = "60s"
 }
 
 resource "azurerm_storage_container" "this" {
