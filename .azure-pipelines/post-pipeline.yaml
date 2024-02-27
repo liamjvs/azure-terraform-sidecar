@@ -27,13 +27,13 @@ stages:
       - template: templates/tf/init.yaml
         parameters:
           working_directory: "$(Build.SourcesDirectory)/terraform"
-          backend_config: variables/${{ variables.terraform_state_file }}
+          backend_config: $(Build.SourcesDirectory)/variables/${{ variables.terraform_state_file }}
       - template: templates/tf/plan.yaml
         parameters:
           working_directory: "$(Build.SourcesDirectory)/terraform"
           terraform_vars:
-            resource_group_name=sidecar552
-            backend_storage_account_name=sidecar552
+            resource_group_name=sidecar598
+            backend_storage_account_name=sidecar598
       - template: templates/az/logout.yaml
 - stage: deployment
   displayName: Deploy
@@ -67,7 +67,7 @@ stages:
             - template: templates/tf/init.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
-                backend_config: ${{ variables.terraform_state_file }}
+                backend_config: $(Build.SourcesDirectory)/variables/${{ variables.terraform_state_file }}
             - template: templates/tf/apply.yaml
               parameters:
                 working_directory: "$(Build.SourcesDirectory)/terraform"
