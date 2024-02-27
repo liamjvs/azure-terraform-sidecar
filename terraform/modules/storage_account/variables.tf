@@ -40,6 +40,12 @@ variable "min_tls_version" {
   default     = "TLS1_2"
 }
 
+variable "enable_https_traffic_only" {
+  description = "Whether or not to only allow HTTPS traffic to the storage account."
+  type        = bool
+  default     = true
+}
+
 variable "public_network_access_enabled" {
   description = "Whether or not public network access is allowed for this storage account."
   type        = bool
@@ -47,9 +53,9 @@ variable "public_network_access_enabled" {
 
 variable "private_endpoint_network" {
   description = "The ID of the subnet to use for the private endpoint."
-  type        = object({
+  type = object({
     virtual_network_id = optional(string)
-    subnet            = optional(string)
+    subnet             = optional(string)
   })
   default = null
 }

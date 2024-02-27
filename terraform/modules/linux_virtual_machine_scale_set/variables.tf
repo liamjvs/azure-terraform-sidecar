@@ -129,7 +129,10 @@ variable "automatic_os_upgrade_policy" {
 }
 
 variable "do_not_run_extensions_on_overprovisioned_vm" {
-  description = "Specifies whether to run extensions on overprovisioned virtual machines."
+  description = <<DESCRIPTION
+  Specifies whether to run extensions on overprovisioned virtual machines. 
+  Recommend setting this to try if using this for Azure DevOps Agents as you may get a condition where a VM is deprovisioned but has received an Azure DevOps job.
+  DESCRIPTION
   type        = bool
   default     = false
 }

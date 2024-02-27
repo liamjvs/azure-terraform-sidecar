@@ -22,7 +22,8 @@ locals {
       address_prefixes = [var.subnet_runner_address_prefixes]
     }
     "${local.default_resource_names.subnet_private_endpoint_name}" = {
-      address_prefixes = [var.subnet_private_endpoint_address_prefixes]
+      address_prefixes                  = [var.subnet_private_endpoint_address_prefixes]
+      private_endpoint_network_policies = true
     }
   }
 

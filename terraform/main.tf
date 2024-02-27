@@ -36,13 +36,13 @@ module "storage_account" {
 module "private_endpoint" {
   source = "./modules/private_endpoint"
 
-  name                = "privateEndpoint"
+  name                            = "privateEndpoint"
   private_service_connection_name = "privateServiceConnection"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.resource_group.name
-  subnet_id           = module.virtual_network.azurerm_subnet[local.resource_names.subnet_private_endpoint_name].id
-  subresource_names = [ "blob" ]
-  private_connection_resource_id = module.storage_account.azurerm_storage_account.id
+  location                        = var.location
+  resource_group_name             = azurerm_resource_group.resource_group.name
+  subnet_id                       = module.virtual_network.azurerm_subnet[local.resource_names.subnet_private_endpoint_name].id
+  subresource_names               = ["blob"]
+  private_connection_resource_id  = module.storage_account.azurerm_storage_account.id
   private_dns_zone_ids = [
     module.private_dns_zone.azurerm_private_dns_zone.id
   ]
@@ -54,9 +54,9 @@ module "private_dns_zone" {
   name                = "privatelink.blob.core.windows.net"
   resource_group_name = azurerm_resource_group.resource_group.name
 
-  virtual_network_ids = {
-    "vnet" = module.virtual_network.azurerm_virtual_network.id
-  }
+  virtual_network_ids = [
+    module.virtual_network.azurerm_virtual_network.id
+  ]
 }
 
 module "linux_virtual_machine_scale_set" {
@@ -78,7 +78,6 @@ module "linux_virtual_machine_scale_set" {
 
   do_not_run_extensions_on_overprovisioned_vm = true
 
-  // Boolean on whether to use managed identity or not
   enable_managed_identity = local.authentication_method_managed_identity
 
   custom_data = data.cloudinit_config.multipart.rendered
@@ -132,6 +131,6 @@ resource "azurerm_role_assignment" "role_assignment" {
   count = local.authentication_method_managed_identity ? 1 : 0
 
   principal_id         = local.rbac_assign_object_id
-  role_definition_name = "Owner" //may need to assign RBAC
+  role_definition_name = "Owner"
   scope                = azurerm_resource_group.resource_group.id
 }

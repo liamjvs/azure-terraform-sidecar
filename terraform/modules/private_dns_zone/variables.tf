@@ -10,6 +10,6 @@ variable "resource_group_name" {
 
 variable "virtual_network_ids" {
   description = "The IDs of the virtual networks to link to the private DNS zone."
-  type        = map(string)
-  default     = {}
+  type        = set(string)
+  default     = []
 }
