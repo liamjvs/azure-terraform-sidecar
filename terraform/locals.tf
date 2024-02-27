@@ -27,7 +27,7 @@ locals {
     }
   }
 
-  private_deployment = var.private_deployment || !var.init
+  private_deployment = var.init ? false : var.private_deployment
 
   authentication_method_managed_identity  = var.authentication_method == "System Managed Identity"
   authentication_method_service_principal = var.authentication_method == "Service Principal"
