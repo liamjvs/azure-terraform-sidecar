@@ -3,6 +3,39 @@ on:
   - pull_request
 
 jobs:
+name: Linting
+on:
+  pull_request:
+    types: ['opened', 'synchronize']
+  merge_group:
+
+concurrency:
+  group: linting-${{ github.event.pull_request.head.repo.full_name }}/${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  superlinter:
+    name: super linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: super-linter
+        uses: github/super-linter/slim@v5
+        env:
+          DEFAULT_BRANCH: main
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_BASH: true
+          VALIDATE_BASH_EXEC: true
+          VALIDATE_GITHUB_ACTIONS: true
+          VALIDATE_JSON: true
+          VALIDATE_MARKDOWN: true
+          VALIDATE_POWERSHELL: true
+          VALIDATE_TERRAFORM_FMT: true
+          VALIDATE_TERRAFORM_TFLINT: true
+          VALIDATE_YAML: true
+          ERROR_ON_MISSING_EXEC_BIT: true
   docs:
     runs-on: ubuntu-latest
     steps:
@@ -10,7 +43,7 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.head.ref }}
 
-    - name: Render terraform docs and push changes back to PR
+    - name: terraform-docs
       run: docker run --rm --volume "$(pwd):/terraform-docs" -u $(id -u) quay.io/terraform-docs/terraform-docs:0.17.0 markdown --recursive --output-file README.md /terraform-docs
       working-directory: ./terraform
     - uses: stefanzweifel/git-auto-commit-action@v5
