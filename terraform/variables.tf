@@ -177,8 +177,3 @@ variable "user_assigned_identity_name" {
   type        = string
   default     = ""
 }
-
-variable "user_assigned_identity_toggle" {
-  description = "Toggle to true to use a User Managed Identity as opposed to a System Managed Identity."
-
-}
