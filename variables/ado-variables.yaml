@@ -17,7 +17,7 @@ variables:
   value: sidecar-agent-pool
 ## Azure DevOps Service Connection
 - name: ado_service_connection_name
-  value: sidecar-service-connection
+  value: sidecar-agent-pool
 ## Azure DevOps Agent Service Connection
 # If you have an alternative service connection for ADO access, you can specify it here.
 - name: ado_service_connection
