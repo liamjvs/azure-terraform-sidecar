@@ -22,7 +22,6 @@ module "storage_account" {
   source = "./modules/storage_account"
 
   name                          = local.resource_names.storage_account_name
-  private_endpoint_name         = local.resource_names.subnet_private_endpoint_name
   resource_group_name           = azurerm_resource_group.resource_group.name
   location                      = var.location
   account_tier                  = var.backend_storage_account_tier
