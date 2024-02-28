@@ -36,13 +36,12 @@ module "storage_account" {
 module "private_endpoint" {
   source = "./modules/private_endpoint"
 
-  name                            = "privateEndpoint"
-  private_service_connection_name = "privateServiceConnection"
-  location                        = var.location
-  resource_group_name             = azurerm_resource_group.resource_group.name
-  subnet_id                       = module.virtual_network.azurerm_subnet[local.resource_names.subnet_private_endpoint_name].id
-  subresource_names               = ["blob"]
-  private_connection_resource_id  = module.storage_account.azurerm_storage_account.id
+  name                           = local.resource_names.storage_account_private_endpoint
+  location                       = var.location
+  resource_group_name            = azurerm_resource_group.resource_group.name
+  subnet_id                      = module.virtual_network.azurerm_subnet[local.resource_names.subnet_private_endpoint_name].id
+  subresource_names              = ["blob"]
+  private_connection_resource_id = module.storage_account.azurerm_storage_account.id
   private_dns_zone_ids = [
     module.private_dns_zone.azurerm_private_dns_zone.id
   ]
@@ -53,7 +52,6 @@ module "private_dns_zone" {
 
   name                = "privatelink.blob.core.windows.net"
   resource_group_name = azurerm_resource_group.resource_group.name
-
   virtual_network_ids = {
     "vnet" = module.virtual_network.azurerm_virtual_network.id
   }
@@ -111,6 +109,7 @@ module "azure_key_pair" {
   resource_group_id = azurerm_resource_group.resource_group.id
 }
 
+## Cloud Init
 
 data "cloudinit_config" "multipart" {
   gzip          = false
@@ -127,9 +126,16 @@ data "cloudinit_config" "multipart" {
 
 # RBAC
 
-resource "azurerm_role_assignment" "role_assignment" {
-  count = local.authentication_method_managed_identity ? 1 : 0
+module "user_assigned_identity" {
+  count               = local.authentication_method_user_managed_identity ? 1 : 0
+  source              = "./modules/user_assigned_identity"
+  name                = "mi"
+  resource_group_name = azurerm_resource_group.resource_group
+  location            = var.location
+}
 
+resource "azurerm_role_assignment" "role_assignment" {
+  count                = local.authentication_method_managed_identity || local.authentication_method_user_managed_identity ? 1 : 0
   principal_id         = local.rbac_assign_object_id
   role_definition_name = "Owner"
   scope                = azurerm_resource_group.resource_group.id

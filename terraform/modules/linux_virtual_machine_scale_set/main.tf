@@ -66,6 +66,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
     }
   }
 
+  tags = var.tags
+
   lifecycle {
     ignore_changes = [
       instances,                                 # If we're making changes to the VMSS from this same deployment, we don't want Terraform to update the instances to 0.

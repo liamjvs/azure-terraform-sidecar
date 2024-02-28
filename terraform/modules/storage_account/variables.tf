@@ -3,12 +3,6 @@ variable "name" {
   type        = string
 }
 
-variable "private_endpoint_name" {
-  description = "The name of the private endpoint."
-  type        = string
-  default     = null
-}
-
 variable "resource_group_name" {
   description = "The name of the resource group in which to create the storage account."
   type        = string
@@ -65,12 +59,6 @@ variable "principal_ids_role_assignment" {
   type        = map(string)
 }
 
-variable "private_dns_zone_ids" {
-  description = "The IDs of the private DNS zones to link to the private endpoint."
-  type        = string
-  default     = null
-}
-
 variable "containers" {
   description = "The containers to create in the storage account."
   type        = set(string)
@@ -81,4 +69,10 @@ variable "container_role_definition_name" {
   description = "The name of the role definition to assign to the container."
   type        = string
   default     = "Storage Blob Data Contributor"
+}
+
+variable "tags" {
+  description = "Tags for this resource"
+  type        = map(string)
+  default     = {}
 }

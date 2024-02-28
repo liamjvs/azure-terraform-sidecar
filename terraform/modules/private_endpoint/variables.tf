@@ -21,6 +21,7 @@ variable "name" {
 variable "private_service_connection_name" {
   description = "Name of the private service connection"
   type        = string
+  default     = "private-service-connection"
 }
 
 variable "private_connection_resource_id" {
@@ -49,4 +50,10 @@ variable "private_dns_zone_group_name" {
   description = "Name of the private DNS zone group"
   type        = string
   default     = "default"
+}
+
+variable "tags" {
+  description = "Tags for this resource"
+  type        = map(string)
+  default     = {}
 }

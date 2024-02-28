@@ -15,7 +15,11 @@ locals {
   )
 
   # the object ID to assign rights to
-  rbac_assign_object_id = local.authentication_method_managed_identity ? module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.identity[0].principal_id : data.azurerm_client_config.current.object_id
+  rbac_assign_object_id = (
+    local.authentication_method_managed_identity ? module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.identity[0].principal_id :
+    local.authentication_method_user_managed_identity ? module.user_assigned_identity.azurerm_user_assigned_identity.principal_id :
+    data.azurerm_client_config.current.object_id
+  )
 
   subnets = {
     "${local.default_resource_names.subnet_runner_name}" = {
@@ -29,9 +33,10 @@ locals {
 
   private_deployment = var.init ? false : var.private_deployment
 
-  authentication_method_managed_identity  = var.authentication_method == "System Managed Identity"
-  authentication_method_service_principal = var.authentication_method == "Service Principal"
-  authentication_method_user              = var.authentication_method == "User"
+  authentication_method_managed_identity      = var.authentication_method == "System Managed Identity"
+  authentication_method_user_managed_identity = var.authentication_method == "User Managed Identity"
+  authentication_method_service_principal     = var.authentication_method == "Service Principal"
+  authentication_method_user                  = var.authentication_method == "User"
 
   storage_account_containers = concat(var.backend_storage_account_containers, [local.default_resource_names.storage_account_container_sidecar])
 
@@ -42,6 +47,7 @@ locals {
     subnet_private_endpoint_name      = coalesce(var.subnet_private_endpoint_name, local.default_resource_names.subnet_private_endpoint_name)
     storage_account_name              = coalesce(var.backend_storage_account_name, local.default_resource_names.storage_account_name)
     storage_account_container_sidecar = coalesce(var.backend_storage_account_container, local.default_resource_names.storage_account_container_sidecar)
+    storage_account_private_endpoint  = coalesce(var.storage_account_private_endpoint_name, local.default_resource_names.storage_account_private_endpoint)
     vmss_name                         = coalesce(var.virtual_machine_scaleset_name, local.default_resource_names.vmss_name)
     vmss_nic_name                     = coalesce(var.virtual_machine_scaleset_nic_name, local.default_resource_names.vmss_nic_name)
   }
@@ -53,6 +59,8 @@ locals {
     subnet_private_endpoint_name      = join("-", compact(["subnet", local.location_to_short_map[var.location], var.context, "endpoint"]))
     storage_account_name              = join("", compact(["sa", local.location_to_short_map[var.location], var.context, substr(data.azurerm_client_config.current.object_id, 0, 2)]))
     storage_account_container_sidecar = "sidecar" //Sidecar container to store this TF deployment
+    storage_account_private_endpoint  = join("-", compact(["pe", local.location_to_short_map[var.location], var.context, "sa"]))
+    user_assigned_identity            = join("-", compact(["umi", local.location_to_short_map[var.location], var.context]))
     vmss_name                         = join("-", compact(["vmss", local.location_to_short_map[var.location], var.context]))
     vmss_disk_name                    = join("-", compact(["vmss", local.location_to_short_map[var.location], var.context, "disk"]))
     vmss_nic_name                     = join("-", compact(["vmss", local.location_to_short_map[var.location], var.context, "nic"]))

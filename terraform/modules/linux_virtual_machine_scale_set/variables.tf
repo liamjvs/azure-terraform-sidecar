@@ -136,3 +136,9 @@ variable "do_not_run_extensions_on_overprovisioned_vm" {
   type        = bool
   default     = false
 }
+
+variable "tags" {
+  description = "Tags for this resource"
+  type        = map(string)
+  default     = {}
+}

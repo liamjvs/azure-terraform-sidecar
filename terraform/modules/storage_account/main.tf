@@ -11,6 +11,7 @@ resource "azurerm_storage_account" "this" {
   network_rules {
     default_action = var.public_network_access_enabled ? "Allow" : "Deny"
   }
+  tags = var.tags
 }
 
 resource "azurerm_role_assignment" "this" {
@@ -35,23 +36,4 @@ resource "azurerm_storage_container" "this" {
   depends_on = [
     time_sleep.sleep_for_role_assignment_to_take_effect
   ]
-}
-
-resource "azurerm_private_endpoint" "this" {
-  count               = var.private_endpoint_network != null ? 1 : 0
-  name                = coalesce(var.private_endpoint_name, "${var.name}-private-endpoint")
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  subnet_id           = try(format("%s/subnets/%s", var.private_endpoint_network.virtual_network_id, var.private_endpoint_network.subnet), null)
-  private_service_connection {
-    name                           = format("%s-private-endpoint-connection", coalesce(var.private_endpoint_name, var.name))
-    private_connection_resource_id = azurerm_storage_account.this.id
-    subresource_names              = ["blob"]
-    is_manual_connection           = false
-  }
-
-  private_dns_zone_group {
-    name                 = format("%s-dns-zone-group", coalesce(var.private_endpoint_name, var.name))
-    private_dns_zone_ids = [var.private_dns_zone_ids]
-  }
 }

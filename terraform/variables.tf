@@ -22,8 +22,8 @@ variable "authentication_method" {
   type        = string
   default     = "System Managed Identity"
   validation {
-    condition     = can(regex("^(User|Service Principal|System Managed Identity)$", var.authentication_method))
-    error_message = "The authentication method must be either User, Service Principal or Managed Identity."
+    condition     = can(regex("^(User|Service Principal|System Managed Identity|User Managed Identity)$", var.authentication_method))
+    error_message = "The authentication method must be either User, Service Principal, System Managed Identity or User Managed Identity."
   }
 }
 
@@ -130,6 +130,12 @@ variable "backend_additional_principal_ids" {
   default     = []
 }
 
+variable "storage_account_private_endpoint_name" {
+  description = "The name of the private endpoint for the storage account."
+  type        = string
+  default     = null
+}
+
 ### Virtual Machine Scale Set
 
 variable "virtual_machine_scaleset_name" {
@@ -164,3 +170,15 @@ variable "virtual_machine_scaleset_use_azure_key_pair" {
   default     = false
 }
 
+### User Assigned
+
+variable "user_assigned_identity_name" {
+  description = "The name of the user assigned managed identity"
+  type        = string
+  default     = ""
+}
+
+variable "user_assigned_identity_toggle" {
+  description = "Toggle to true to use a User Managed Identity as opposed to a System Managed Identity."
+
+}

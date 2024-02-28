@@ -10,7 +10,7 @@ variables:
 - name: register_vm
   value: 'true' # must be a string, sorry
 - name: agent_pool_name
-  value: agent_pool_552
+  value: sidecar
 # Azure DevOps Required Variables
 ## Azure Register VM Name
 - name: ado_vm_pool

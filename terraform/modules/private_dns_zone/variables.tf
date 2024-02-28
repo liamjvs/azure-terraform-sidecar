@@ -13,3 +13,9 @@ variable "virtual_network_ids" {
   type        = map(string)
   default     = {}
 }
+
+variable "tags" {
+  description = "Tags for this resource"
+  type        = map(string)
+  default     = {}
+}
