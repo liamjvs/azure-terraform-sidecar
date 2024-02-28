@@ -120,6 +120,7 @@ variable "user_assigned_identity_ids" {
   description = "The IDs of the user assigned identities to assign to the virtual machine scale set."
   type        = list(string)
   default     = []
+  nullable    = false
 }
 
 variable "automatic_os_upgrade_policy" {
