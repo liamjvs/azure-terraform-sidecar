@@ -11,9 +11,6 @@ jobs:
         ref: ${{ github.event.pull_request.head.ref }}
 
     - name: Render terraform docs and push changes back to PR
-      uses: terraform-docs/gh-actions@main
-      with:
-        working-dir: ./terraform
-        output-file: README.md
-        output-method: replace
-        git-push: "true"
+      run: docker run --rm --volume "$(pwd):/terraform-docs" -u $(id -u) quay.io/terraform-docs/terraform-docs:0.17.0 markdown --recursive --output-file README.md /terraform-docs
+      working-directory: ./terraform
+    - uses: stefanzweifel/git-auto-commit-action@v5
