@@ -1,18 +1,7 @@
 name: Generate Terraform Documentation
 on:
   - pull_request
-
-jobs:
-name: Linting
-on:
-  pull_request:
-    types: ['opened', 'synchronize']
-  merge_group:
-
-concurrency:
-  group: linting-${{ github.event.pull_request.head.repo.full_name }}/${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
-
+  
 jobs:
   superlinter:
     name: super linter
