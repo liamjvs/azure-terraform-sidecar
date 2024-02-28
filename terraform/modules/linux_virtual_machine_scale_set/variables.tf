@@ -116,6 +116,12 @@ variable "enable_managed_identity" {
   default     = true
 }
 
+variable "user_assigned_identity_ids" {
+  description = "The IDs of the user assigned identities to assign to the virtual machine scale set."
+  type        = list(string)
+  default     = []
+}
+
 variable "automatic_os_upgrade_policy" {
   description = "The automatic OS upgrade policy of the virtual machine scale set."
   type = object({

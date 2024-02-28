@@ -62,7 +62,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
   dynamic "identity" {
     for_each = var.enable_managed_identity ? ["identity"] : []
     content {
-      type = "SystemAssigned"
+      type         = length(var.user_assigned_identity_ids) > 0 ? "UserAssigned" : "SystemAssigned"
+      identity_ids = length(var.user_assigned_identity_ids) > 0 ? var.user_assigned_identity_ids : null
     }
   }
 
