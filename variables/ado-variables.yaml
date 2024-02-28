@@ -2,10 +2,10 @@ variables:
 # Required Variables
 ## Azure Subscription ID to Deploy to
 - name: azure_subscription_id
-  value: '3f96fd38-eec2-48f5-8d76-c9b6c17c8c95'
+  value: 3f96fd38-eec2-48f5-8d76-c9b6c17c8c95
 ## Azure Service Connection Name
 - name: azure_service_connection
-  value: 'sidecar-service-connection'
+  value: sidecar-service-connection
 ## Register Virutal Machine with ADO
 - name: register_vm
   value: 'true' # must be a string, sorry
