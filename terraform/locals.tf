@@ -57,7 +57,7 @@ locals {
     virtual_network_name              = join("-", compact(["vnet", local.location_to_short_map[var.location], var.context]))
     subnet_runner_name                = join("-", compact(["subnet", local.location_to_short_map[var.location], var.context, "runner"]))
     subnet_private_endpoint_name      = join("-", compact(["subnet", local.location_to_short_map[var.location], var.context, "endpoint"]))
-    storage_account_name              = join("", compact(["sa", local.location_to_short_map[var.location], var.context, substr(data.azurerm_client_config.current.object_id, 0, 2)]))
+    storage_account_name              = join("", compact(["sa", local.location_to_short_map[var.location], var.context, substr(data.azurerm_client_config.current.subscription_id, 0, 2)]))
     storage_account_container_sidecar = "sidecar" //Sidecar container to store this TF deployment
     storage_account_private_endpoint  = join("-", compact(["pe", local.location_to_short_map[var.location], var.context, "sa"]))
     user_assigned_identity            = join("-", compact(["umi", local.location_to_short_map[var.location], var.context]))

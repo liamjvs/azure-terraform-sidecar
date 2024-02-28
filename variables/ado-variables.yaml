@@ -10,16 +10,17 @@ variables:
 - name: register_vm
   value: 'true' # must be a string, sorry
 - name: agent_pool_name
-  value: sidecar
+  value: sidecar-agent-pool
 # Azure DevOps Required Variables
-## Azure Register VM Name
-- name: ado_vm_pool
-  value: ''
+## The name to register the Agent Pool with
+- name: ado_agent_pool_name
+  value: sidecar-agent-pool
 ## Azure DevOps Service Connection
-- name: ado_service_connection
-  value: ''
+- name: ado_service_connection_name
+  value: sidecar-service-connection
 ## Azure DevOps Agent Service Connection
-- name: ado_agent_service_connection
+# If you have an alternative service connection for ADO access, you can specify it here.
+- name: ado_service_connection
   value: ''
 ## Azure DevOps Agent Pool Name
 - name: ado_agent_pool_name
