@@ -21,12 +21,9 @@ variables:
 ## Azure DevOps Agent Service Connection
 # If you have an alternative service connection for ADO access, you can specify it here.
 - name: ado_service_connection
-  value: ''
-## Azure DevOps Agent Pool Name
-- name: ado_agent_pool_name
-  value: ''
+  value: 
 ## Azure DevOps Agent Pool Name
 - name: subscription_name
-  value: 'MCAPS-Test'
+  value: MCAPS-Test
 - name: terraform_state_file
-  value: 'tf.tfbackend'
+  value: tf.tfbackend
