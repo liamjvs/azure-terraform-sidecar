@@ -77,8 +77,7 @@ $service_endpoints_search = Get-ServiceConnections -ado_org $ado_org -ado_projec
 if ($service_endpoints_search) {
   $service_endpoint_object = $service_endpoints_search | where-object { $_.name -eq $ado_service_connection_name }
   if ($service_endpoint_object) {
-    Write-Output "Service Connection Already Exists"
-    Write-Output "Updating Secret for Service Connection"
+    Write-Output "Service Connection Already Exists. Updating Secret for Service Connection"
     $service_endpoints_object = Update-ServiceConnectionSecret -ado_org $ado_org -ado_project $ado_project -user_id $ado_service_connection_name -service_principal_secret $vmss_sp.clientSecret
   }
 }

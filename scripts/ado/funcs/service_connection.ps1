@@ -105,7 +105,7 @@ function Update-ServiceConnectionSecret {
 
     $uri = "$($ado_org)/_apis/serviceendpoint/endpoints/$($user_id)?api-version=7.1-preview.4"
 
-    $service_connections = Get-ServiceConnections -ado_org $ado_org -ado_project $project
+    $service_connections = Get-ServiceConnections -ado_org $ado_org -ado_project $ado_project
 
     $service_connection = $service_connections | where-object { $_.id -eq $user_id }
 
