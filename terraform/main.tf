@@ -76,7 +76,7 @@ module "linux_virtual_machine_scale_set" {
   do_not_run_extensions_on_overprovisioned_vm = true
 
   enable_managed_identity    = local.authentication_method_managed_identity
-  user_assigned_identity_ids = local.authentication_method_user_managed_identity ? [ module.user_assigned_identity[0].id ] : []
+  user_assigned_identity_ids = local.authentication_method_user_managed_identity ? [module.user_assigned_identity[0].id] : []
 
   custom_data = data.cloudinit_config.multipart.rendered
 }
