@@ -115,7 +115,7 @@ function Update-ServiceConnectionSecret {
         Add-Member -InputObject $service_connection.authorization.parameters -Name serviceprincipalkey -Value $service_principal_secret -MemberType NoteProperty
         $service_connection.authorization.parameters.serviceprincipalkey = $service_principal_secret
         $service_connection | ConvertTo-Json -Compress -Depth 10 | Out-File -FilePath "payload.json" -Encoding ascii -Force
-        Write-Verbose ("Sending payload to update service connection: {0}" -f ($service_connection | ConvertTo-Json -Compress -Depth 10)
+        Write-Verbose ("Sending payload to update service connection: {0}" -f ($service_connection | ConvertTo-Json -Compress -Depth 10))
         $out = az rest --uri $uri --method put --resource "499b84ac-1321-427f-aa17-267ca6975798" --output json --body "@payload.json"
         Write-Verbose ("Response from updating service connection: {0}" -f $out)
         Remove-Item -Path "payload.json" -Force
