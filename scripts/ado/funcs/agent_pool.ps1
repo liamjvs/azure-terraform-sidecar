@@ -4,7 +4,7 @@ function New-AgentPool {
         [Parameter(Mandatory=$true)][string]$ado_org,
         [Parameter(Mandatory=$true)][string]$ado_project_id,
         [Parameter(Mandatory=$true)][string]$ado_agent_pool_vmss_id,
-        [Parameter(Mandatory=$true)][string]$service_endpoints_object_id,
+        [Parameter(Mandatory=$true)][string]$service_endpoint_object_id,
         [bool]$authorizeAllPipelines = $false,
         [bool]$autoProvisionProjectPools = $false,
         [int]$maxCapacity = 10,
@@ -26,7 +26,7 @@ function New-AgentPool {
         maxSavedNodeCount = $maxSavedNodeCount
         osType = 1
         recycleAfterEachUse = $recycleAfterEachUse
-        serviceEndpointId = $service_endpoints_object_id
+        serviceEndpointId = $service_endpoint_object_id
         serviceEndpointScope = $ado_project_id
         timeToLiveMinutes = $timeToLiveMinutes
     }
