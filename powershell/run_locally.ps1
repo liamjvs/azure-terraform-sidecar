@@ -3,23 +3,23 @@ param(
 )
 
 try {
-    Write-Host "Checking if logged in to Azure"
+    Write-Output "Checking if logged in to Azure"
     $az_login = az account show --query user -o tsv
     if(!$az_login){
-        Write-Host "Not logged in to Azure."
+        Write-Output "Not logged in to Azure."
         exit 1
     } else {
-        Write-Host "You are logged in to Azure."
+        Write-Output "You are logged in to Azure."
     }
 
     # Check if Terraform is installed
-    Write-Host "Checking if Terraform is installed"
+    Write-Output "Checking if Terraform is installed"
     $tf_version = terraform --version
     if(!$tf_version){
-        Write-Host "Terraform is not installed."
+        Write-Output "Terraform is not installed."
         exit 1
     } else {
-        Write-Host "Terraform is installed."
+        Write-Output "Terraform is installed."
     }
 
     # get the current azure subscription name and id into json
@@ -33,79 +33,79 @@ try {
             $azure_subscription_id = $azure_subscription.id
         } else {
             while($azure_subscription_id -notmatch "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$") {
-                Write-Host "Subscription ID must be valid"
+                Write-Output "Subscription ID must be valid"
                 $azure_subscription_id = Read-Host "Enter the Azure Subscription ID"
             }
         }
     }
 
-    Write-Host "Changing to Terraform directory"
+    Write-Output "Changing to Terraform directory"
     cd terraform
 
-    Write-Host "Disabling backend.tf"
+    Write-Output "Disabling backend.tf"
     ../scripts/utils/modify_backend.ps1 -disable $true
 
     Read-Host "Press Enter to continue with terraform init or Ctrl+C to cancel..."
-    Write-Host "Running terraform init"
+    Write-Output "Running terraform init"
     ../scripts/tf/init.ps1 -azure_subscription_id $azure_subscription_id
     if($LASTEXITCODE -ne 0){
-        Write-Host "Terraform init failed"
+        Write-Output "Terraform init failed"
         exit 1
     }
 
     Read-Host "Press Enter to continue with terraform plan or Ctrl+C to cancel..."
-    Write-Host "Running terraform plan"
+    Write-Output "Running terraform plan"
     ../scripts/tf/plan.ps1 -terraform_vars "resource_group_name=rg-terraform-demo"
     if($LASTEXITCODE -eq 1){
-        Write-Host "Terraform plan failed"
+        Write-Output "Terraform plan failed"
         exit 1
     }
 
     Read-Host "Press Enter to continue with terraform apply or Ctrl+C to cancel..."
-    Write-Host "Running terraform apply"
+    Write-Output "Running terraform apply"
     ../scripts/tf/apply.ps1
     if($LASTEXITCODE -ne 0){
-        Write-Host "Terraform apply failed"
+        Write-Output "Terraform apply failed"
         exit 1
     }
 
-    Write-Host "Getting Terraform Outputs"
+    Write-Output "Getting Terraform Outputs"
     ../scripts/tf/output.ps1 -cicd_ado $false
 
-    Write-Host "Creating Terraform State File"
+    Write-Output "Creating Terraform State File"
     ../scripts/utils/create_state_file.ps1 -cicd_ado $false
 
-    Write-Host "Enabling backend.tf"
+    Write-Output "Enabling backend.tf"
     ../scripts/utils/modify_backend.ps1 -enable $true
 
-    Write-Host "Migrating Terraform State"
+    Write-Output "Migrating Terraform State"
     ../scripts/tf/init.ps1 -azure_subscription_id $azure_subscription_id -terraform_migrate $true -terraform_backend_config "terraform.tfbackend"
 
     Read-Host "Press Enter to continue with terraform plan or Ctrl+C to cancel..."
-    Write-Host "Running terraform plan"
+    Write-Output "Running terraform plan"
     ../scripts/tf/plan.ps1 -terraform_vars "resource_group_name=rg-terraform-demo"
     if($LASTEXITCODE -eq 1){
-        Write-Host "Terraform plan failed"
+        Write-Output "Terraform plan failed"
         exit 1
     }
 
     Read-Host "Press Enter to continue with terraform apply or Ctrl+C to cancel..."
-    Write-Host "Running terraform apply"
+    Write-Output "Running terraform apply"
     ../scripts/tf/apply.ps1
     if($LASTEXITCODE -ne 0){
-        Write-Host "Terraform apply failed"
+        Write-Output "Terraform apply failed"
         exit 1
     }
 
 } catch {
-    Write-Host "An error occurred: $_"
+    Write-Output "An error occurred: $_"
     exit 1
 }
 finally {
     if(Test-Path "terraform"){
         # Test if backend.tf exists
         if(Test-Path "backend.tf"){
-            Write-Host "Restoring backend.tf"
+            Write-Output "Restoring backend.tf"
             ../scripts/utils/modify_backend.ps1 -enable $true
         }
 

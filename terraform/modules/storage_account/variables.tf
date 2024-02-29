@@ -16,7 +16,7 @@ variable "location" {
 variable "account_tier" {
   description = "Defines the Tier to use for this storage account."
   type        = string
-  
+
 }
 
 variable "account_replication_type" {

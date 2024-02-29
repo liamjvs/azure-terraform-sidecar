@@ -129,7 +129,7 @@ data "cloudinit_config" "multipart" {
 module "user_assigned_identity" {
   count               = local.authentication_method_user_managed_identity ? 1 : 0
   source              = "./modules/user_assigned_identity"
-  name                = "mi"
+  name                = local.resource_names.user_assigned_identity
   resource_group_name = azurerm_resource_group.resource_group
   location            = var.location
 }

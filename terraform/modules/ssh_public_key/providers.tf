@@ -9,5 +9,9 @@ terraform {
       source  = "azure/azapi"
       version = "1.10.0"
     }
+    random_pet = {
+      source  = "hashicorp/random"
+      version = "3.6.0"
+    }
   }
 }

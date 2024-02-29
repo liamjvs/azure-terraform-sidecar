@@ -23,14 +23,14 @@ catch {
 
 # check if the az cli is installed
 if(!(Get-Command az -ErrorAction SilentlyContinue)) {
-    Write-Host "Azure CLI is not installed. Please install Azure CLI and try again."
+    Write-Output "Azure CLI is not installed. Please install Azure CLI and try again."
     exit
 }
 
 # check if the user is logged in
 $az_account = az account show --output json
 if(!$az_account) {
-    Write-Host "Please login to Azure CLI and try again."
+    Write-Output "Please login to Azure CLI and try again."
     exit
 }
 
@@ -43,7 +43,7 @@ if (!$ado_organization) {
         while($answer -ne "y" -and $answer -ne "n") {
             $answer = Read-Host "Do you want to append 'https://dev.azure.com' to the organization name? (y/n)"
             if($answer -ne "y" -and $answer -ne "n") {
-                Write-Host "Invalid input. Please enter 'y' or 'n'"
+                Write-Output "Invalid input. Please enter 'y' or 'n'"
             } else {
                 if($answer -eq "y") {
                     $ado_organization = "https://dev.azure.com/$ado_organization"
@@ -57,7 +57,7 @@ if (!$ado_organization) {
 if(!$ado_project) {
     $ado_project = Read-Host "Enter the ADO project"
     while(!$ado_project) {
-        Write-Host "ADO project must be valid"
+        Write-Output "ADO project must be valid"
         $ado_project = Read-Host "Enter the ADO project"
     }
 }
@@ -75,7 +75,7 @@ if(!$repo_name) {
     while(!$repo_name){
         $answer = Read-Host "Enter the repo name you want to use (must be valid)"
         if($ado_repositories -notcontains $answer) {
-            Write-Host "Repo name must be valid"
+            Write-Output "Repo name must be valid"
         } else {
             $repo_name = $repo_name
         }
@@ -93,7 +93,7 @@ if(!$azure_subscription_id) {
         $azure_subscription_id = $azure_subscription.id
     else {
         while($azure_subscription_id -notmatch "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$") {
-            Write-Host "Subscription ID must be valid"
+            Write-Output "Subscription ID must be valid"
             $azure_subscription_id = Read-Host "Enter the Azure Subscription ID"
         }
     }
@@ -115,7 +115,7 @@ if(!$service_principal_id) {
     } else {
         #service principal id should be a valid guid
         while($service_principal_id -notmatch "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$") {
-            Write-Host "Service Principal ID must be valid"
+            Write-Output "Service Principal ID must be valid"
             $service_principal_id = Read-Host "Enter the service principal application id (default: script will create a new service principal)"
         }
     }
@@ -155,7 +155,7 @@ if($service_connections) {
 $assign_creator_role_service_connections = Read-Host "Assign the creator role for service connections to the service principal? (default: y) (y/n)"
 if($assign_creator_role_service_connections -ne "n") {
     if($assign_creator_role_service_connections -ne "y" -and $assign_creator_role_service_connections){
-        Write-Host "Invalid input. Defaulting to 'y'"
+        Write-Output "Invalid input. Defaulting to 'y'"
     }
     $assign_creator_role_service_connections = $true
 } else {
@@ -165,7 +165,7 @@ if($assign_creator_role_service_connections -ne "n") {
 $assign_creator_role_agent_pools = Read-Host "Assign the creator role for agent pools to the service principal? (default: y) (y/n)"
 if($assign_creator_role_agent_pools -ne "n") {
     if($assign_creator_role_agent_pools -ne "y" -and $assign_creator_role_agent_pools){
-        Write-Host "Invalid input. Defaulting to 'y'"
+        Write-Output "Invalid input. Defaulting to 'y'"
     }
     $assign_creator_role_agent_pools = $true
 } else {
@@ -175,7 +175,7 @@ if($assign_creator_role_agent_pools -ne "n") {
 $assign_repo_permissions = Read-Host "Do you want to assign the required access for your service connection to the repo? (default: y) (y/n)"
 if($assign_repo_permissions -ne "n") {
     if($assign_repo_permissions -ne "y" -and $assign_repo_permissions){
-        Write-Host "Invalid input. Defaulting to 'y'"
+        Write-Output "Invalid input. Defaulting to 'y'"
     }
     $assign_repo_permissions = $true
 } else {
@@ -184,30 +184,30 @@ if($assign_repo_permissions -ne "n") {
 
 
 # Write new line
-Write-Host ""
+Write-Output ""
 
 # Confirm with the user the values entered
-Write-Host "ADO Organization: $ado_organization"
-Write-Host "ADO Project: $ado_project"
-Write-Host "Repo Name: $repo_name"
-Write-Host "Subscription ID: $azure_subscription_id"
-Write-Host "Subscription Name: $subscription_name"
-Write-Host "Service Principal ID: $service_principal_id"
-Write-Host "Service Connection Name: $service_connection_name"
-Write-Host "Assign Creator Role for Service Connections: $assign_creator_role_service_connections"
-Write-Host "Assign Creator Role for Agent Pools: $assign_creator_role_agent_pools"
-Write-Host "Assign Repo Permissions: $assign_repo_permissions"
+Write-Output "ADO Organization: $ado_organization"
+Write-Output "ADO Project: $ado_project"
+Write-Output "Repo Name: $repo_name"
+Write-Output "Subscription ID: $azure_subscription_id"
+Write-Output "Subscription Name: $subscription_name"
+Write-Output "Service Principal ID: $service_principal_id"
+Write-Output "Service Connection Name: $service_connection_name"
+Write-Output "Assign Creator Role for Service Connections: $assign_creator_role_service_connections"
+Write-Output "Assign Creator Role for Agent Pools: $assign_creator_role_agent_pools"
+Write-Output "Assign Repo Permissions: $assign_repo_permissions"
 $confirm = Read-Host "Do you want to continue? (y/n)"
 if($confirm -ne "y") {
-    Write-Host "Exiting..."
+    Write-Output "Exiting..."
     exit
 }
 
 # Write new line
-Write-Host ""
+Write-Output ""
 
 # Create Service Principal and Service Connection
-Write-Host "Creating Service Principal"
+Write-Output "Creating Service Principal"
 $service_principal = az ad sp create-for-rbac --name $service_connection_name --role Owner --scopes "/subscriptions/$azure_subscription_id" --only-show-errors --output json
 $service_principal = $service_principal | ConvertFrom-Json -Depth 10
 if(!$service_principal) {
@@ -215,34 +215,34 @@ if(!$service_principal) {
 }
 
 # Create Service Connection
-Write-Host "Creating Service Connection"
+Write-Output "Creating Service Connection"
 $service_connection = New-ServiceConnection -ado_org $ado_organization -ado_project $ado_project -ado_project_id $ado_project_id -subscription_id $azure_subscription_id -subscription_name $subscription_name -service_principal_id $($service_principal).appId -service_principal_secret $($service_principal).password -tenant_id $($service_principal).tenant -ado_service_connection_name $service_connection_name
 if(!$service_connection) {
     Write-Error "Service Connection creation failed. Do you have the required permissions to create a service connection?"
 } else {
-    Write-Host "Service Connection created successfully"
+    Write-Output "Service Connection created successfully"
 }
 
 # Get Object ID of the Service Principal
-Write-Host "Getting ID of the Service Principal"
+Write-Output "Getting ID of the Service Principal"
 $service_principal_object_id = az ad sp show --id $($service_principal).appId --query "id" -o tsv
 
 # Add Service Principal to the ADO environment
-Write-Host "Adding Service Principal to the ADO environment"
+Write-Output "Adding Service Principal to the ADO environment"
 $service_principal_entitlement = New-ServicePrincipalEntitlement -ado_org $ado_organization -service_principal_object_id $service_principal_object_id -project_id $ado_project_id
 
 if($assign_creator_role_service_connections) {
-    Write-Host "Assigning Creator Role for Service Connections to Service Principal"
+    Write-Output "Assigning Creator Role for Service Connections to Service Principal"
     $service_connection = Set-ServiceConnectionSecurity -ado_org $ado_organization -user_id $($service_principal_entitlement).id -project_id $ado_project_id -role "Creator"
 }
 
 if($assign_creator_role_agent_pools){
-    Write-Host "Assigning Creator Role for Agent Pools to Service Principal"
+    Write-Output "Assigning Creator Role for Agent Pools to Service Principal"
     $agent_pool = Set-AgentPoolSecurity -ado_org $ado_organization -project_id $ado_project_id -user_id $($service_principal_entitlement).id -role "Creator"
 }
 
 if($assign_repo_permissions) {
-    Write-Host "Assigning required access to the repo"
+    Write-Output "Assigning required access to the repo"
     if($build_service){
         $descriptor = Get-BuildServiceSecurityID -ado_org $ado_organization -project_id $ado_project_id
     } else {
@@ -254,20 +254,20 @@ if($assign_repo_permissions) {
     foreach ($role in $roles) {
         $repo_security = Set-RepositorySecurity -ado_org $ado_organization -descriptor $descriptor -project_id $ado_project_id -repo_id $repo.id -role $role -allow $true
         sleep 1
-        Write-Host ("Assigned $role to the {0} in $repo_name" -f ($build_service ? "build service" : "service principal"))
+        Write-Output ("Assigned $role to the {0} in $repo_name" -f ($build_service ? "build service" : "service principal"))
     }
 }
 
 # Write new line
-Write-Host ""
+Write-Output ""
 
 # Write in green
-Write-Host "ADO Environment initialized successfully" -ForegroundColor Green
+Write-Output "ADO Environment initialized successfully" -ForegroundColor Green
 
 # Write new line
-Write-Host ""
-Write-Host "Please create a pipeline and use the service connection '$service_connection_name' to deploy the application to ADO."
-Write-Host "The pipeline will also need the subscription id '$azure_subscription_id' added."
+Write-Output ""
+Write-Output "Please create a pipeline and use the service connection '$service_connection_name' to deploy the application to ADO."
+Write-Output "The pipeline will also need the subscription id '$azure_subscription_id' added."
 
 # Clean up the environment
 Write-Verbose "Cleaning up the environment"

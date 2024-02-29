@@ -31,10 +31,10 @@ locals {
   )
 
   subnets = {
-    lookup(local.default_resource_names,"subnet_runner_name") = {
+    local.default_resource_names["subnet_runner_name"] = {
       address_prefixes = [var.subnet_runner_address_prefixes]
     }
-    lookup(local.default_resource_names,"subnet_private_endpoint_name") = {
+    local.default_resource_names["subnet_private_endpoint_name"] = {
       address_prefixes                  = [var.subnet_private_endpoint_address_prefixes]
       private_endpoint_network_policies = true
     }
@@ -57,8 +57,8 @@ locals {
     storage_account_name              = coalesce(var.backend_storage_account_name, local.default_resource_names.storage_account_name)
     storage_account_container_sidecar = coalesce(var.backend_storage_account_container, local.default_resource_names.storage_account_container_sidecar)
     storage_account_private_endpoint  = coalesce(var.storage_account_private_endpoint_name, local.default_resource_names.storage_account_private_endpoint)
+    user_assigned_identity            = coalesce(var.user_assigned_identity_name, local.default_resource_names.user_assigned_identity)
     vmss_name                         = coalesce(var.virtual_machine_scaleset_name, local.default_resource_names.vmss_name)
-    vmss_nic_name                     = coalesce(var.virtual_machine_scaleset_nic_name, local.default_resource_names.vmss_nic_name)
   }
 
   default_resource_names = {

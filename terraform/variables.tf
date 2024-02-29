@@ -144,18 +144,6 @@ variable "virtual_machine_scaleset_name" {
   default     = null
 }
 
-variable "virtual_machine_scaleset_disk_name" {
-  description = "The name of the virtual machine scale set disk."
-  type        = string
-  default     = null
-}
-
-variable "virtual_machine_scaleset_nic_name" {
-  description = "The name of the virtual machine scale set network interface."
-  type        = string
-  default     = null
-}
-
 #### Autehntication
 
 variable "virtual_machine_scaleset_use_random_password" {
