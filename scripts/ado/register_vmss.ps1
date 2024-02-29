@@ -27,35 +27,40 @@ if (!$vmss_sp) {
     Write-Error "Found too many Service Principals"
     throw "Found too many Service Principals"
   }
+
+  Write-Output "Service Principal already exists, updating password credentials."
+
   # Read existing keys
   $keys = az rest --method get --url https://graph.microsoft.com/v1.0/applications/$($vmss_sp.id) `
           --query "passwordCredentials[?displayName=='rbac'].{name:displayName,id:keyId}" `
           | ConvertFrom-Json -Depth 10
     foreach($key in $keys){
-        Write-Verbose ("Removing key with displayName {0}" -f $key.name) -Verbose
+        Write-Output ("Removing key with displayName {0}" -f $key.name)
         @{ keyId = $key.id } | ConvertTo-Json -Depth 10 | Out-File -FilePath payload.json -Encoding ascii -Force
         az rest --method post --url https://graph.microsoft.com/v1.0/applications/$($vmss_sp.id)/removePassword --body "@payload.json" --only-show-errors
+        Remove-Item -Path payload.json -Force
     }
   
-  Write-Verbose ("Creating key with displayName" -f $sp.name) -Verbose
+  Write-Output ("Creating key with displayName {0}" -f $sp.name)
   @{ passwordCredential = @{ displayName = "rbac" }} | ConvertTo-Json -Depth 10 | Out-File -FilePath "payload.json" -Encoding ascii -Force
   $output = az rest --method post --url https://graph.microsoft.com/v1.0/applications/$($vmss_sp.id)/addPassword --body "@payload.json" --only-show-errors
+  Remove-Item -Path payload.json -Force
   $vmss_sp_object = $output | ConvertFrom-Json -depth 10
   $vmss_sp = @{
     clientId = $vmss_sp.appId
     clientSecret = $vmss_sp_object.secretText
     subscriptionId = $ado_agent_pool_vmss_id.Split("/")[2]
     displayName = $vmss_operator_name
-    tenantId = $(az account show --query "tenantId")
+    tenantId = $(az account show --query "tenantId" --output tsv)
   }
 }
 
 if($env:ADO_CLIENT_ID -and $env:ADO_TENANT_ID -and $env:ADO_CLIENT_SECRET){
-  Write-Verbose "Logging out of Service Connection" -Verbose
+  Write-Output "Logging out of Service Connection"
   az logout
-  Write-Verbose "Logging into Azure DevOps Service Connection" -Verbose
+  Write-Output "Logging into Azure DevOps Service Connection"
   az login --service-principal --username $env:ADO_CLIENT_ID --password $env:ADO_CLIENT_SECRET --tenant $env:ADO_TENANT_ID --allow-no-subscriptions --only-show-errors
-  Write-Verbose "Successfully Logged into Azure DevOps Service Connection" -Verbose
+  Write-Output "Successfully Logged into Azure DevOps Service Connection"
 }
 
 # Get Project Object
@@ -71,10 +76,10 @@ $service_endpoints_search = Get-ServiceConnections -ado_org $ado_org -ado_projec
 
 if ($service_endpoints_search) {
   if ($service_endpoints_search | where-object { $_.name -eq $ado_service_connection_name }) {
-    Write-Verbose "Service Connection Already Exists" -Verbose
-    $service_endpoints_object = $service_endpoints_search.value | where-object { $_.name -eq $ado_service_connection_name }
+    Write-Output "Service Connection Already Exists"
+    Write-Output "Updating Secret for Service Connection"
+    $service_endpoints_object = Update-ServiceConnection -ado_org $ado_org -ado_project $ado_project -ado_service_connection_name $ado_service_connection_name -service_principal_secret $vmss_sp.clientSecret
   }
-  # To-Do: Write logic where Service Endpoint exists and we need to push the new secret
 }
 
 if (!$service_endpoints_object) {

@@ -94,3 +94,29 @@ function Set-ServiceConnectionSecurity {
     $out = ($out | ConvertFrom-Json -Depth 10).value
     return $out
 }
+
+function Update-ServiceConnectionSecret {
+    param (
+        [Parameter(Mandatory=$true)][string]$ado_org,
+        [Parameter(Mandatory=$true)][string]$user_id,
+        [Parameter(Mandatory=$true)][string]$project,
+        [Parameter(Mandatory=$true)][string]$service_principal_secret
+    )
+
+    $uri = "$($ado_org)/_apis/serviceendpoint/endpoints/$($user_id)?api-version=7.1-preview.4"
+
+    $service_connections = Get-ServiceConnections -ado_org $ado_org -ado_project $project
+
+    $service_connection = $service_connections | where-object { $_.id -eq $user_id }
+
+    if($service_connection -eq $null){
+        Write-Error "Service Connection Not Found"
+    } else {
+        Add-Member -InputObject $service_connection.authorization.parameters -Name serviceprincipalkey -Value $service_principal_secret -MemberType NoteProperty
+        $service_connection.authorization.parameters.serviceprincipalkey = $service_principal_secret
+        $service_connection | ConvertTo-Json -Compress -Depth 10 | Out-File -FilePath "payload.json" -Encoding ascii -Force
+        $out = az rest --uri $uri --method put --resource "499b84ac-1321-427f-aa17-267ca6975798" --output json --body "@payload.json"
+        Remove-Item -Path "payload.json" -Force
+        return ($out | ConvertFrom-Json -Depth 10).value
+    }
+}
