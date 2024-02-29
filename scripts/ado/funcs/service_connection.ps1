@@ -119,6 +119,6 @@ function Update-ServiceConnectionSecret {
         $out = az rest --uri $uri --method put --resource "499b84ac-1321-427f-aa17-267ca6975798" --output json --body "@payload.json"
         Write-Verbose ("Response from updating service connection: {0}" -f $out)
         Remove-Item -Path "payload.json" -Force
-        return ($out | ConvertFrom-Json -Depth 10).value
+        return ($out | ConvertFrom-Json -Depth 10)
     }
 }
