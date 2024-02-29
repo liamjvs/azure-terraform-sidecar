@@ -11,7 +11,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
       - name: super-linter
-        uses: github/super-linter/slim@v5
+        uses: github/super-linter@v6.3
         env:
           DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: true
@@ -25,6 +25,7 @@ jobs:
           VALIDATE_TERRAFORM_TFLINT: true
           VALIDATE_YAML: true
           ERROR_ON_MISSING_EXEC_BIT: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   docs:
     runs-on: ubuntu-latest
     steps:
