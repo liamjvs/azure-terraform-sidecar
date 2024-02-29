@@ -32,10 +32,10 @@ if (!$vmss_sp) {
 
   Write-Output "Checking if Service Principal has access to VMSS"
   $vmss_sp_object = az ad sp list --query "[?appId=='$($vmss_sp.appId)']" --output json | ConvertFrom-Json -Depth 10
-  $vmss_sp_rbac = az role assignment list --assignee $vmss_sp_object.id --scope $ado_agent_pool_vmss_id --output json --query "[?roleDefinitionName=='Virtual Machine Contributor']" | ConvertFrom-Json -Depth 10
+  $vmss_sp_rbac = az role assignment list --assignee $vmss_sp_object.id --scope $ado_agent_pool_vmss_id --output json --query "[?roleDefinitionName=='Virtual Machine Contributor']" --all | ConvertFrom-Json -Depth 10
   if(!$vmss_sp_rbac){
     Write-Output "Assigning role to Service Principal"
-    $out = az role assignment create --assignee-principal ServicePrincipal --assignee-object-id $vmss_sp_rbac.id --role "Virtual Machine Contributor" --scope $ado_agent_pool_vmss_id --only-show-errors
+    $out = az role assignment create --assignee-principal ServicePrincipal --assignee-object-id $vmss_sp_rbac[0].id --role "Virtual Machine Contributor" --scope $ado_agent_pool_vmss_id --only-show-errors
   } else {
     Write-Output "Service Principal already has access to VMSS"
   }
