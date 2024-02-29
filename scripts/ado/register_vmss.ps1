@@ -28,7 +28,17 @@ if (!$vmss_sp) {
     throw "Found too many Service Principals"
   }
 
-  Write-Output "Service Principal already exists, updating password credentials."
+  Write-Output "Service Principal already exists."
+
+  Write-Output "Checking if Service Principal has access to VMSS"
+  $vmss_sp = $vmss_sp[0]
+  $vmss_sp_role = az role assignment list --assignee $vmss_sp.id --scope $ado_agent_pool_vmss_id --output json --query "[?roleDefinitionName=='Virtual Machine Contributor']" | ConvertFrom-Json -Depth 10
+  if(!$vmss_sp_role){
+    Write-Output "Assigning role to Service Principal"
+    $out = az role assignment create --assignee $vmss_sp.id --role "Virtual Machine Contributor" --scope $ado_agent_pool_vmss_id --only-show-errors
+  } else {
+    Write-Output "Service Principal already has access to VMSS"
+  }
 
   # Read existing keys
   $keys = az rest --method get --url https://graph.microsoft.com/v1.0/applications/$($vmss_sp.id) `
