@@ -4,7 +4,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
   location            = var.location
 
   sku       = var.sku
-  instances = 0
+  instances = var.instances
 
   admin_username = var.admin_username
   admin_password = var.admin_password
@@ -20,7 +20,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
   disable_password_authentication = false
 
   upgrade_mode                                      = var.upgrade_mode
-  single_placement_group                            = false
+  single_placement_group                            = var.single_placement_group
   do_not_run_extensions_on_overprovisioned_machines = var.do_not_run_extensions_on_overprovisioned_vm
 
   network_interface {
@@ -71,7 +71,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "this" {
 
   lifecycle {
     ignore_changes = [
-      instances,                                 # If we're making changes to the VMSS from this same deployment, we don't want Terraform to update the instances to 0.
+      instances,                                 # For ADO only, If we're making changes to the VMSS from this same deployment, we don't want Terraform to update the instances to 0.
       tags["__AzureDevOpsElasticPool"],          # We don't want to update the tag if it's already set by Azure DevOps.
       tags["__AzureDevOpsElasticPoolTimeStamp"], # We don't want to update the tag if it's already set by Azure DevOps.
       automatic_os_upgrade_policy,               # Going to assume you have selected manual and this will prevent Terraform from wanting to constantly set false -> null

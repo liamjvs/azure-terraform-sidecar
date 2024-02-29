@@ -101,7 +101,7 @@ variable "custom_data" {
 }
 
 variable "instances" {
-  description = "The number of instances in the virtual machine scale set."
+  description = "The number of instances in the virtual machine scale set on initialy deployment. Currently, this property is added to be ignored post-deployment as Azure DevOps handles the instance count"
   type        = number
   default     = 0
   validation {

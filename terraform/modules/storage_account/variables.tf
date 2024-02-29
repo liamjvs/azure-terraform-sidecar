@@ -16,6 +16,7 @@ variable "location" {
 variable "account_tier" {
   description = "Defines the Tier to use for this storage account."
   type        = string
+  
 }
 
 variable "account_replication_type" {
@@ -40,18 +41,15 @@ variable "enable_https_traffic_only" {
   default     = true
 }
 
+variable "shared_access_key_enabled" {
+  description = "Whether or not to enable shared access keys for this storage account."
+  type        = bool
+  default     = false
+}
+
 variable "public_network_access_enabled" {
   description = "Whether or not public network access is allowed for this storage account."
   type        = bool
-}
-
-variable "private_endpoint_network" {
-  description = "The ID of the subnet to use for the private endpoint."
-  type = object({
-    virtual_network_id = optional(string)
-    subnet             = optional(string)
-  })
-  default = null
 }
 
 variable "principal_ids_role_assignment" {
