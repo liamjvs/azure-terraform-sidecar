@@ -28,6 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   docs:
     runs-on: ubuntu-latest
+    needs: [ superlinter ]
     steps:
     - uses: actions/checkout@v3
       with:
