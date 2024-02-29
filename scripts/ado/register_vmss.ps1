@@ -12,12 +12,12 @@ Import-Module ./funcs/project.ps1 -Force
 Import-Module ./funcs/service_connection.ps1 -Force
 Import-Module ./funcs/agent_pool.ps1 -Force
 
-Write-Verbose "Organisation: $ado_org" -Verbose
-Write-Verbose "Project: $ado_project" -Verbose
-Write-Verbose "Endpoint Name: $ado_service_connection_name" -Verbose
-Write-Verbose "VMSS Azure Id: $ado_agent_pool_vmss_id" -Verbose
-Write-Verbose "Service Principal Name: $vmss_operator_name" -Verbose
-Write-Verbose "Subscription Name: $subscription_name" -Verbose
+Write-Output "Organisation: $ado_org"
+Write-Output "Project: $ado_project"
+Write-Output "Endpoint Name: $ado_service_connection_name"
+Write-Output "VMSS Azure Id: $ado_agent_pool_vmss_id"
+Write-Output "Service Principal Name: $vmss_operator_name"
+Write-Output "Subscription Name: $subscription_name"
 
 $vmss_sp = az ad app list --output json --query "[?displayName=='$($vmss_operator_name)']" | ConvertFrom-Json -Depth 10
 if (!$vmss_sp) {
@@ -75,10 +75,11 @@ $ado_project_id = $ado_projectTargetObject.id
 $service_endpoints_search = Get-ServiceConnections -ado_org $ado_org -ado_project $ado_project
 
 if ($service_endpoints_search) {
-  if ($service_endpoints_search | where-object { $_.name -eq $ado_service_connection_name }) {
+  $service_endpoint_object = $service_endpoints_search | where-object { $_.name -eq $ado_service_connection_name }
+  if ($service_endpoint_object) {
     Write-Output "Service Connection Already Exists"
     Write-Output "Updating Secret for Service Connection"
-    $service_endpoints_object = Update-ServiceConnection -ado_org $ado_org -ado_project $ado_project -ado_service_connection_name $ado_service_connection_name -service_principal_secret $vmss_sp.clientSecret
+    $service_endpoints_object = Update-ServiceConnectionSecret -ado_org $ado_org -ado_project $ado_project -user_id $ado_service_connection_name -service_principal_secret $vmss_sp.clientSecret
   }
 }
 
