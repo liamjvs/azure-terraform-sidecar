@@ -6,11 +6,19 @@ locals {
       if local.authentication_method_managed_identity
     },
     {
+      for k, v in [true] : "user_managed_identity" => module.user_assigned_identity.azurerm_user_assigned_identity.principal_id
+      if local.authentication_method_user_managed_identity
+    },
+    {
       for k, v in [true] : "service_principal" => data.azurerm_client_config.current.object_id
       if local.authentication_method_service_principal || var.init
     },
     {
-      for _, v in var.backend_additional_principal_ids : v => v
+      for k, v in [true] : "user" => data.azurerm_client_config.current.object_id
+      if local.authentication_method_user
+    },
+    {
+      for k, v in var.backend_additional_principal_ids : k => v
     }
   )
 
@@ -18,14 +26,15 @@ locals {
   rbac_assign_object_id = (
     local.authentication_method_managed_identity ? module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.identity[0].principal_id :
     local.authentication_method_user_managed_identity ? module.user_assigned_identity.azurerm_user_assigned_identity.principal_id :
-    data.azurerm_client_config.current.object_id
+    local.authentication_method_service_principal || local.authentication_method_user ? data.azurerm_client_config.current.object_id :
+    null // you've not selected an authentication method
   )
 
   subnets = {
-    "${local.default_resource_names.subnet_runner_name}" = {
+    local.default_resource_names.subnet_runner_name = {
       address_prefixes = [var.subnet_runner_address_prefixes]
     }
-    "${local.default_resource_names.subnet_private_endpoint_name}" = {
+    local.default_resource_names.subnet_private_endpoint_name = {
       address_prefixes                  = [var.subnet_private_endpoint_address_prefixes]
       private_endpoint_network_policies = true
     }
