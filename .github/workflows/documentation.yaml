@@ -11,7 +11,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
       - name: super-linter
-        uses: github/super-linter@v6.3
+        uses: github/super-linter@v6.3.0
         env:
           DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: true
