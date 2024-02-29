@@ -31,7 +31,7 @@ if (!$vmss_sp) {
   Write-Output "Service Principal already exists."
 
   Write-Output "Checking if Service Principal has access to VMSS"
-  $vmss_sp = $vmss_sp[0]
+  $vmss_sp = az ad sp list --query "[?appId=='$($vmss_sp.appId)']" --output json | ConvertFrom-Json -Depth 10
   $vmss_sp_role = az role assignment list --assignee $vmss_sp.id --scope $ado_agent_pool_vmss_id --output json --query "[?roleDefinitionName=='Virtual Machine Contributor']" | ConvertFrom-Json -Depth 10
   if(!$vmss_sp_role){
     Write-Output "Assigning role to Service Principal"
@@ -40,6 +40,7 @@ if (!$vmss_sp) {
     Write-Output "Service Principal already has access to VMSS"
   }
 
+  Write-Host "Updating Service Principal Secret"
   # Read existing keys
   $keys = az rest --method get --url https://graph.microsoft.com/v1.0/applications/$($vmss_sp.id) `
           --query "passwordCredentials[?displayName=='rbac'].{name:displayName,id:keyId}" `
