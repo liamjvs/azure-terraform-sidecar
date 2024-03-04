@@ -122,3 +122,9 @@ Ensure that the Service Connection has the 'Agent Pool Creator' role or greater.
 
 #### The Service Connection does not have access to create Service Connections
 Ensure that the Service Connection has the 'Service Connection Creator' role or greater. Navigate to the Service Connections under the project you want to create the Service Connection under. Top right, click on the three dots and select 'Security'. Add the Service Principal to the Service Connection with the 'Service Connection Creator' role or greater. The Service Principal will not appear unless it has been added to the Azure DevOps Organisation (please see above).
+
+
+
+TO-DO:
+- Add Graph permissions to SP in init
+- Add Graph check to init
