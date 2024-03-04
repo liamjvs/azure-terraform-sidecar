@@ -55,7 +55,7 @@ try {
 
     Read-Host "Press Enter to continue with terraform plan or Ctrl+C to cancel..."
     Write-Output "Running terraform plan"
-    ../scripts/tf/plan.ps1 -terraform_vars "resource_group_name=rg-terraform-demo"
+    ../scripts/tf/plan.ps1
     if($LASTEXITCODE -eq 1){
         Write-Output "Terraform plan failed"
         exit 1

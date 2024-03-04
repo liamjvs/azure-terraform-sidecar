@@ -11,6 +11,28 @@ variable "context" {
   default     = "sidecar"
 }
 
+variable "init" {
+  description = "If this is the first deployment of the solution."
+  type        = bool
+  default     = false
+}
+
+variable "deployment_choice" {
+  description = <<DEPLOYMENT_METHOD
+  Select the deployment choice. This can either be:
+  - Storage Account
+    - A public storage account is created to store the backend state file(s).
+  - Agent Pool
+    - A Virtual Network, Private DNS Zone, Linux Virtual Machine Scale Set, Storage Account and Private Endpoint are created with the appropriate Role-Based Access Control (RBAC) assignments.
+  DEPLOYMENT_METHOD
+  type        = string
+  default     = "Storage Account"
+  validation {
+    condition     = can(regex("^(Storage Account|Agent Pool)$", var.deployment_choice))
+    error_message = "The deployment choice must be either Storage Account or Agent Pool."
+  }
+}
+
 variable "private_deployment" {
   description = "Make the solution private and only accessible via private endpoints."
   type        = bool
@@ -20,17 +42,11 @@ variable "private_deployment" {
 variable "authentication_method" {
   description = "Post-deployment authentication method; either User, Service Principal or Managed Identity."
   type        = string
-  default     = "System Managed Identity"
+  default     = "User"
   validation {
     condition     = can(regex("^(User|Service Principal|System Managed Identity|User Managed Identity)$", var.authentication_method))
     error_message = "The authentication method must be either User, Service Principal, System Managed Identity or User Managed Identity."
   }
-}
-
-variable "init" {
-  description = "If this is the first deployment of the solution."
-  type        = bool
-  default     = false
 }
 
 ## Resource Group

@@ -1,5 +1,5 @@
 output "virtual_machine_scaleset_id" {
-  value = module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.id
+  value = local.deployment_choice_agent_pool ? module.linux_virtual_machine_scale_set[0].azurerm_linux_virtual_machine_scale_set.id : null
 }
 
 // Terraform Backend State File Outputs

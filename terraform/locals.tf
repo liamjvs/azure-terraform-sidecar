@@ -2,12 +2,12 @@ locals {
   # storage_account_containers = { for container in var.backend_storage_account_containers : container.name => container }
   backend_principal_ids = merge(
     {
-      for k, v in [true] : "system_managed_identity" => module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.identity[0].principal_id
-      if local.authentication_method_managed_identity
+      for k, v in [true] : "system_managed_identity" => module.linux_virtual_machine_scale_set[0].azurerm_linux_virtual_machine_scale_set.identity[0].principal_id
+      if local.authentication_method_managed_identity && local.deployment_choice_agent_pool
     },
     {
-      for k, v in [true] : "user_managed_identity" => module.user_assigned_identity.azurerm_user_assigned_identity.principal_id
-      if local.authentication_method_user_managed_identity
+      for k, v in [true] : "user_managed_identity" => module.user_assigned_identity[0].azurerm_user_assigned_identity.principal_id
+      if local.authentication_method_user_managed_identity && local.deployment_choice_agent_pool
     },
     {
       for k, v in [true] : "service_principal" => data.azurerm_client_config.current.object_id
@@ -24,23 +24,26 @@ locals {
 
   # the object ID to assign rights to
   rbac_assign_object_id = (
-    local.authentication_method_managed_identity ? module.linux_virtual_machine_scale_set.azurerm_linux_virtual_machine_scale_set.identity[0].principal_id :
+    local.authentication_method_managed_identity ? one(module.linux_virtual_machine_scale_set[*].azurerm_linux_virtual_machine_scale_set.identity[0].principal_id) :
     local.authentication_method_user_managed_identity ? module.user_assigned_identity.azurerm_user_assigned_identity.principal_id :
     local.authentication_method_service_principal || local.authentication_method_user ? data.azurerm_client_config.current.object_id :
     null // you've not selected an authentication method
   )
 
   subnets = {
-    local.default_resource_names["subnet_runner_name"] = {
+    "${local.default_resource_names["subnet_runner_name"]}" = {
       address_prefixes = [var.subnet_runner_address_prefixes]
     }
-    local.default_resource_names["subnet_private_endpoint_name"] = {
+    "${local.default_resource_names["subnet_private_endpoint_name"]}" = {
       address_prefixes                  = [var.subnet_private_endpoint_address_prefixes]
       private_endpoint_network_policies = true
     }
   }
 
   private_deployment = var.init ? false : var.private_deployment
+
+  deployment_choice_storage_account = var.deployment_choice == "Storage Account"
+  deployment_choice_agent_pool      = var.deployment_choice == "Agent Pool"
 
   authentication_method_managed_identity      = var.authentication_method == "System Managed Identity"
   authentication_method_user_managed_identity = var.authentication_method == "User Managed Identity"

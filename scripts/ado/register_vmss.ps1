@@ -40,7 +40,7 @@ if (!$vmss_sp) {
     Write-Output "Service Principal already has access to VMSS"
   }
 
-  Write-Host "Updating Service Principal Secret"
+  Write-Output "Updating Service Principal Secret"
   # Read existing keys
   $keys = az rest --method get --url https://graph.microsoft.com/v1.0/applications/$($vmss_sp.id) `
           --query "passwordCredentials[?displayName=='rbac'].{name:displayName,id:keyId}" `
