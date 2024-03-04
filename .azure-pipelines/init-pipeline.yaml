@@ -19,6 +19,10 @@ parameters:
     type: boolean
     default: false
     displayName: Skip Azure Checks
+  - name: skip_checks_entra
+    type: boolean
+    default: false
+    displayName: Skip Entra ID Checks
 
 variables:
   - template: ../variables/ado-variables.yaml
@@ -63,6 +67,15 @@ stages:
           parameters:
             service_connection: ${{ variables.azure_service_connection }}
             azure_subscription_id: ${{ variables.azure_subscription_id }}
+  - ${{ if eq(parameters.skip_checks_entra, false) }}:
+    - job: entra
+      displayName: entra
+      steps:
+        - checkout: none
+        - template: templates/entra/get_approle.yaml
+          parameters:
+            service_connection: ${{ variables.azure_service_connection }}
+            graph_permission: "Application.ReadWrite.OwnedBy"
 - stage: plan
   displayName: Plan
   condition: succeeded()

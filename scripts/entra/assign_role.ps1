@@ -4,6 +4,8 @@ param(
     [string[]]$graph_permissions
 )
 
+Import-Module ./funcs/approle_assignments.ps1 -Force
+
 # Check if logged in to Azure
 if (!$tenant_id) {
     Write-Verbose "Tenant ID not provided, fetching from Azure account"
@@ -11,10 +13,7 @@ if (!$tenant_id) {
 }
 Write-Verbose "Tenant ID: $tenant_id"
 
-Write-Verbose "Getting current app role assignments for $object_id"
-$uri = "https://graph.microsoft.com/v1.0/servicePrincipals/$object_id/appRoleAssignments"
-Write-Verbose "URI: $uri"
-$existing_roles = (az rest --method GET --uri $uri --output json --resource "https://graph.microsoft.com" | ConvertFrom-Json -Depth 10).value
+$existing_roles = Get-AppRoleAssignments -object_id $object_id
 
 $uri = "https://graph.microsoft.com/v1.0/servicePrincipals/$object_id/appRoleAssignedTo"
 Write-Verbose "Assigning roles to $object_id"

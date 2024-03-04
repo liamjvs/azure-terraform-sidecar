@@ -1,0 +1,20 @@
+parameters:
+- name: service_connection
+  type: string
+  displayName: Service Connection To Use
+- name: graph_permission
+  type: string
+  displayName: Graph Permission To Check
+
+steps:
+  - task: AzureCLI@2
+    name: entra_check
+    inputs:
+      azureSubscription: ${{ parameters.service_connection }}
+      addSpnToEnvironment: true
+      scriptType: pscore
+      scriptLocation: scriptPath
+      scriptPath: '$(Build.SourcesDirectory)/scripts/entra/get_approle.ps1'
+      arguments: >
+        -object_id $env:servicePrincipalId
+        -graph_permission ${{ parameters.graph_permission }}
