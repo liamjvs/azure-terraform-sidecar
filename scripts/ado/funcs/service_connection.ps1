@@ -77,8 +77,8 @@ function Get-ServiceConnectionSecurity {
         [Parameter(Mandatory=$true)][string]$project_id
     )
 
-    $uri = "$($ado_org)/_apis/securityroles/scopes/distributedtask.project.serviceendpointrole/roleassignments/resources$($project_id)?api-version=7.1-preview.1"
-    Write-Verbose ("Trying for Service Connection Security: {0}" -f $uri)
+    $uri = "$($ado_org)/_apis/securityroles/scopes/distributedtask.project.serviceendpointrole/roleassignments/resources/$($project_id)?api-version=7.1-preview.1"
+    Write-Verbose ("Trying for Service Connection Security: {0}" -f $uri) -Verbose
 
     $out = az rest --uri $uri --method get --resource "499b84ac-1321-427f-aa17-267ca6975798" --output json
     $out = ($out | ConvertFrom-Json -Depth 10).value | where-object { $_.identity.id -eq $user_id }
