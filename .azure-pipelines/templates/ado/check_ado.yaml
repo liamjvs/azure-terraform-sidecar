@@ -18,6 +18,7 @@ steps:
       scriptType: pscore
       scriptLocation: scriptPath
       scriptPath: '$(Build.SourcesDirectory)/scripts/ado/check_ado.ps1'
+      workingDirectory: '$(Build.SourcesDirectory)/scripts/ado'
       arguments: >
         -ado_project ${{ parameters.ado_project }}
         -ado_org ${{ parameters.ado_org }}
