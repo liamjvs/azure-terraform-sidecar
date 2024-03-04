@@ -105,7 +105,7 @@ function Set-RepositorySecurity {
     $payload | Out-File -FilePath "payload.json" -Encoding ascii -Force
 
     $out = az rest --uri $uri --method POST --resource "499b84ac-1321-427f-aa17-267ca6975798" --output json --body "@payload.json"
-    # Remove-Item -Path "payload.json" -Force
+    Remove-Item -Path "payload.json" -Force
     $out = $out | ConvertFrom-Json -Depth 10
     return $out
 }

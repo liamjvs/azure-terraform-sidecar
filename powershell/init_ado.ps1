@@ -1,11 +1,11 @@
 # Description: This script initializes the ADO environment
 
 param(
-    [string]$ado_organization = "https://dev.azure.com/lismithmcaps",
-    [string]$ado_project = "Code",
-    [string]$repo_name = "azure-terraform-sidecar",
+    [string]$ado_organization,
+    [string]$ado_project,
+    [string]$repo_name,
     [string]$service_connection_name,
-    [string]$azure_subscription_id = "3f96fd38-eec2-48f5-8d76-c9b6c17c8c95",
+    [string]$azure_subscription_id,
     [string]$service_principal_id
 )
 
@@ -74,10 +74,10 @@ if(!$repo_name) {
     $ado_repositories = Get-Repositories -ado_org $ado_organization -project_id $ado_project_id
     while(!$repo_name){
         $answer = Read-Host "Enter the repo name you want to use (must be valid)"
-        if($ado_repositories -notcontains $answer) {
+        if($ado_repositories.name -notcontains $answer) {
             Write-Output "Repo name must be valid"
         } else {
-            $repo_name = $repo_name
+            $repo_name = $answer
         }
     }
 }
@@ -91,13 +91,12 @@ if(!$azure_subscription_id) {
     $azure_subscription_id = (Read-Host ("Enter the Azure Subscription ID (blank: {0})" -f $($azure_subscription).id))
     if($azure_subscription_id -eq "") {
         $azure_subscription_id = $azure_subscription.id
-    else {
+    } else {
         while($azure_subscription_id -notmatch "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$") {
             Write-Output "Subscription ID must be valid"
             $azure_subscription_id = Read-Host "Enter the Azure Subscription ID"
         }
     }
-}
 }
 
 $answer = (Read-Host ("Enter the Azure Subscription Name (blank: {0})" -f $($azure_subscription).name))
@@ -262,7 +261,7 @@ if($assign_repo_permissions) {
 Write-Output ""
 
 # Write in green
-Write-Output "ADO Environment initialized successfully" -ForegroundColor Green
+Write-Output "ADO Environment initialized successfully"
 
 # Write new line
 Write-Output ""
