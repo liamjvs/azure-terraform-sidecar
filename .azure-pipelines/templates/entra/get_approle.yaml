@@ -15,6 +15,7 @@ steps:
       scriptType: pscore
       scriptLocation: scriptPath
       scriptPath: '$(Build.SourcesDirectory)/scripts/entra/get_approle.ps1'
+      workingDirectory: '$(Build.SourcesDirectory)/scripts/entra'
       arguments: >
         -object_id $env:servicePrincipalId
         -graph_permission ${{ parameters.graph_permission }}
