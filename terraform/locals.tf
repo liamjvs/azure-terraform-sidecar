@@ -42,12 +42,12 @@ locals {
 
   private_deployment = var.init ? false : var.private_deployment
 
-  deployment_choice_storage_account = var.deployment_choice == "Storage Account"
-  deployment_choice_agent_pool      = var.deployment_choice == "Agent Pool"
+  deployment_choice_storage_account = var.deployment_choice == "StorageAccount"
+  deployment_choice_agent_pool      = var.deployment_choice == "AgentPool"
 
-  authentication_method_managed_identity      = var.authentication_method == "System Managed Identity"
-  authentication_method_user_managed_identity = var.authentication_method == "User Managed Identity"
-  authentication_method_service_principal     = var.authentication_method == "Service Principal"
+  authentication_method_managed_identity      = var.authentication_method == "SystemManagedIdentity"
+  authentication_method_user_managed_identity = var.authentication_method == "UserManagedIdentity"
+  authentication_method_service_principal     = var.authentication_method == "ServicePrincipal"
   authentication_method_user                  = var.authentication_method == "User"
 
   storage_account_containers = concat(var.backend_storage_account_containers, [local.default_resource_names.storage_account_container_sidecar])

@@ -91,8 +91,8 @@ stages:
           working_directory: "$(Build.SourcesDirectory)/terraform"
           terraform_vars:
             init=true
-            deployment_choice="System Agent Pool"
-            authentication_method="System Managed Identity"
+            deployment_choice=SystemAgentPool
+            authentication_method=SystemManagedIdentity
       - template: templates/az/logout.yaml
 - stage: deployment
   displayName: Deploy

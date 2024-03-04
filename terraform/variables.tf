@@ -20,16 +20,16 @@ variable "init" {
 variable "deployment_choice" {
   description = <<DEPLOYMENT_METHOD
   Select the deployment choice. This can either be:
-  - Storage Account
+  - StorageAccount
     - A public storage account is created to store the backend state file(s).
-  - Agent Pool
+  - AgentPool
     - A Virtual Network, Private DNS Zone, Linux Virtual Machine Scale Set, Storage Account and Private Endpoint are created with the appropriate Role-Based Access Control (RBAC) assignments.
   DEPLOYMENT_METHOD
   type        = string
-  default     = "Storage Account"
+  default     = "StorageAccount"
   validation {
-    condition     = can(regex("^(Storage Account|Agent Pool)$", var.deployment_choice))
-    error_message = "The deployment choice must be either Storage Account or Agent Pool."
+    condition     = can(regex("^(StorageAccount|AgentPool)$", var.deployment_choice))
+    error_message = "The deployment choice must be either StorageAccount or AgentPool."
   }
 }
 
@@ -40,12 +40,12 @@ variable "private_deployment" {
 }
 
 variable "authentication_method" {
-  description = "Post-deployment authentication method; either User, Service Principal or Managed Identity."
+  description = "Post-deployment authentication method; either User, ServicePrincipal, SystemManagedIdentity or UserManagedIdentity."
   type        = string
   default     = "User"
   validation {
-    condition     = can(regex("^(User|Service Principal|System Managed Identity|User Managed Identity)$", var.authentication_method))
-    error_message = "The authentication method must be either User, Service Principal, System Managed Identity or User Managed Identity."
+    condition     = can(regex("^(User|ServicePrincipal|SystemManagedIdentity|UserManagedIdentity)$", var.authentication_method))
+    error_message = "The authentication method must be either User, ServicePrincipal, SystemManagedIdentity or UserManagedIdentity."
   }
 }
 
