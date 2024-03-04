@@ -32,8 +32,8 @@ stages:
         parameters:
           working_directory: "$(Build.SourcesDirectory)/terraform"
           terraform_vars:
-            deployment_choice='System Agent Pool'
-            authentication_method='System Managed Identity'
+            "deployment_choice=System Agent Pool"
+            "authentication_method=System Managed Identity"
       - template: templates/az/logout.yaml
 - stage: deployment
   displayName: Deploy
