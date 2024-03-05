@@ -29,3 +29,44 @@ function Get-AppRoleAssignment {
     $app_role = $graph_app_roles | Where-Object { $_.value -eq $app_role_display_name }
     return $app_role
 }
+
+function New-AppRoleAssignments {
+    param (
+        [Parameter(Mandatory=$true)][string]$object_id,
+        [Parameter(Mandatory=$true)][string[]]$app_role_display_names
+    )
+
+    $output = @()
+    $graph_app_roles = Get-AppRoles
+    $object_app_roles = Get-AppRoleAssignments -object_id $object_id
+    $app_role = $graph_app_roles | Where-Object { $_.value -in $app_role_display_names }
+    foreach($role in $app_role) {
+        if($object_app_roles | Where-Object { $_.appRoleId -eq $role.id })
+        {
+            Write-Warning "Role $($role.value) already assigned to $object_id"
+        } else {
+            $output += New-AppRoleAssignment -object_id $object_id -resourceId $graph_id.id -appRoleId $role.id
+        }
+    }
+    return $output
+}
+
+function New-AppRoleAssignment {
+    param (
+        [Parameter(Mandatory=$true)][string]$object_id,
+        [Parameter(Mandatory=$true)][string]$resourceId,
+        [Parameter(Mandatory=$true)][string]$appRoleId
+    )
+
+    $app_role_assignment = @{
+        "principalId" = $object_id
+        "resourceId" = $resourceId
+        "appRoleId" = $appRoleId
+    } | ConvertTo-Json -Depth 10 -Compress | Out-File -FilePath "payload.json" -Force
+    Write-Verbose "Payload: $app_role_assignment"
+    $uri = "https://graph.microsoft.com/v1.0/servicePrincipals/$object_id/appRoleAssignedTo"
+    Write-Verbose "URI: $uri"
+    $out = az rest --method POST --uri $uri --body "@payload.json" --output json --resource $graph_app_id
+    Write-Verbose "Role $($app_role.value) assigned to $object_id"
+    Remove-Item -Path "payload.json" -Force
+}

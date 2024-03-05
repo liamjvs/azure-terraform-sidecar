@@ -18,5 +18,5 @@ steps:
       scriptPath: '$(Build.SourcesDirectory)/scripts/entra/get_approle.ps1'
       workingDirectory: '$(Build.SourcesDirectory)/scripts/entra'
       arguments: >
-        -object_id "8dc8ef1c-07a4-4303-975b-d72f005df0c3"
+        -app_id $env:servicePrincipalId
         -graph_permission ${{ parameters.graph_permission }}

@@ -9,17 +9,21 @@ param(
     [string]$service_principal_id
 )
 
+$ErrorActionPreference = "Stop"
+
 try {
     Import-Module ./scripts/ado/funcs/agent_pool.ps1 -Force
     Import-Module ./scripts/ado/funcs/service_connection.ps1 -Force
     Import-Module ./scripts/ado/funcs/project.ps1 -Force
     Import-Module ./scripts/ado/funcs/repo.ps1 -Force
+    Import-Module ./scripts/entra/funcs/approle_assignments.ps1 -Force
 }
 catch {
     Write-Error "Failed to import the required modules. Please make sure the modules are present in the correct location."
     Write-Warning "Please make sure you are the root of the repository and try again."
     exit
 }
+
 
 # check if the az cli is installed
 if(!(Get-Command az -ErrorAction SilentlyContinue)) {
@@ -108,36 +112,51 @@ if(!$answer) {
 
 # prompt the user for their service principal id
 if(!$service_principal_id) {
-    $service_principal_id = Read-Host "Enter the service principal application id (blank: script will create a new service principal)"
+    $question = "Enter the service principal application id (blank: script will create a new service principal)"
+    $service_principal_id = Read-Host $question
     if(!$service_principal_id) {
         $service_principal_id = "to_be_created"
     } else {
         #service principal id should be a valid guid
         while($service_principal_id -notmatch "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$") {
             Write-Output "Service Principal ID must be valid"
-            $service_principal_id = Read-Host "Enter the service principal application id (default: script will create a new service principal)"
+            $service_principal_id = Read-Host $question
         }
     }
 }
 
+if($service_principal_id -ne "to_be_created") {
+    $question = "Do you want to assign 'Application.ReadWrite.OwnedBy' permission to the service principal? (default: y) (y/n)"
+    $answer = Read-Host $question
+    while($answer -ne "y" -and $answer -ne "n") {
+        Write-Output "Invalid input. Please enter 'y' or 'n'"
+        $answer = Read-Host $question
+    }
+}
+if($answer -eq "y" -or $service_principal_id -eq "to_be_created") {
+    $assign_app_role = $true
+} else {
+    $assign_app_role = $false
+}
+
 # prompt the user for their service connection name
 if(!$service_connection_name) {
-    $service_connection_to_be = Read-Host "Enter the service connection name (blank: sidecar-service-connection)"
-    if(!$service_connection_to_be) {
-        $service_connection_to_be = "sidecar-service-connection"
+    $service_connection_name = Read-Host "Enter the service connection name (blank: sidecar-service-connection)"
+    if(!$service_connection_name) {
+        $service_connection_name = "sidecar-service-connection"
     }
 }
 
+$service_connection_loop = $true
 # loop through the service connections to check if the service connection name already exists
-while($service_connection_to_be){
+while($service_connection_loop){
     $service_connections = Get-ServiceConnections -ado_org $ado_organization -ado_project $ado_project
     if($service_connections) {
         $service_connection_names = $service_connections.name
-        if($service_connection_names -contains $service_connection_to_be) {
-            $service_connection_to_be = Read-Host "Service Connection name already exists. Please enter a unique name."
+        if($service_connection_names -contains $service_connection_name) {
+            $service_connection_name = Read-Host "Service Connection name already exists. Please enter a unique name."
         } else {
-            $service_connection_name = $service_connection_to_be
-            $service_connection_to_be = $false
+            $service_connection_loop = $false
         }
     }
 
@@ -181,7 +200,6 @@ if($assign_repo_permissions -ne "n") {
     $assign_repo_permissions = $false
 }
 
-
 # Write new line
 Write-Output ""
 
@@ -192,6 +210,7 @@ Write-Output "Repo Name: $repo_name"
 Write-Output "Subscription ID: $azure_subscription_id"
 Write-Output "Subscription Name: $subscription_name"
 Write-Output "Service Principal ID: $service_principal_id"
+Write-Output "Adding AppRole 'Application.ReadWrite.OwnedBy' to Service Principal: $assign_app_role"
 Write-Output "Service Connection Name: $service_connection_name"
 Write-Output "Assign Creator Role for Service Connections: $assign_creator_role_service_connections"
 Write-Output "Assign Creator Role for Agent Pools: $assign_creator_role_agent_pools"
@@ -211,6 +230,13 @@ $service_principal = az ad sp create-for-rbac --name $service_connection_name --
 $service_principal = $service_principal | ConvertFrom-Json -Depth 10
 if(!$service_principal) {
     Write-Error "Service Principal creation failed. Do you have the required permissions to create a service principal?"
+}
+
+# Add AppRole 'Application.ReadWrite.OwnedBy' to Service Principal
+if($assign_app_role) {
+    Write-Output "Adding AppRole 'Application.ReadWrite.OwnedBy' to Service Principal"
+    $object_id = az ad sp show --id $($service_principal.appId) -o tsv --query "id"
+    New-AppRoleAssignments -object_id $object_id -app_role_display_names @("Application.ReadWrite.OwnedBy")
 }
 
 # Create Service Connection
