@@ -21,9 +21,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
       - name: super-linter
-        uses: super-linter/super-linter@v6.3.0
+        uses: super-linter/super-linter/slim@v6.3.0
         env:
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_BASH: true
@@ -31,7 +31,6 @@ jobs:
           VALIDATE_GITHUB_ACTIONS: true
           VALIDATE_JSON: true
           VALIDATE_MARKDOWN: true
-          VALIDATE_POWERSHELL: true
           VALIDATE_TERRAFORM_FMT: true
           VALIDATE_TERRAFORM_TFLINT: true
           ERROR_ON_MISSING_EXEC_BIT: true
