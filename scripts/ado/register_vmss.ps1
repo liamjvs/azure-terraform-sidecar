@@ -31,7 +31,11 @@ if (!$vmss_sp) {
   Write-Output "Service Principal already exists."
 
   Write-Output "Checking if Service Principal has access to VMSS"
-  $vmss_sp_object = az ad sp list --query "[?appId=='$($vmss_sp.appId)']" --output json --only-show-errors | ConvertFrom-Json -Depth 10
+  $vmss_sp_object = az ad sp list --query "[?appId=='$($vmss_sp.appId)']" --all --output json --only-show-errors | ConvertFrom-Json -Depth 10
+  if($vmss_sp_object.Length -eq 0){
+    Write-Error "Service Principal with that App ID was not found"
+    throw "Service Principal with that App ID was not found"
+  }
   $vmss_sp_rbac = az role assignment list --assignee $vmss_sp_object.id --scope $ado_agent_pool_vmss_id --output json --query "[?roleDefinitionName=='Virtual Machine Contributor']" --only-show-errors | ConvertFrom-Json -Depth 10
   if(!$vmss_sp_rbac){
     Write-Output "Assigning role to Service Principal"
