@@ -43,7 +43,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_authentication_method"></a> [authentication\_method](#input\_authentication\_method) | Post-deployment authentication method; either User, Service Principal or Managed Identity. | `string` | `"System Managed Identity"` | no |
+| <a name="input_authentication_method"></a> [authentication\_method](#input\_authentication\_method) | Post-deployment authentication method; either User, ServicePrincipal, SystemManagedIdentity or UserManagedIdentity. | `string` | `"User"` | no |
 | <a name="input_backend_additional_principal_ids"></a> [backend\_additional\_principal\_ids](#input\_backend\_additional\_principal\_ids) | The additional principal IDs to grant access to the storage account. | `list(string)` | `[]` | no |
 | <a name="input_backend_storage_account_container"></a> [backend\_storage\_account\_container](#input\_backend\_storage\_account\_container) | The container to store this Sidecar Terraform deployment into post-deployment. | `string` | `""` | no |
 | <a name="input_backend_storage_account_containers"></a> [backend\_storage\_account\_containers](#input\_backend\_storage\_account\_containers) | The containers to create in the storage account. | `list(string)` | `[]` | no |
@@ -51,6 +51,7 @@
 | <a name="input_backend_storage_account_replication_type"></a> [backend\_storage\_account\_replication\_type](#input\_backend\_storage\_account\_replication\_type) | The type of replication to use for this storage account. | `string` | `"LRS"` | no |
 | <a name="input_backend_storage_account_tier"></a> [backend\_storage\_account\_tier](#input\_backend\_storage\_account\_tier) | The tier to use for this storage account. | `string` | `"Standard"` | no |
 | <a name="input_context"></a> [context](#input\_context) | The context of the deployment. | `string` | `"sidecar"` | no |
+| <a name="input_deployment_choice"></a> [deployment\_choice](#input\_deployment\_choice) | Select the deployment choice. This can either be:<br>  - StorageAccount<br>    - A public storage account is created to store the backend state file(s).<br>  - AgentPool<br>    - A Virtual Network, Private DNS Zone, Linux Virtual Machine Scale Set, Storage Account and Private Endpoint are created with the appropriate Role-Based Access Control (RBAC) assignments. | `string` | `"StorageAccount"` | no |
 | <a name="input_init"></a> [init](#input\_init) | If this is the first deployment of the solution. | `bool` | `false` | no |
 | <a name="input_location"></a> [location](#input\_location) | The location/region where the resources are created. | `string` | `"uksouth"` | no |
 | <a name="input_private_deployment"></a> [private\_deployment](#input\_private\_deployment) | Make the solution private and only accessible via private endpoints. | `bool` | `false` | no |
@@ -61,9 +62,7 @@
 | <a name="input_subnet_private_runner_name"></a> [subnet\_private\_runner\_name](#input\_subnet\_private\_runner\_name) | The name of the runner subnet. | `string` | `null` | no |
 | <a name="input_subnet_runner_address_prefixes"></a> [subnet\_runner\_address\_prefixes](#input\_subnet\_runner\_address\_prefixes) | The address prefixes to use for the runner subnet. | `string` | `"10.0.0.0/24"` | no |
 | <a name="input_user_assigned_identity_name"></a> [user\_assigned\_identity\_name](#input\_user\_assigned\_identity\_name) | The name of the user assigned managed identity | `string` | `""` | no |
-| <a name="input_virtual_machine_scaleset_disk_name"></a> [virtual\_machine\_scaleset\_disk\_name](#input\_virtual\_machine\_scaleset\_disk\_name) | The name of the virtual machine scale set disk. | `string` | `null` | no |
 | <a name="input_virtual_machine_scaleset_name"></a> [virtual\_machine\_scaleset\_name](#input\_virtual\_machine\_scaleset\_name) | The name of the virtual machine scale set. | `string` | `null` | no |
-| <a name="input_virtual_machine_scaleset_nic_name"></a> [virtual\_machine\_scaleset\_nic\_name](#input\_virtual\_machine\_scaleset\_nic\_name) | The name of the virtual machine scale set network interface. | `string` | `null` | no |
 | <a name="input_virtual_machine_scaleset_use_azure_key_pair"></a> [virtual\_machine\_scaleset\_use\_azure\_key\_pair](#input\_virtual\_machine\_scaleset\_use\_azure\_key\_pair) | Whether to use an Azure key pair for the virtual machine scale set. | `bool` | `false` | no |
 | <a name="input_virtual_machine_scaleset_use_random_password"></a> [virtual\_machine\_scaleset\_use\_random\_password](#input\_virtual\_machine\_scaleset\_use\_random\_password) | Whether to use a random password for the virtual machine scale set. | `bool` | `true` | no |
 | <a name="input_virtual_network_address_space"></a> [virtual\_network\_address\_space](#input\_virtual\_network\_address\_space) | The address space that is used the virtual network. | `list(string)` | <pre>[<br>  "10.0.0.0/23"<br>]</pre> | no |

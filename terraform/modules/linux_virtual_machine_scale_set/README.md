@@ -1,16 +1,18 @@
 <!-- BEGIN_TF_DOCS -->
+# Linux Virtual Machine Scale Set
+
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.19.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.93.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.19.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.93.0 |
 
 ## Modules
 
@@ -33,7 +35,7 @@ No modules.
 | <a name="input_custom_data"></a> [custom\_data](#input\_custom\_data) | The custom data of the virtual machine scale set. If populated, it must be base64 encoded. | `string` | `null` | no |
 | <a name="input_do_not_run_extensions_on_overprovisioned_vm"></a> [do\_not\_run\_extensions\_on\_overprovisioned\_vm](#input\_do\_not\_run\_extensions\_on\_overprovisioned\_vm) | Specifies whether to run extensions on overprovisioned virtual machines. <br>  Recommend setting this to try if using this for Azure DevOps Agents as you may get a condition where a VM is deprovisioned but has received an Azure DevOps job. | `bool` | `false` | no |
 | <a name="input_enable_managed_identity"></a> [enable\_managed\_identity](#input\_enable\_managed\_identity) | Specifies whether a managed identity should be enabled for the virtual machine scale set. | `bool` | `true` | no |
-| <a name="input_instances"></a> [instances](#input\_instances) | The number of instances in the virtual machine scale set. | `number` | `0` | no |
+| <a name="input_instances"></a> [instances](#input\_instances) | The number of instances in the virtual machine scale set on initialy deployment. Currently, this property is added to be ignored post-deployment as Azure DevOps handles the instance count | `number` | `0` | no |
 | <a name="input_location"></a> [location](#input\_location) | The location/region where the resources are created. | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | The name of the virtual machine scale set. | `string` | n/a | yes |
 | <a name="input_nic_name"></a> [nic\_name](#input\_nic\_name) | The name of the network interface. | `string` | `null` | no |

@@ -1,18 +1,21 @@
 <!-- BEGIN_TF_DOCS -->
+# SSH Public Key
+
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
 | <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | 1.10.0 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.5 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.93.0 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | 3.6.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_azapi"></a> [azapi](#provider\_azapi) | 1.10.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.5 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.6.0 |
 
 ## Modules
 
@@ -24,7 +27,7 @@ No modules.
 |------|------|
 | [azapi_resource.public_key](https://registry.terraform.io/providers/azure/azapi/1.10.0/docs/resources/resource) | resource |
 | [azapi_resource_action.gen](https://registry.terraform.io/providers/azure/azapi/1.10.0/docs/resources/resource_action) | resource |
-| [random_pet.name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) | resource |
+| [random_pet.name](https://registry.terraform.io/providers/hashicorp/random/3.6.0/docs/resources/pet) | resource |
 
 ## Inputs
 
