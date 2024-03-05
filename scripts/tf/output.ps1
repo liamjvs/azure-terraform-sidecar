@@ -6,7 +6,7 @@ param(
 $terraform_output = terraform output -json
 $output_object = $terraform_output | ConvertFrom-Json -Depth 100
 
-if($output_object -eq $null){
+if($null -eq $output_object){
     if($error_on_no_output){
         Write-Error "Unable to find outputs in terraform output"
         exit 1
@@ -22,6 +22,7 @@ if(!$cicd_ado){
 
 foreach($key in $output_object.PSObject.Properties.Name){
     $line_item = "{0} = `"{1}`"" -f $key, $output_object.$key.value
+    Write-Verbose $line_item
     if($cicd_ado){
         Write-Host ("##vso[task.setvariable variable=TF_OUTPUT_{0};]{1}" -f ($key.ToUpper()), $output_object.$key.value)
     } else {

@@ -31,14 +31,14 @@ function Get-BuildServiceSecurityID{
     )
 
     $uri = "$($ado_org)/_apis/accesscontrollists/2e9eb7ed-3c0a-47d4-87c1-0ffdd275fd87"
-    $query = @{
+    @{
         "api-version" = "7.1-preview.1"
         token = "repoV2/$($project_id)"
     } | ConvertTo-Json -Compress | Out-File "query.json" -Force
     $out = az rest --url $uri --method GET --resource "499b84ac-1321-427f-aa17-267ca6975798" --output json --uri-parameters "@query.json"
     Remove-Item -Path "query.json" -Force
     # force conver tot hashtable
-    $out = ($out | ConvertFrom-Json -Depth 10).value.acesDictionary.pSobject.Properties.Name | Where {$_ -like "Microsoft.TeamFoundation.ServiceIdentity*"}
+    $out = ($out | ConvertFrom-Json -Depth 10).value.acesDictionary.pSobject.Properties.Name | Where-Object {$_ -like "Microsoft.TeamFoundation.ServiceIdentity*"}
     if (!$out) {
         Write-Error "Could not find the build service account. This is unexpected."
     }

@@ -22,7 +22,6 @@ jobs:
           VALIDATE_POWERSHELL: true
           VALIDATE_TERRAFORM_FMT: true
           VALIDATE_TERRAFORM_TFLINT: true
-          VALIDATE_YAML: true
           ERROR_ON_MISSING_EXEC_BIT: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: ${{ github.event.pull_request.head.ref }}

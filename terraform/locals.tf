@@ -31,10 +31,10 @@ locals {
   )
 
   subnets = {
-    "${local.default_resource_names["subnet_runner_name"]}" = {
+    lookup(local.resource_names,"subnet_runner_name") = {
       address_prefixes = [var.subnet_runner_address_prefixes]
     }
-    "${local.default_resource_names["subnet_private_endpoint_name"]}" = {
+    lookup(local.resource_names,"subnet_private_endpoint_name") = {
       address_prefixes                  = [var.subnet_private_endpoint_address_prefixes]
       private_endpoint_network_policies = true
     }
@@ -42,7 +42,6 @@ locals {
 
   private_deployment = var.init ? false : var.private_deployment
 
-  deployment_choice_storage_account = var.deployment_choice == "StorageAccount"
   deployment_choice_agent_pool      = var.deployment_choice == "AgentPool"
 
   authentication_method_managed_identity      = var.authentication_method == "SystemManagedIdentity"

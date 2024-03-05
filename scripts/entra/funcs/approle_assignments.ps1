@@ -25,7 +25,6 @@ function Get-AppRoleAssignment {
     )
 
     $graph_app_roles = Get-AppRoles
-    $object_app_roles = Get-AppRoleAssignments -object_id $object_id
     $app_role = $graph_app_roles | Where-Object { $_.value -eq $app_role_display_name }
     return $app_role
 }
@@ -67,6 +66,7 @@ function New-AppRoleAssignment {
     $uri = "https://graph.microsoft.com/v1.0/servicePrincipals/$object_id/appRoleAssignedTo"
     Write-Verbose "URI: $uri"
     $out = az rest --method POST --uri $uri --body "@payload.json" --output json --resource $graph_app_id
+    Write-Verbose $out
     Write-Verbose "Role $($app_role.value) assigned to $object_id"
     Remove-Item -Path "payload.json" -Force
 }

@@ -24,11 +24,6 @@ variable "account_replication_type" {
   type        = string
 }
 
-variable "account_access_tier" {
-  description = "Defines the access tier to use for this storage account."
-  type        = string
-}
-
 variable "min_tls_version" {
   description = "The minimum TLS version to use for this storage account."
   type        = string

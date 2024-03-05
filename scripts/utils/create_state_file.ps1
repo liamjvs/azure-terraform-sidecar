@@ -20,7 +20,7 @@ $valid_backend_outputs = @(
 )
 
 if($cicd_ado) {
-    $terraform_output = gci env:* | where-object {$_.Name -like "TF_OUTPUT_*"}
+    $terraform_output = Get-ChildItem env:* | where-object {$_.Name -like "TF_OUTPUT_*"}
 } else {
     $terraform_output = $Global:tf_output
 }

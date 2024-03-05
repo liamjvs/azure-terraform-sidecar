@@ -124,7 +124,7 @@ function Update-ServiceConnectionSecret {
 
     $service_connection = $service_connections | where-object { $_.id -eq $user_id }
 
-    if($service_connection -eq $null){
+    if($null -eq $service_connection){
         Write-Error "Service Connection Not Found"
     } else {
         Add-Member -InputObject $service_connection.authorization.parameters -Name serviceprincipalkey -Value $service_principal_secret -MemberType NoteProperty

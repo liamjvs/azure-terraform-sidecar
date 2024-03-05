@@ -10,13 +10,6 @@ Import-Module ./funcs/project.ps1 -Force
 Import-Module ./funcs/service_connection.ps1 -Force
 Import-Module ./funcs/agent_pool.ps1 -Force
 
-$projects_uri = "$($ado_org)_apis/projects?api-version=7.1-preview.4"
-$member_entitlements_uri = "$($ado_org)_apis/MemberEntitlements" -replace "dev.azure.com", "vsaex.dev.azure.com"
-$agent_pool_uri = "$($ado_org)_apis/securityroles/scopes/distributedtask.globalagentqueuerole/roleassignments/resources/{0}"
-$service_connection_uri = "$($ado_org)_apis/securityroles/scopes/distributedtask.project.serviceendpointrole/roleassignments/resources/{0}"
-$ado_graph_app = "499b84ac-1321-427f-aa17-267ca6975798"
-
-Write-Verbose "Trying if Service Connection has access to ADO projects: $projects_uri" -Verbose
 $projects_object = Get-ProjectObject -ado_org $ado_org -ado_project $ado_project
 if (!$projects_object) {
     Write-Error ("The Service Connection '{0}' does not have access to the project." -f $service_connection)
@@ -35,7 +28,7 @@ if ($service_principal) {
 }
 
 $agent_pool_security = Get-AgentPoolSecurity -ado_org $ado_org -user_id $service_principal.id -project_id $project_id
-$agent_pool_identity = $agent_pool_security | where-object { $_.role.allowPermissions -ge 33 } 
+$agent_pool_identity = $agent_pool_security | where-object { $_.role.allowPermissions -ge 33 }
 
 if (!$agent_pool_identity) {
     Write-Error "The Service Connection does not have Creator or above to the project Agent Pools."

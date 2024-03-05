@@ -40,7 +40,7 @@ try {
     }
 
     Write-Output "Changing to Terraform directory"
-    cd terraform
+    Set-Location terraform
 
     Write-Output "Disabling backend.tf"
     ../scripts/utils/modify_backend.ps1 -disable $true
@@ -109,6 +109,6 @@ finally {
             ../scripts/utils/modify_backend.ps1 -enable $true
         }
 
-        cd ..
+        Set-Location ..
     }
 }

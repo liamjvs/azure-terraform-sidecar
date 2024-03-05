@@ -36,6 +36,7 @@ if (!$vmss_sp) {
   if(!$vmss_sp_rbac){
     Write-Output "Assigning role to Service Principal"
     $out = az role assignment create --assignee-principal ServicePrincipal --assignee-object-id $vmss_sp_object[0].id --role "Virtual Machine Contributor" --scope $ado_agent_pool_vmss_id --only-show-errors
+    Write-Verbose "Role Assignment: $($out | ConvertTo-Json -Compress)"
   } else {
     Write-Output "Service Principal already has access to VMSS"
   }
@@ -51,7 +52,7 @@ if (!$vmss_sp) {
         az rest --method post --url https://graph.microsoft.com/v1.0/applications/$($vmss_sp.id)/removePassword --body "@payload.json" --only-show-errors
         Remove-Item -Path payload.json -Force
     }
-  
+
   Write-Output ("Creating key with displayName {0}" -f $sp.name)
   @{ passwordCredential = @{ displayName = "rbac" }} | ConvertTo-Json -Depth 10 | Out-File -FilePath "payload.json" -Encoding ascii -Force
   $output = az rest --method post --url https://graph.microsoft.com/v1.0/applications/$($vmss_sp.id)/addPassword --body "@payload.json" --only-show-errors
