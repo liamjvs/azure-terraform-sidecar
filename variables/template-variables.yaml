@@ -2,30 +2,28 @@ variables:
 # Required Variables
 ## Azure Subscription ID to Deploy to
 - name: azure_subscription_id
-  value: ''
+  value: <YOUR_SUBSCRIPTION_ID>
 ## Azure Service Connection Name
 - name: azure_service_connection
-  value: ''
+  value: sidecar-service-connection
 ## Register Virutal Machine with ADO
 - name: register_vm
   value: 'true' # must be a string, sorry
 - name: agent_pool_name
-  value: agent_pool_529
+  value: sidecar-agent-pool
 # Azure DevOps Required Variables
-## Azure Register VM Name
-- name: ado_vm_pool
-  value: ''
-## Azure DevOps Service Connection
-- name: ado_service_connection
-  value: ''
-## Azure DevOps Agent Service Connection
-- name: ado_agent_service_connection
-  value: ''
-## Azure DevOps Agent Pool Name
+## The name to register the Agent Pool with
 - name: ado_agent_pool_name
-  value: ''
+  value: sidecar-agent-pool
+## Azure DevOps Service Connection
+- name: ado_service_connection_name
+  value: sidecar-agent-pool
+## Azure DevOps Agent Service Connection
+# If you have an alternative service connection for ADO access, you can specify it here.
+- name: ado_service_connection
+  value: 
 ## Azure DevOps Agent Pool Name
 - name: subscription_name
-  value: ''
+  value: <YOUR_SUBSCRIPTION_NAME>
 - name: terraform_state_file
-  value: tf.tfbackend
+  value:
