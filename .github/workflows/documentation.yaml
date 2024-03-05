@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ steps.commit.outputs.commit_hash }}
+          fetch-depth: 0
       - name: super-linter
         uses: super-linter/super-linter/slim@v6.3.0
         env:
