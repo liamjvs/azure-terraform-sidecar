@@ -35,4 +35,3 @@ jobs:
           VALIDATE_TERRAFORM_TFLINT: true
           ERROR_ON_MISSING_EXEC_BIT: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: ${{ steps.commit.outputs.commit_hash }}
