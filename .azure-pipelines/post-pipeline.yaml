@@ -34,6 +34,7 @@ stages:
           terraform_vars:
             deployment_choice=AgentPool
             authentication_method=SystemManagedIdentity
+            private_deployment=true
       - template: templates/az/logout.yaml
 - stage: deployment
   displayName: Deploy
