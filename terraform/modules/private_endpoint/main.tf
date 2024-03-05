@@ -1,3 +1,7 @@
+/**
+ * # Private Endpoint
+ */
+
 resource "azurerm_private_endpoint" "this" {
   name                = var.name
   location            = var.location

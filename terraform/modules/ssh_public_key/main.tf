@@ -1,3 +1,7 @@
+/**
+ * # SSH Public Key
+ */
+
 resource "random_pet" "name" {
   prefix    = "ssh"
   separator = ""

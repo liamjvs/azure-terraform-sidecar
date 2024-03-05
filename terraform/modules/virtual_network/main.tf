@@ -1,3 +1,7 @@
+/**
+ * # Virtual Network and Subnet(s)
+ */
+
 resource "azurerm_virtual_network" "this" {
   name                = var.name
   location            = var.location

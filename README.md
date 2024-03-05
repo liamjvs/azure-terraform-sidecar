@@ -6,8 +6,8 @@
 Sidecar is a solution to provide a minimal Terraform environment for future Terraform deployments.
 
 Sidecar caters for if you're starting off executing Terraform locally or you're looking to integrate Terraform into your CI/CD environment, Sidecar will provide you with a Terraform environment in Azure.
-Whether you are deploying your Terraform solution directly to a subscription and need a simple way to deploy a Storage Account to store your Terraform state files, 
-or you are looking to deploy a new Azure Landing Zone within a new tenant through your Azure DevOps environment 
+Whether you are deploying your Terraform solution directly to a subscription and need a simple way to deploy a Storage Account to store your Terraform state files,
+or you are looking to deploy a new Azure Landing Zone within a new tenant through your Azure DevOps environment
 or provide a Bring-Your-Own-Runner (BYOR) functionality to application teams, Sidecar will provide you with a Terraform environment in Azure.
 
 ## Features
@@ -88,7 +88,7 @@ Clone the repository to your local machine and push it to your Azure DevOps envi
 Add the `init-pipeline.yml` and `post-pipeline.yml` to your Azure DevOps project. The `init-pipeline.yml` will create the resources required for the Terraform environment. The `post-pipeline.yml` will create the Service Connection and Agent Pool.
 
 ###### `init-pipeline.yml`
-The `init-pipeline.yml` needs to be executed first. This pipeline will execute the Terraform deployment from a Microsoft-hosted agent. 
+The `init-pipeline.yml` needs to be executed first. This pipeline will execute the Terraform deployment from a Microsoft-hosted agent.
 The pipeline executes the deployment with the Terraform variable `init` set to `true` that ensures the resources deployed via the process are publically facing for the Microsoft-hosted agent to access.
 
 After the deployment has succeeded, the pipeline will:
@@ -108,7 +108,7 @@ Alternatively, the Agent Pool and the backend Storage Account can now be utilise
 ## FAQ
 
 ### Isn't this just another accelerator/bootstrap?
-Yes-no. Yes, it is a bootstrap in the sense that it will get you up and running with a Terraform environment in Azure. No, it is not an accelerator in the sense it is for a specific usecase. 
+Yes-no. Yes, it is a bootstrap in the sense that it will get you up and running with a Terraform environment in Azure. No, it is not an accelerator in the sense it is for a specific usecase.
 It is a series of scripts, pipelines and Terraform code that will deploy a Terraform environment to your requirements.
 There's a lot of flexibility in how you can use this solution/scripts/components in the form it's in or rework it to suit your needs.
 
@@ -121,19 +121,17 @@ From here you can then start to build out your Terraform solution using the Stor
 I have been on countless engagements where individuals are using Terraform however, due to time constraints, they have not been able to perform their Terraform deployments in the best manner they'd like.
 This solution is a way to provide a simple, off-the-shelf way to create a Terraform environment in Azure that can be used to deploy Terraform solutions in a more structured manner, using the toolset that is available to them.
 
-### Azure DevOps
-
-#### The Service Connection does not have access to the Azure DevOps Project
+#### Azure DevOps - The Service Connection does not have access to the Project
 Add the Service Principal to the Azure DevOps Organisation as you would a user.
 
-#### The Service Connection does not have access to create Agent Pools
+#### Azure DevOps -  The Service Connection does not have access to create Agent Pools
 Ensure that the Service Connection has the 'Agent Pool Creator' role or greater.
 Navigate to the Agnet Pools under the project you want to create the Agent Pool under.
 Top right, click on the three dots and select 'Security'.
 Add the Service Principal to the Agent Pool with the 'Agent Pool Creator' role or greater.
 The Service Principal will not appear unless it has been added to the Azure DevOps Organisation (please see above).
 
-#### The Service Connection does not have access to create Service Connections
+#### Azure DevOps - The Service Connection does not have access to create Service Connections
 Ensure that the Service Connection has the 'Service Connection Creator' role or greater.
 Navigate to the Service Connections under the project you want to create the Service Connection under.
 Top right, click on the three dots and select 'Security'.
