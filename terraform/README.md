@@ -1,4 +1,6 @@
 <!-- BEGIN_TF_DOCS -->
+# azure-terraform-sidecar
+
 ## Requirements
 
 | Name | Version |
@@ -51,7 +53,7 @@
 | <a name="input_backend_storage_account_replication_type"></a> [backend\_storage\_account\_replication\_type](#input\_backend\_storage\_account\_replication\_type) | The type of replication to use for this storage account. | `string` | `"LRS"` | no |
 | <a name="input_backend_storage_account_tier"></a> [backend\_storage\_account\_tier](#input\_backend\_storage\_account\_tier) | The tier to use for this storage account. | `string` | `"Standard"` | no |
 | <a name="input_context"></a> [context](#input\_context) | The context of the deployment. | `string` | `"sidecar"` | no |
-| <a name="input_deployment_choice"></a> [deployment\_choice](#input\_deployment\_choice) | Select the deployment choice. This can either be:<br>  - StorageAccount<br>    - A public storage account is created to store the backend state file(s).<br>  - AgentPool<br>    - A Virtual Network, Private DNS Zone, Linux Virtual Machine Scale Set, Storage Account and Private Endpoint are created with the appropriate Role-Based Access Control (RBAC) assignments. | `string` | `"StorageAccount"` | no |
+| <a name="input_deployment_choice"></a> [deployment\_choice](#input\_deployment\_choice) | Select the deployment choice. This can either be:<br>  - StorageAccount: A public storage account is created to store the backend state file(s).<br>  - AgentPool: A Virtual Network, Private DNS Zone, VMSS, Storage Account and Private Endpoint are created with the appropriate RBAC assignments. | `string` | `"StorageAccount"` | no |
 | <a name="input_init"></a> [init](#input\_init) | If this is the first deployment of the solution. | `bool` | `false` | no |
 | <a name="input_location"></a> [location](#input\_location) | The location/region where the resources are created. | `string` | `"uksouth"` | no |
 | <a name="input_private_deployment"></a> [private\_deployment](#input\_private\_deployment) | Make the solution private and only accessible via private endpoints. | `bool` | `false` | no |
