@@ -5,14 +5,14 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.93.0 |
+| terraform | >= 1.5.0 |
+| azurerm | >= 3.93.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.93.0 |
+| azurerm | >= 3.93.0 |
 
 ## Modules
 
@@ -28,14 +28,14 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_location"></a> [location](#input\_location) | Location of the resource group | `string` | n/a | yes |
-| <a name="input_name"></a> [name](#input\_name) | Name of the user assigned identity | `string` | n/a | yes |
-| <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Name of the resource group | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags for this resource | `map(string)` | `{}` | no |
+| location | Location of the resource group | `string` | n/a | yes |
+| name | Name of the user assigned identity | `string` | n/a | yes |
+| resource\_group\_name | Name of the resource group | `string` | n/a | yes |
+| tags | Tags for this resource | `map(string)` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_azurerm_user_assigned_identity"></a> [azurerm\_user\_assigned\_identity](#output\_azurerm\_user\_assigned\_identity) | n/a |
+| azurerm\_user\_assigned\_identity | n/a |
 <!-- END_TF_DOCS -->

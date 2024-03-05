@@ -5,14 +5,14 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.93.0 |
+| terraform | >= 1.5.0 |
+| azurerm | >= 3.93.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.93.0 |
+| azurerm | >= 3.93.0 |
 
 ## Modules
 
@@ -28,17 +28,17 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_is_manual_connection"></a> [is\_manual\_connection](#input\_is\_manual\_connection) | Is the connection manual | `bool` | `false` | no |
-| <a name="input_location"></a> [location](#input\_location) | Location of the resource group | `string` | n/a | yes |
-| <a name="input_name"></a> [name](#input\_name) | Name of the private endpoint | `string` | n/a | yes |
-| <a name="input_private_connection_resource_id"></a> [private\_connection\_resource\_id](#input\_private\_connection\_resource\_id) | ID of the private connection resource | `string` | n/a | yes |
-| <a name="input_private_dns_zone_group_name"></a> [private\_dns\_zone\_group\_name](#input\_private\_dns\_zone\_group\_name) | Name of the private DNS zone group | `string` | `"default"` | no |
-| <a name="input_private_dns_zone_ids"></a> [private\_dns\_zone\_ids](#input\_private\_dns\_zone\_ids) | Private DNS zone IDs | `list(string)` | `[]` | no |
-| <a name="input_private_service_connection_name"></a> [private\_service\_connection\_name](#input\_private\_service\_connection\_name) | Name of the private service connection | `string` | `"private-service-connection"` | no |
-| <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Name of the resource group | `string` | n/a | yes |
-| <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | ID of the subnet | `string` | n/a | yes |
-| <a name="input_subresource_names"></a> [subresource\_names](#input\_subresource\_names) | Subresource names | `list(string)` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags for this resource | `map(string)` | `{}` | no |
+| is\_manual\_connection | Is the connection manual | `bool` | `false` | no |
+| location | Location of the resource group | `string` | n/a | yes |
+| name | Name of the private endpoint | `string` | n/a | yes |
+| private\_connection\_resource\_id | ID of the private connection resource | `string` | n/a | yes |
+| private\_dns\_zone\_group\_name | Name of the private DNS zone group | `string` | `"default"` | no |
+| private\_dns\_zone\_ids | Private DNS zone IDs | `list(string)` | `[]` | no |
+| private\_service\_connection\_name | Name of the private service connection | `string` | `"private-service-connection"` | no |
+| resource\_group\_name | Name of the resource group | `string` | n/a | yes |
+| subnet\_id | ID of the subnet | `string` | n/a | yes |
+| subresource\_names | Subresource names | `list(string)` | n/a | yes |
+| tags | Tags for this resource | `map(string)` | `{}` | no |
 
 ## Outputs
 

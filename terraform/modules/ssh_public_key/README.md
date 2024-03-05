@@ -5,17 +5,17 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | 1.10.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.93.0 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | 3.6.0 |
+| terraform | >= 1.5.0 |
+| azapi | 1.10.0 |
+| azurerm | >= 3.93.0 |
+| random | 3.6.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | 1.10.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | 3.6.0 |
+| azapi | 1.10.0 |
+| random | 3.6.0 |
 
 ## Modules
 
@@ -33,12 +33,12 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_location"></a> [location](#input\_location) | The location/region where the resources are created. | `string` | n/a | yes |
-| <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | The name of the resource group in which to create the SSH Key. | `string` | n/a | yes |
+| location | The location/region where the resources are created. | `string` | n/a | yes |
+| resource\_group\_id | The name of the resource group in which to create the SSH Key. | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_public_key"></a> [public\_key](#output\_public\_key) | n/a |
+| public\_key | n/a |
 <!-- END_TF_DOCS -->
