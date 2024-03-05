@@ -5,8 +5,9 @@ param(
 
 Import-Module ./funcs/approle_assignments.ps1 -Force
 
-$existing_roles = Get-AppRoleAssignments -object_id $object_id
-if ($existing_roles | Where-Object { $_.value -eq $graph_permission }) {
+$role_exists = Get-AppRoleAssignment -object_id $object_id -app_role_display_name $graph_permission
+
+if ($role_exists) {
     Write-Output "Role $graph_permission already assigned to $object_id"
 } else {
     Write-Error "Role $graph_permission not assigned to $object_id"
