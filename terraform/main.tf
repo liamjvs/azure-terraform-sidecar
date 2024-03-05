@@ -1,3 +1,7 @@
+/**
+ * # azure-terraform-sidecar
+ */
+
 ## Data
 data "azurerm_client_config" "current" {
 }
@@ -27,7 +31,6 @@ module "storage_account" {
   location                      = var.location
   account_tier                  = var.backend_storage_account_tier
   account_replication_type      = var.backend_storage_account_replication_type
-  account_access_tier           = var.backend_storage_account_tier
   public_network_access_enabled = !local.private_deployment
   principal_ids_role_assignment = local.backend_principal_ids
   containers                    = local.storage_account_containers

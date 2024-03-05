@@ -20,10 +20,8 @@ variable "init" {
 variable "deployment_choice" {
   description = <<DEPLOYMENT_METHOD
   Select the deployment choice. This can either be:
-  - StorageAccount
-    - A public storage account is created to store the backend state file(s).
-  - AgentPool
-    - A Virtual Network, Private DNS Zone, Linux Virtual Machine Scale Set, Storage Account and Private Endpoint are created with the appropriate Role-Based Access Control (RBAC) assignments.
+  - StorageAccount: A public storage account is created to store the backend state file(s).
+  - AgentPool: A Virtual Network, Private DNS Zone, VMSS, Storage Account and Private Endpoint are created with the appropriate RBAC assignments.
   DEPLOYMENT_METHOD
   type        = string
   default     = "StorageAccount"
