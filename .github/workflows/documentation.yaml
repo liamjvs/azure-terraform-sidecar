@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          ref: ${{ steps.commit.outputs.commit_hash }}
       - name: super-linter
         uses: super-linter/super-linter/slim@v6.3.0
         env:
@@ -35,4 +35,4 @@ jobs:
           VALIDATE_TERRAFORM_TFLINT: true
           ERROR_ON_MISSING_EXEC_BIT: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: ${{ github.event.pull_request.head.ref }}
+          DEFAULT_BRANCH: ${{ steps.commit.outputs.commit_hash }}
