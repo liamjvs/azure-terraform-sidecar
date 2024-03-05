@@ -1,4 +1,4 @@
-name: Generate Terraform Documentation
+name: action.yaml
 on:
   - pull_request
   
