@@ -1,5 +1,5 @@
 # Azure Terraform Sidecar
-![Azure Terraform Sidecar](./docs/images/sidecar.png)
+![Azure Terraform Sidecar](./docs/sidecar.png)
 
 ## Description
 
