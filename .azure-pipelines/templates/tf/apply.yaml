@@ -1,0 +1,25 @@
+parameters:
+  - name: task_name
+    type: string
+    displayName: Task Name
+    default: 'tf_apply'
+  - name: working_directory
+    type: string
+    displayName: Working Directory
+    default: '$(Build.SourcesDirectory)'
+  - name: plan_name
+    type: string
+    displayName: Plan Name
+    default: $(Build.Repository.Name)_$(Build.SourceBranchName)_$(Build.BuildNumber).tfplan
+
+steps:
+  - task: PowerShell@2
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/scripts/tf/apply.ps1'
+      pwsh: true
+      ${{ if ne(parameters.plan_name, '') }}:
+        arguments: >
+          -terraform_plan_file ${{ parameters.plan_name }}
+      workingDirectory: '${{ parameters.working_directory }}'
+    displayName: terraform apply

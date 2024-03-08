@@ -1,0 +1,25 @@
+parameters:
+- name: service_connection
+  type: string
+  displayName: Service Connection To Use
+- name: ado_org
+  type: string
+  displayName: Azure DevOps Org Name
+- name: ado_project
+  type: string
+  displayName: Azure DevOps Project Name
+
+steps:
+  - task: AzureCLI@2
+    name: ado_check
+    inputs:
+      azureSubscription: ${{ parameters.service_connection }}
+      addSpnToEnvironment: true
+      scriptType: pscore
+      scriptLocation: scriptPath
+      scriptPath: '$(Build.SourcesDirectory)/scripts/ado/check_ado.ps1'
+      workingDirectory: '$(Build.SourcesDirectory)/scripts/ado'
+      arguments: >
+        -ado_project ${{ parameters.ado_project }}
+        -ado_org ${{ parameters.ado_org }}
+        -service_connection ${{ parameters.service_connection }}

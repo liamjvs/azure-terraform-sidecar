@@ -1,0 +1,65 @@
+# Register VMSS Agent
+# This template will register a VMSS with Azure DevOps
+
+parameters:
+  - name: service_connection
+    type: string
+  - name: ado_service_connection
+    type: string
+    default: ''
+  - name: ado_agent_pool_name
+    type: string
+  - name: ado_agent_pool_vmss_id
+    type: string
+  - name: ado_org
+    type: string
+  - name: ado_project
+    type: string
+  - name: ado_service_connection_name
+    type: string
+  - name: subscription_name
+    type: string
+
+steps:
+  - ${{ if ne(parameters.ado_service_connection, '') }}:
+    - task: AzureCLI@2
+      name: az_login_ado
+      inputs:
+        azureSubscription: ${{ parameters.ado_service_connection }}
+        addSpnToEnvironment: true
+        scriptType: pscore
+        scriptLocation: inlineScript
+        inlineScript: |
+          # Output ADO SP Environment Variables
+
+          Write-Verbose "Logging in to Azure using Service Connection `${{ parameters.ado_service_connection }}`." -Verbose
+          # Translate Service Connection Environment Variables to Terrraform Environment Variables
+
+          Write-Verbose "Setting `$env:ADO_CLIENT_ID to `$env:servicePrincipalId`." -Verbose
+          Write-Host "##vso[task.setvariable variable=ADO_CLIENT_ID;]$($env:servicePrincipalId)"
+
+          Write-Verbose "Setting `$env:ADO_CLIENT_SECRET to `$env:servicePrincipalKey`." -Verbose
+          Write-Host "##vso[task.setvariable variable=ADO_CLIENT_SECRET;]$($env:servicePrincipalKey)"
+
+          Write-Verbose "Setting `$env:ADO_TENANT_ID to `$env:tenantId`." -Verbose
+          Write-Host "##vso[task.setvariable variable=ADO_TENANT_ID;]$($env:tenantId)"
+  - task: AzureCLI@2
+    displayName: 'Register VMSS [${{ parameters.service_connection }}]'
+    inputs:
+      addSpnToEnvironment: true
+      azureSubscription: ${{ parameters.service_connection }}
+      scriptType: 'pscore'
+      scriptLocation: 'scriptPath'
+      scriptPath: '$(Build.SourcesDirectory)/scripts/ado/register_vmss.ps1'
+      workingDirectory: '$(Build.SourcesDirectory)/scripts/ado'
+      failOnStandardError: true
+      arguments: >
+        -ado_project ${{ parameters.ado_project }}
+        -ado_org ${{ parameters.ado_org }}
+        -ado_agent_pool_vmss_id ${{ parameters.ado_agent_pool_vmss_id }}
+        -ado_service_connection_name ${{ parameters.ado_service_connection_name }}
+        -ado_agent_pool_name ${{ parameters.ado_agent_pool_name }}
+        -subscription_name ${{ parameters.subscription_name }}
+        -vmss_operator_name ${{ parameters.ado_service_connection_name }}
+    env:
+      ADO_CLIENT_SECRET: $(ADO_CLIENT_SECRET)

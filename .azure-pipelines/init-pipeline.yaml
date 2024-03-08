@@ -1,0 +1,183 @@
+name: azure-terraform-sidecar-initdeployment
+# For initialising the pipeline
+# This pipeline runs on Microsoft-hosted agents and deployments the infrastructure to Azure
+# After deployment, this will migrate the state file to the backend storage account
+# and then commit the backend file for future use to the repo. The pipeline will also
+# register the VMSS with Azure DevOps if the register_vm variable is set to true.
+
+pool:
+  vmImage: ubuntu-latest
+
+trigger: none
+
+parameters:
+  - name: skip_checks_ado
+    type: boolean
+    default: false
+    displayName: Skip ADO Checks
+  - name: skip_checks_azure
+    type: boolean
+    default: false
+    displayName: Skip Azure Checks
+  - name: skip_checks_entra
+    type: boolean
+    default: false
+    displayName: Skip Entra ID Checks
+
+variables:
+  - template: ../variables/ado-variables.yaml
+
+stages:
+- stage: checks
+  displayName: Check
+  jobs:
+  - job: variables
+    displayName: variables
+    steps:
+      - checkout: none
+      - template: templates/utils/check_variables.yaml
+        parameters:
+          variables_to_check:
+            - azure_service_connection
+            - azure_subscription_id
+            - register_vm
+  - job: state_file
+    displayName: state file
+    steps:
+      - template: templates/utils/check_state_file.yaml
+        parameters:
+          terraform_state_file: terraform.tfbackend
+          terraform_working_dir: "$(Build.SourcesDirectory)/variables"
+          fail_on_existance: true
+  - ${{ if eq(parameters.skip_checks_ado, false) }}:
+    - job: ado
+      displayName: azure devops
+      steps:
+        - template: templates/ado/check_ado.yaml
+          parameters:
+            service_connection: ${{ coalesce(variables.ado_service_connection, variables.azure_service_connection) }}
+            ado_org: $(System.TeamFoundationCollectionUri)
+            ado_project: $(System.TeamProject)
+  - ${{ if eq(parameters.skip_checks_azure, false) }}:
+    - job: azure
+      displayName: azure
+      steps:
+        - checkout: none
+        - template: templates/utils/check_azure.yaml
+          parameters:
+            service_connection: ${{ variables.azure_service_connection }}
+            azure_subscription_id: ${{ variables.azure_subscription_id }}
+  - ${{ if eq(parameters.skip_checks_entra, false) }}:
+    - job: entra
+      displayName: entra
+      steps:
+        - template: templates/entra/get_approle.yaml
+          parameters:
+            service_connection: ${{ variables.azure_service_connection }}
+            graph_permission: "Application.ReadWrite.OwnedBy"
+- stage: plan
+  displayName: Plan
+  condition: succeeded()
+  dependsOn: checks
+  jobs:
+  - job: tf_plan
+    displayName: terraform plan
+    steps:
+      - template: templates/utils/cloud_init.yaml
+      - checkout: self
+        persistCredentials: true
+        displayName: git checkout
+      - template: templates/utils/backend_disable.yaml
+        parameters:
+          working_directory: "$(Build.SourcesDirectory)/terraform"
+      - template: templates/az/login.yaml
+        parameters:
+          service_connection: ${{ variables.azure_service_connection }}
+          managed_identity: false
+          azure_subscription_id: ${{ variables.azure_subscription_id }}
+      - template: templates/tf/init.yaml
+        parameters:
+          working_directory: "$(Build.SourcesDirectory)/terraform"
+      - template: templates/tf/plan.yaml
+        parameters:
+          working_directory: "$(Build.SourcesDirectory)/terraform"
+          terraform_vars:
+            init=true
+            deployment_choice=AgentPool
+            authentication_method=SystemManagedIdentity
+      - template: templates/az/logout.yaml
+- stage: deployment
+  displayName: Deploy
+  dependsOn: plan
+  condition: succeeded()
+  jobs:
+  - deployment: tf_apply
+    displayName: terraform apply
+    environment: "terraform"
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - template: templates/utils/cloud_init.yaml
+            - checkout: self
+              persistCredentials: true
+              displayName: git checkout
+            - task: DownloadBuildArtifacts@1
+              displayName: "Download Artifact"
+              inputs:
+                buildType: "current"
+                downloadType: "single"
+                artifactName: "terraform_plan"
+                downloadPath: "$(Build.SourcesDirectory)/terraform"
+            - template: templates/utils/backend_disable.yaml
+              parameters:
+                working_directory: "$(Build.SourcesDirectory)/terraform"
+            - template: templates/az/login.yaml
+              parameters:
+                service_connection: ${{ variables.azure_service_connection }}
+                managed_identity: false
+                azure_subscription_id: ${{ variables.azure_subscription_id }}
+            - template: templates/tf/init.yaml
+              parameters:
+                working_directory: "$(Build.SourcesDirectory)/terraform"
+            - template: templates/tf/apply.yaml
+              parameters:
+                working_directory: "$(Build.SourcesDirectory)/terraform"
+            - template: templates/tf/output.yaml
+              parameters:
+                working_directory: "$(Build.SourcesDirectory)/terraform"
+            - template: templates/utils/create_state_file.yaml
+              parameters:
+                working_directory: "$(Build.SourcesDirectory)/terraform"
+                state_file: ${{ coalesce(variables['terraform_state_file'], 'terraform.tfbackend') }}
+            - template: templates/utils/backend_enable.yaml
+              parameters:
+                working_directory: "$(Build.SourcesDirectory)/terraform"
+            - template: templates/az/refresh.yaml
+            - template: templates/utils/sleep.yaml
+              parameters:
+                duration: 60
+                message: "Waiting for Storage Account RBAC to Propagate"
+            - template: templates/tf/init.yaml
+              parameters:
+                working_directory: "$(Build.SourcesDirectory)/terraform"
+                migrate_backend: true
+                backend_config: 
+                  $(Build.SourcesDirectory)/variables/${{ coalesce(variables['terraform_state_file'], 'terraform.tfbackend') }}
+            - template: templates/utils/git_commit.yaml
+              parameters:
+                commit_message: "Added Backend Config"
+                files: 
+                  - variables/${{ coalesce(variables['terraform_state_file'], 'terraform.tfbackend') }}"
+            - ${{ if eq(variables.register_vm, 'true') }}:
+              - template: templates/ado/register_agent.yaml
+                parameters:
+                  service_connection: ${{ variables.azure_service_connection }}
+                  ado_service_connection: ${{ variables.ado_service_connection }}
+                  ado_agent_pool_vmss_id: $(TF_OUTPUT_VIRTUAL_MACHINE_SCALESET_ID)
+                  ado_service_connection_name: ${{ variables.ado_service_connection_name }}
+                  ado_agent_pool_name: ${{ variables.ado_agent_pool_name }}
+                  subscription_name: ${{ variables.subscription_name }}
+                  ado_org: $(System.TeamFoundationCollectionUri)
+                  ado_project: $(System.TeamProject)
+            - template: templates/az/logout.yaml

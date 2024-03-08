@@ -1,0 +1,9 @@
+steps:
+  - task: PowerShell@2
+    name: az_login_refresh
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/scripts/az/refresh.ps1'
+      pwsh: true
+      workingDirectory: '$(Build.SourcesDirectory)'
+    displayName: az refresh token

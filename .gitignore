@@ -1,0 +1,15 @@
+# Local .terraform directories
+.terraform**
+!.terraform-docs.yml
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# tfplan files
+tfplan**
+
+*.tfvars
+
+# Ignore testing ADO variables
+variables/ado-variables.yaml

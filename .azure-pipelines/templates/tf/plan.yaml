@@ -1,0 +1,54 @@
+parameters:
+  - name: task_name
+    type: string
+    displayName: Task Name
+    default: 'tf_plan'
+  - name: working_directory
+    type: string
+    displayName: Working Directory
+    default: '$(Build.SourcesDirectory)'
+  - name: refresh_only
+    type: boolean
+    displayName: Refresh Only?
+    default: false
+  - name: publish_plan
+    type: boolean
+    displayName: Publish tf plan?
+    default: true
+  - name: plan_name
+    type: string
+    displayName: Plan Name
+    default: $(Build.Repository.Name)_$(Build.SourceBranchName)_$(Build.BuildNumber).tfplan
+  - name: terraform_vars
+    type: object
+    displayName: Terraform Vars
+    default:
+
+steps:
+  - task: PowerShell@2
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/scripts/tf/plan.ps1'
+      pwsh: true
+      arguments: >
+        -refresh_only $${{ parameters.refresh_only }}
+        -terraform_publish_plan $${{ parameters.publish_plan }}
+        -terraform_plan_file "${{ parameters.plan_name }}"
+        -terraform_vars '${{ parameters.terraform_vars }}'
+      workingDirectory: '${{ parameters.working_directory }}'
+    displayName: terraform plan
+  - ${{ if eq(parameters.publish_plan, true) }}:
+    - task: CopyFiles@2
+      inputs:
+        Contents: |
+          ${{ parameters.plan_name }}
+          .terraform.lock.hcl
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        SourceFolder: '${{ parameters.working_directory }}'
+      displayName: Copy terraform plan
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'terraform_plan'
+        publishLocation: 'pipeline'
+      displayName: Publish terraform plan

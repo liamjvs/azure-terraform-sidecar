@@ -1,0 +1,25 @@
+parameters:
+- name: service_connection
+  type: string
+  displayName: Service Connection To Use
+- name: azure_subscription_id
+  type: string
+  displayName: Azure Subscription ID
+
+steps:
+  - task: AzureCLI@2
+    name: azure_check
+    displayName: Azure Connection
+    inputs:
+      azureSubscription: ${{ parameters.service_connection }}
+      addSpnToEnvironment: true
+      scriptType: pscore
+      scriptLocation: inlineScript
+      inlineScript: |
+        Write-Verbose "Checking Azure Subscription ID `${{ parameters.azure_subscription_id }}`." -Verbose
+        $subscription = az account show --subscription ${{ parameters.azure_subscription_id }} --query 'id' -o tsv
+        if ($subscription -eq '') {
+          Write-Error "Azure Subscription ID `${{ parameters.azure_subscription_id }}` is not valid."
+          exit 1
+        }
+        Write-Verbose "Azure Subscription ID `${{ parameters.azure_subscription_id }}` is valid." -Verbose
