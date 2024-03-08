@@ -17,16 +17,12 @@ or provide a Bring-Your-Own-Runner (BYOR) functionality to application teams, Si
 - Choice of the identity used to perform the Terraform deployment
 - Scripts and pipelines to interface with Azure DevOps, Azure and Entra ID
 
-## How do you want to start?
-
-This supports either local or Azure DevOps deployments.
-
-### Local Deployment
+## Local Deployment
 Out-of-the-box, when deploying locally by executing `./powershell/run-locally.ps1`, the solution will deploy a Storage Account for Terraform state files. The Storage Account will be used as the backend for the Terraform state files.
 
 Further customisation can be made to the solution to suit your requirements.
 
-### Azure DevOps
+## Azure DevOps
 
 __TL;DR:__
 - Add this repo to your Azure DevOps environment
@@ -50,11 +46,11 @@ There are few options available when deploying this solution.
 
 Please review the Terraform variables for more information.
 
-#### Requirements
+### Requirements
 - Azure Subscription to host the Azure Resources required for the Terraform environment
 - Azure DevOps Project under an Azure DevOps Organisation
 
-#### Permissions
+### Permissions
 - Azure DevOps
   - Add Azure DevOps Users to the Azure DevOps Project
   - Add Azure DevOps Users as Creator or greater to the Agent Pool and Service Connection
@@ -62,15 +58,13 @@ Please review the Terraform variables for more information.
   - Contributor to deploy the resources to the Azure Subscription
   - User Access Administrator or greater to assign roles to the subscription
 
-#### Getting Started
+### Getting Started
 
-##### `init_ado.ps1`
 The `init_ado.ps1` script will prompt you to set up your Azure DevOps environment. It will create a Service Principal, a Service Connection and set up the repository access.
 
-You don't trust the script or some other reason, you want to do it manually. Here's how you can do it.
+If you don't trust the script or some other reason, you want to do it manually. Here's how you can do it:
 
-##### Pre-Requirements Steps
-Create a Service Principal within the same tenant as the Azure DevOps Organisation (see x.x). The Service Principal will require the following permissions:
+Create a Service Principal within the same tenant as the Azure DevOps Organisation. The Service Principal will require the following permissions:
 - __Microsoft Graph__ permissions of Application.ReadWrite.OwnedBy. The initial Service Principal requires the ability to create other Service Principals (please see point X.X as to why)
 - In __Azure DevOps__
   - Added as a User to the Azure DevOps Organisation
@@ -78,16 +72,14 @@ Create a Service Principal within the same tenant as the Azure DevOps Organisati
   - __'Agent Pool Creator' or greater__ The initial Service Principal will need to create an Agent Pool in Azure DevOps.
   - __'Service Connection Creator' or greater__  The created Service Principal will be created as a Service Connection within Azure DevOps.
 
-##### Method
-
-###### Add the Repository to Azure DevOps
+#### Add the Repository to Azure DevOps
 Assuming you have the Service Principal and Service Connection created, you can now add the repository to your Azure DevOps environment.
 Clone the repository to your local machine and push it to your Azure DevOps environment.
 
-###### Create the Pipeline
+#### Create the Pipeline
 Add the `init-pipeline.yml` and `post-pipeline.yml` to your Azure DevOps project. The `init-pipeline.yml` will create the resources required for the Terraform environment. The `post-pipeline.yml` will create the Service Connection and Agent Pool.
 
-###### `init-pipeline.yml`
+#### init-pipeline.yml
 The `init-pipeline.yml` needs to be executed first. This pipeline will execute the Terraform deployment from a Microsoft-hosted agent.
 The pipeline executes the deployment with the Terraform variable `init` set to `true` that ensures the resources deployed via the process are publically facing for the Microsoft-hosted agent to access.
 
@@ -97,7 +89,7 @@ After the deployment has succeeded, the pipeline will:
 - Commit the Terraform Backend Configuration file to the repository and submit a Pull Request
 - Register the Agent Pool created in the deployment
 
-###### `post-pipeline.yml`
+#### post-pipeline.yml
 The Pull Request created by the `init-pipeline.yml` will need to be approved. After the Pull Request has been approved, the `post-pipeline.yml` can be executed.
 This pipeline will ensure that the deployed Agent Pool has access to the Terraform state files on the Storage Account and optionally make the deployment a private deployment ensuring that only the deployed Virtual Machine Scale Set has access to the resources.
 
@@ -136,3 +128,9 @@ Ensure that the Service Connection has the 'Service Connection Creator' role or 
 Navigate to the Service Connections under the project you want to create the Service Connection under.
 Top right, click on the three dots and select 'Security'.
 Add the Service Principal to the Service Connection with the 'Service Connection Creator' role or greater. The Service Principal will not appear unless it has been added to the Azure DevOps Organisation (please see above).
+
+#### Azure DevOps - What is the variable ado_service_connection for Azure DevOps?
+As the identity executing the `init-pipeline.yaml` Azure DevOps pipeline requires access to add Service Connections and Agent Pools, the identity executing the pipeline requires to be added to the Azure DevOps environment.
+At the time of writing, only identities within the tenant that the Azure DevOps instance is in can be added to the Azure DevOps instance.
+The `ado_service_connection` variable is the name of the Service Connection that the pipeline will use to create the Service Connection and Agent Pool.
+This opens up the possibility of using a Service Principal that is not within the same tenant as the Azure DevOps instance to deploy the sidecar solution and then use a Service Principal within the same tenant as the Azure DevOps instance to add the relevant Service Connection and Agent Pool.
